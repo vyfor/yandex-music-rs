@@ -1,4 +1,4 @@
-use crate::{api::RequestPath, YandexMusicClient};
+use crate::api::RequestPath;
 
 pub struct DownloadInfoRequest {
     pub track_id: i32,
@@ -16,6 +16,7 @@ impl RequestPath for DownloadInfoRequest {
     }
 }
 
+#[cfg(test)]
 #[tokio::test]
 async fn get_track_download_info_test() {
     dotenv::dotenv().ok();
@@ -26,7 +27,7 @@ async fn get_track_download_info_test() {
         .parse()
         .unwrap();
 
-    let client = YandexMusicClient::new(&api_key);
+    let client = crate::YandexMusicClient::new(&api_key);
 
     let result = client.get_track_download_info(track_id).await.unwrap();
     println!("{result:#?}");

@@ -16,6 +16,7 @@ impl RequestPath for AllPlaylistsRequest {
     }
 }
 
+#[cfg(test)]
 #[tokio::test]
 async fn get_all_playlists_test() {
     dotenv::dotenv().ok();
