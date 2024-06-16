@@ -5,7 +5,6 @@ description = "Rust wrapper for the Yandex Music API"
 edition = "2021"
 keywords = ["yandex", "music", "api", "client", "http"]
 license = "MIT"
-license-file = "LICENSE"
 name = "yandex-music"
 repository = "https://github.com/vyfor/yandex-music-rs"
 version = "0.1.0"
