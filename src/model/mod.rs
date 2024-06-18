@@ -4,6 +4,7 @@ pub mod clip;
 pub mod cover;
 pub mod download_info;
 pub mod label;
+pub mod library;
 pub mod lyrics;
 pub mod playlist;
 pub mod supplement;

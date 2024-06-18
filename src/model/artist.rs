@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use super::{cover::Cover, track::Track};
+use super::{cover::Cover, track::TrackFull};
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -11,7 +11,7 @@ pub struct Artist {
     pub name: String,
     pub various: bool,
     #[serde(default)]
-    pub popular_tracks: Vec<Track>,
+    pub popular_tracks: Vec<TrackFull>,
     #[serde(default)]
     pub tickets_available: bool,
     #[serde(default)]

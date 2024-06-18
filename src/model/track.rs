@@ -6,6 +6,14 @@ use super::{album::Album, artist::Artist};
 #[serde(rename_all = "camelCase")]
 pub struct Track {
     pub id: i32,
+    pub album_id: i32,
+    pub timestamp: String,
+}
+
+#[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackFull {
+    pub id: i32,
     pub play_count: i32,
     pub recent: bool,
     pub timestamp: String,
