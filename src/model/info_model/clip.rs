@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::model::track_model::artist::Artist;
 
-#[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackClip {
     pub clip_id: i32,
