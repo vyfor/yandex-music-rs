@@ -28,6 +28,27 @@ impl YandexMusicClient {
         }
     }
 
+    pub fn with_proxy(token: &str, proxy: reqwest::Proxy) -> Self {
+        let mut headers = HeaderMap::with_capacity(1);
+        headers.insert(
+            "Authorization",
+            HeaderValue::from_str(&format!("OAuth {token}"))
+                .expect("Failed to set client headers"),
+        );
+
+        Self {
+            client: reqwest::Client::builder()
+                .default_headers(headers)
+                .proxy(proxy)
+                .build()
+                .expect("Failed to create a Client"),
+        }
+    }
+
+    pub fn with_client(client: reqwest::Client) -> Self {
+        Self { client }
+    }
+
     async fn get<T: serde::de::DeserializeOwned>(
         &self,
         endpoint: &str,
