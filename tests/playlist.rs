@@ -1,5 +1,7 @@
 #[cfg(test)]
 mod playlist {
+    use yandex_music::YandexMusicClient;
+
     #[tokio::test]
     async fn get_all_playlists_test() {
         dotenv::dotenv().ok();
@@ -10,7 +12,7 @@ mod playlist {
             .parse()
             .unwrap();
 
-        let client = crate::YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::new(&api_key);
 
         let result = client.get_all_playlists(user_id).await.unwrap();
         println!("{result:#?}");
@@ -30,7 +32,7 @@ mod playlist {
             .parse()
             .unwrap();
 
-        let client = crate::YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::new(&api_key);
 
         let result = client.get_playlist(user_id, playlist_kind).await.unwrap();
         println!("{result:#?}");

@@ -1,5 +1,7 @@
 #[cfg(test)]
 mod track {
+    use yandex_music::YandexMusicClient;
+
     #[tokio::test]
     async fn get_track_download_info_test() {
         dotenv::dotenv().ok();
@@ -10,7 +12,7 @@ mod track {
             .parse()
             .unwrap();
 
-        let client = crate::YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::new(&api_key);
 
         let result = client.get_track_download_info(track_id).await.unwrap();
         println!("{result:#?}");
