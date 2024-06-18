@@ -73,6 +73,7 @@ pub struct Track {
     pub fade: Option<TrackFade>,
     #[serde(default)]
     pub special_audio_resources: Vec<String>,
+    pub player_id: Option<String>,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
