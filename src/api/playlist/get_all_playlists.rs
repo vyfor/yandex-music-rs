@@ -1,7 +1,7 @@
 use crate::{
     api::{RequestPath, Response},
     error::ClientError,
-    model::playlist_model::playlist::Playlist,
+    model::playlist::Playlist,
     YandexMusicClient,
 };
 
