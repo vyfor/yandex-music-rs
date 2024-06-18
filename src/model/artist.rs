@@ -10,7 +10,14 @@ pub struct Artist {
     pub id: i32,
     pub name: String,
     pub various: bool,
+    #[serde(default)]
     pub popular_tracks: Vec<Track>,
+    #[serde(default)]
     pub tickets_available: bool,
+    #[serde(default)]
     pub regions: Vec<String>,
+    #[serde(default)]
+    pub disclaimers: Vec<String>,
+    #[serde(default)]
+    pub genres: Vec<String>,
 }

@@ -53,7 +53,7 @@ impl From<serde_json::Error> for ClientError {
 pub const API_PATH: &str = "https://api.music.yandex.net:443/";
 
 pub struct YandexMusicClient {
-    client: reqwest::Client,
+    pub client: reqwest::Client,
 }
 
 impl YandexMusicClient {
