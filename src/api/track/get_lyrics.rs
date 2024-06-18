@@ -1,50 +1,57 @@
-use crate::api::{utils::add_param, RequestPath};
+use crate::{
+    api::{utils::create_sign, RequestPath, Response},
+    model::lyrics::{LyricsFormat, TrackLyrics},
+    YandexMusicClient,
+};
 
 pub struct LyricsRequest {
     pub track_id: i32,
-    pub format: Option<String>,
-    pub timestamp: Option<String>,
-    pub sign: Option<String>,
+    pub format: LyricsFormat,
+    pub timestamp: u64,
+    pub sign: String,
 }
 
 impl LyricsRequest {
-    pub fn new(track_id: i32) -> Self {
+    pub fn new(track_id: i32, format: LyricsFormat) -> Self {
+        let (timestamp, sign) = create_sign(track_id);
+
         Self {
             track_id,
-            format: None,
-            timestamp: None,
-            sign: None,
+            format,
+            timestamp,
+            sign,
         }
-    }
-
-    pub fn format(mut self, format: String) -> Self {
-        self.format = Some(format);
-        self
-    }
-
-    pub fn timestamp(mut self, timestamp: String) -> Self {
-        self.timestamp = Some(timestamp);
-        self
-    }
-
-    pub fn sign(mut self, sign: String) -> Self {
-        self.sign = Some(sign);
-        self
     }
 }
 
 impl RequestPath for LyricsRequest {
     fn path(&self) -> String {
-        let mut base_path = format!("tracks/{}/lyrics?", self.track_id);
-
-        add_param(&mut base_path, "format", &self.format);
-        add_param(&mut base_path, "timestamp", &self.timestamp);
-        add_param(&mut base_path, "sign", &self.sign);
+        let mut base_path = format!(
+            "tracks/{}/lyrics?format={}&timeStamp={}&sign={}",
+            self.track_id, self.format, self.timestamp, self.sign.replace('+', "%2B")
+        );
 
         if base_path.ends_with('?') {
             base_path.pop();
         }
 
+        println!("{}", base_path);
+
         base_path
+    }
+}
+
+impl YandexMusicClient {
+    pub async fn get_lyrics(
+        &self,
+        track_id: i32,
+    ) -> Result<TrackLyrics, crate::ClientError> {
+        let response: Response = self
+            .get(&LyricsRequest::new(track_id, LyricsFormat::TEXT).path())
+            .await?;
+
+        println!("{:#?}", response.result);
+
+        Ok(serde_json::from_value::<TrackLyrics>(response.result)?)
     }
 }

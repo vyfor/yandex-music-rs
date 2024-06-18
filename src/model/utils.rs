@@ -1,4 +1,16 @@
-#[inline]
-pub fn default_i32() -> i32 {
-    0
+use serde::de::{self, Deserializer, Error};
+use serde::Deserialize;
+
+pub fn string_to_i32<'de, D>(deserializer: D) -> Result<i32, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value = Deserialize::deserialize(deserializer)?;
+    match value {
+        serde_json::Value::Number(num) => Ok(num.as_i64().unwrap() as i32),
+        serde_json::Value::String(s) => {
+            s.parse::<i32>().map_err(de::Error::custom)
+        }
+        _ => Err(D::Error::custom("expected number or string")),
+    }
 }

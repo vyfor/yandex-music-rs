@@ -19,6 +19,11 @@ impl YandexMusicClient {
             HeaderValue::from_str(&format!("OAuth {token}"))
                 .expect("Failed to set client headers"),
         );
+        headers.insert(
+            "X-Yandex-Music-Client",
+            HeaderValue::from_str("YandexMusicAndroid/24023621")
+                .expect("Failed to set client headers"),
+        );
 
         Self {
             client: reqwest::Client::builder()
@@ -33,6 +38,11 @@ impl YandexMusicClient {
         headers.insert(
             "Authorization",
             HeaderValue::from_str(&format!("OAuth {token}"))
+                .expect("Failed to set client headers"),
+        );
+        headers.insert(
+            "X-Yandex-Music-Client",
+            HeaderValue::from_str("YandexMusicAndroid/24023621")
                 .expect("Failed to set client headers"),
         );
 

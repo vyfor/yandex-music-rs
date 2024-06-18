@@ -1,6 +1,5 @@
 use crate::{
     api::{self, RequestPath, Response},
-    error::ClientError,
     model::download_info::TrackDownloadInfo,
     YandexMusicClient,
 };
@@ -25,7 +24,7 @@ impl YandexMusicClient {
     pub async fn get_track_download_info(
         &self,
         track_id: i32,
-    ) -> Result<Vec<TrackDownloadInfo>, ClientError> {
+    ) -> Result<Vec<TrackDownloadInfo>, crate::ClientError> {
         let response: Response = self
             .get(
                 &api::track::get_download_info::DownloadInfoRequest::new(

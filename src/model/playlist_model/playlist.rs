@@ -30,6 +30,6 @@ pub struct Playlist {
     pub track_count: i32,
     pub uid: i32,
     pub visibility: String,
-    #[serde(default = "crate::model::utils::default_i32")]
+    #[serde(default)]
     pub likes_count: i32,
 }

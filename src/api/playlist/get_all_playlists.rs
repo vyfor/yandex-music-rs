@@ -1,6 +1,5 @@
 use crate::{
     api::{RequestPath, Response},
-    error::ClientError,
     model::playlist::Playlist,
     YandexMusicClient,
 };
@@ -25,7 +24,7 @@ impl YandexMusicClient {
     pub async fn get_all_playlists(
         &self,
         user_id: i32,
-    ) -> Result<Vec<Playlist>, ClientError> {
+    ) -> Result<Vec<Playlist>, crate::ClientError> {
         let response: Response =
             self.get(&AllPlaylistsRequest::new(user_id).path()).await?;
 
