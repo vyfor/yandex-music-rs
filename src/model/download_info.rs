@@ -1,6 +1,8 @@
 use reqwest::Client;
 use serde::Deserialize;
 
+use crate::error::ClientError;
+
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackDownloadInfo {
@@ -43,18 +45,20 @@ impl DownloadInfo {
 }
 
 impl TrackDownloadInfo {
-    pub async fn get_direct_link(&self, client: &Client) -> String {
+    pub async fn get_direct_link(
+        &self,
+        client: &Client,
+    ) -> Result<String, ClientError> {
         let xml = client
             .get(&self.download_info_url)
             .send()
-            .await
-            .unwrap()
+            .await?
+            .error_for_status()?
             .text()
-            .await
-            .unwrap();
+            .await?;
 
-        let download_info: DownloadInfo = serde_xml_rs::from_str(&xml).unwrap();
+        let download_info: DownloadInfo = serde_xml_rs::from_str(&xml)?;
 
-        download_info.get_direct_link()
+        Ok(download_info.get_direct_link())
     }
 }

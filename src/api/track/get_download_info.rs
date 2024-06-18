@@ -36,6 +36,7 @@ async fn get_track_download_info_test() {
         .first()
         .unwrap()
         .get_direct_link(&client.client)
-        .await;
+        .await
+        .unwrap();
     println!("{result:#?}");
 }
