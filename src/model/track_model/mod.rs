@@ -1,6 +1,7 @@
 pub mod album;
 pub mod artist;
 pub mod cover;
+pub mod custom_wave;
 pub mod label;
 pub mod library;
 pub mod similar_tracks;

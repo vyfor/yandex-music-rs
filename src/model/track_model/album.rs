@@ -1,6 +1,8 @@
 use serde::Deserialize;
 
-use super::{artist::Artist, label::Label, track::Track};
+use super::{
+    artist::Artist, custom_wave::CustomWave, label::Label, track::Track,
+};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -56,10 +58,24 @@ pub struct Album {
     pub available_regions: Vec<String>,
     #[serde(default)]
     pub available_for_options: Vec<String>,
+    pub meta_tag_id: Option<String>,
+    pub has_trailer: Option<bool>,
+    pub sort_order: Option<String>,
+    pub background_image_url: Option<String>,
+    pub custom_wave: Option<CustomWave>,
+    pub pager: Option<AlbumPager>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct TrackPosition {
     pub volume: i32,
     pub index: i32,
+}
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AlbumPager {
+    pub page: i32,
+    pub per_page: i32,
+    pub total: i32,
 }
