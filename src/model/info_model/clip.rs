@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use super::artist::Artist;
+use crate::model::track_model::artist::Artist;
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

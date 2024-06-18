@@ -1,6 +1,8 @@
 use serde::Deserialize;
 
-use super::{cover::Cover, tag::Tag, user::User};
+use crate::model::{
+    playlist_model::tag::Tag, track_model::cover::Cover, user_model::user::User,
+};
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -28,6 +30,6 @@ pub struct Playlist {
     pub track_count: i32,
     pub uid: i32,
     pub visibility: String,
-    #[serde(default = "super::utils::default_i32")]
+    #[serde(default = "crate::model::utils::default_i32")]
     pub likes_count: i32,
 }
