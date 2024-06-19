@@ -32,4 +32,12 @@ pub struct Playlist {
     pub visibility: String,
     #[serde(default)]
     pub likes_count: i32,
+    #[serde(default)]
+    pub similar_playlists: Vec<Playlist>,
+}
+
+#[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
+pub struct PartialPlaylist {
+    pub uid: i32,
+    pub kind: i32,
 }
