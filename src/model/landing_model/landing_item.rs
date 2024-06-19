@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::Deserialize;
 
-use crate::model::playlist::{PartialPlaylist, Playlist};
+use crate::model::playlist::{Playlist, PlaylistId};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -16,7 +16,7 @@ pub struct LandingItem {
     #[serde(default)]
     pub new_releases: Vec<i32>,
     #[serde(default)]
-    pub new_playlists: Vec<PartialPlaylist>,
+    pub new_playlists: Vec<PlaylistId>,
     #[serde(default)]
     pub podcasts: Vec<i32>,
 }
