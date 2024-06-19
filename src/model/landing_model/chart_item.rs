@@ -5,12 +5,12 @@ use crate::model::track::Track;
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct ChartItem {
     pub track: Option<Track>,
-    pub chart: Option<PartialChart>,
+    pub chart: Option<Chart>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct PartialChart {
+pub struct Chart {
     pub position: i32,
     pub listeners: i32,
     pub shift: i32,
