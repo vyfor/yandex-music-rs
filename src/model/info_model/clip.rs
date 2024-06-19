@@ -7,13 +7,16 @@ use crate::model::track_model::artist::Artist;
 pub struct TrackClip {
     pub clip_id: i32,
     pub title: String,
-    pub player_id: String,
-    pub uuid: String,
-    pub thumbnail: String,
-    pub preview_url: String,
+    pub player_id: Option<String>,
+    pub uuid: Option<String>,
+    pub thumbnail: Option<String>,
+    pub preview_url: Option<String>,
     pub duration: i32,
+    #[serde(default)]
     pub track_ids: Vec<i32>,
+    #[serde(default)]
     pub artists: Vec<Artist>,
+    #[serde(default)]
     pub disclaimers: Vec<String>,
-    pub explicit: bool,
+    pub explicit: Option<bool>,
 }

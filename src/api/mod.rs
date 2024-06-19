@@ -2,6 +2,7 @@ use serde::Deserialize;
 use serde_json::Value;
 
 pub mod album;
+pub mod artist;
 pub mod landing;
 pub mod playlist;
 pub mod track;

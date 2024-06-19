@@ -1,5 +1,7 @@
 use serde::Deserialize;
 
+use crate::model::pager::Pager;
+
 use super::{
     artist::Artist, custom_wave::CustomWave, label::Label, track::Track,
 };
@@ -63,19 +65,11 @@ pub struct Album {
     pub sort_order: Option<String>,
     pub background_image_url: Option<String>,
     pub custom_wave: Option<CustomWave>,
-    pub pager: Option<AlbumPager>,
+    pub pager: Option<Pager>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct TrackPosition {
     pub volume: i32,
     pub index: i32,
-}
-
-#[derive(Debug, PartialEq, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct AlbumPager {
-    pub page: i32,
-    pub per_page: i32,
-    pub total: i32,
 }
