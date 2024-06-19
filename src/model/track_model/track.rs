@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::User;
+use crate::model::user::User;
 
 use super::{album::Album, artist::Artist};
 
