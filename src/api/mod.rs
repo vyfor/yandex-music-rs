@@ -9,6 +9,7 @@ pub mod rotor;
 pub mod tag;
 pub mod track;
 pub mod utils;
+pub mod account;
 
 pub trait RequestPath {
     fn path(&self) -> String;
