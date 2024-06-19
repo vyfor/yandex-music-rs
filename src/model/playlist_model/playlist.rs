@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 use crate::model::{
-    playlist_model::tag::Tag, track_model::cover::Cover, user_model::user::User,
+    tag::Tag, track_model::cover::Cover, user_model::user::User,
 };
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
@@ -37,7 +37,7 @@ pub struct Playlist {
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
-pub struct PartialPlaylist {
+pub struct PlaylistId {
     pub uid: i32,
     pub kind: i32,
 }

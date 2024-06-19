@@ -6,6 +6,7 @@ pub mod artist;
 pub mod landing;
 pub mod playlist;
 pub mod rotor;
+pub mod tag;
 pub mod track;
 pub mod utils;
 
