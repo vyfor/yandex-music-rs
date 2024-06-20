@@ -73,3 +73,10 @@ pub struct TrackPosition {
     pub volume: i32,
     pub index: i32,
 }
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AlbumEvent {
+    pub album: Option<Album>,
+    pub tracks: Vec<Track>,
+}

@@ -4,6 +4,7 @@ use serde_json::Value;
 pub mod account;
 pub mod album;
 pub mod artist;
+pub mod common;
 pub mod landing;
 pub mod playlist;
 pub mod queue;

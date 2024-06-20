@@ -85,6 +85,13 @@ pub struct TrackId {
     pub from: Option<String>,
 }
 
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackWithAds {
+    pub r#type: String,
+    pub track: Track,
+}
+
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackMajor {
