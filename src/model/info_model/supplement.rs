@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use super::{clip::TrackClip, video::TrackVideo};
+use super::{clip::TrackClip, video::Video};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -9,7 +9,7 @@ pub struct TrackSupplement {
     #[serde(default)]
     pub lyrics: Vec<TrackSupplementLyrics>,
     #[serde(default)]
-    pub videos: Vec<TrackVideo>,
+    pub videos: Vec<Video>,
     #[serde(default)]
     pub clips: Vec<TrackClip>,
 }
