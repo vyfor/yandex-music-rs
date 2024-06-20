@@ -6,6 +6,7 @@ pub mod album;
 pub mod artist;
 pub mod landing;
 pub mod playlist;
+pub mod queue;
 pub mod rotor;
 pub mod search;
 pub mod tag;

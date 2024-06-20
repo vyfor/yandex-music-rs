@@ -2,9 +2,18 @@ use std::{error::Error, fmt::Display};
 
 #[derive(Debug)]
 pub enum ClientError {
-    RequestError { error: reqwest::Error },
-    JsonParseError { error: serde_json::Error },
-    XmlParseError { error: serde_xml_rs::Error },
+    RequestError {
+        error: reqwest::Error,
+    },
+    JsonParseError {
+        error: serde_json::Error,
+    },
+    XmlParseError {
+        error: serde_xml_rs::Error,
+    },
+    InvalidHeader {
+        error: reqwest::header::InvalidHeaderValue,
+    },
 }
 
 impl Error for ClientError {
@@ -13,6 +22,7 @@ impl Error for ClientError {
             ClientError::RequestError { error } => Some(error),
             ClientError::JsonParseError { error } => Some(error),
             ClientError::XmlParseError { error } => Some(error),
+            ClientError::InvalidHeader { error } => Some(error),
         }
     }
 }
@@ -23,6 +33,7 @@ impl Display for ClientError {
             ClientError::RequestError { error } => write!(f, "{error}"),
             ClientError::JsonParseError { error } => write!(f, "{error}"),
             ClientError::XmlParseError { error } => write!(f, "{error}"),
+            ClientError::InvalidHeader { error } => write!(f, "{error}"),
         }
     }
 }
@@ -42,5 +53,11 @@ impl From<serde_json::Error> for ClientError {
 impl From<serde_xml_rs::Error> for ClientError {
     fn from(error: serde_xml_rs::Error) -> Self {
         ClientError::XmlParseError { error }
+    }
+}
+
+impl From<reqwest::header::InvalidHeaderValue> for ClientError {
+    fn from(error: reqwest::header::InvalidHeaderValue) -> Self {
+        ClientError::InvalidHeader { error }
     }
 }

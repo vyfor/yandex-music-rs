@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::track::Track;
+use crate::model::track::{Track, TrackId};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct ChartItem {
@@ -16,13 +16,4 @@ pub struct Chart {
     pub shift: i32,
     pub bg_color: Option<String>,
     pub track_id: Option<TrackId>,
-}
-
-#[derive(Debug, PartialEq, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TrackId {
-    pub id: i32,
-    pub track_id: i32,
-    pub album_id: Option<i32>,
-    pub from: Option<String>,
 }

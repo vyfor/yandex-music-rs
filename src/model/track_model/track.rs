@@ -76,6 +76,15 @@ pub struct Track {
     pub player_id: Option<String>,
 }
 
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackId {
+    pub id: Option<i32>,
+    pub track_id: Option<i32>,
+    pub album_id: Option<i32>,
+    pub from: Option<String>,
+}
+
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackMajor {
