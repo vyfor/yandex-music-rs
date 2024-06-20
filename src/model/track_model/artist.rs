@@ -3,7 +3,7 @@ use std::fmt::Display;
 use serde::Deserialize;
 
 use crate::model::{
-    chart_item::Chart, clip::TrackClip, pager::Pager, video::TrackVideo,
+    chart_item::Chart, clip::TrackClip, pager::Pager, video::Video,
 };
 
 use super::{
@@ -66,7 +66,7 @@ pub struct ArtistInfo {
     #[serde(default)]
     pub all_covers: Vec<Cover>,
     #[serde(default)]
-    pub videos: Vec<TrackVideo>,
+    pub videos: Vec<Video>,
     #[serde(default)]
     pub clips: Vec<TrackClip>,
     #[serde(default)]

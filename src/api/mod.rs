@@ -1,15 +1,16 @@
 use serde::Deserialize;
 use serde_json::Value;
 
+pub mod account;
 pub mod album;
 pub mod artist;
 pub mod landing;
 pub mod playlist;
 pub mod rotor;
+pub mod search;
 pub mod tag;
 pub mod track;
 pub mod utils;
-pub mod account;
 
 pub trait RequestPath {
     fn path(&self) -> String;
