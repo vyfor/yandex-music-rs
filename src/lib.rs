@@ -76,4 +76,24 @@ impl YandexMusicClient {
 
         Ok(response)
     }
+
+    async fn get_with_headers<T: serde::de::DeserializeOwned>(
+        &self,
+        endpoint: &str,
+        headers: HeaderMap,
+    ) -> Result<T, ClientError> {
+        let url = format!("{}{}", API_PATH, endpoint);
+
+        let response = self
+            .client
+            .get(url)
+            .headers(headers)
+            .send()
+            .await?
+            .error_for_status()?
+            .json::<T>()
+            .await?;
+
+        Ok(response)
+    }
 }
