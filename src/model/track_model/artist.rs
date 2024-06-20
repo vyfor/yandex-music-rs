@@ -93,6 +93,15 @@ pub struct ArtistTracks {
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct ArtistEvent {
+    pub artist: Option<Artist>,
+    pub tracks: Vec<Track>,
+    pub similar_to_artists_from_history: Vec<Artist>,
+    pub subscribed: bool,
+}
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct ArtistAlbums {
     pub pager: Pager,
     pub albums: Vec<Album>,

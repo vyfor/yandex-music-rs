@@ -1,3 +1,3 @@
 pub mod account;
-pub mod settings;
+pub mod account_settings;
 pub mod status;

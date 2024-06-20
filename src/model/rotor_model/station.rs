@@ -1,18 +1,16 @@
 use serde::Deserialize;
 
-use crate::model::track::Track;
+use crate::model::{icon::Icon, track::Track};
 
-use super::{
-    icon::StationIcon, id::StationId, restrictions::StationRestrictions,
-};
+use super::{id::StationId, restrictions::StationRestrictions};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Station {
     pub id: StationId,
     pub name: String,
-    pub icon: StationIcon,
-    pub mts_icon: StationIcon,
+    pub icon: Icon,
+    pub mts_icon: Icon,
     pub id_for_from: String,
     pub restrictions: StationRestrictions,
     pub restrictions2: StationRestrictions,
