@@ -26,7 +26,7 @@ impl YandexMusicClient {
         track_ids: &[i32],
     ) -> Result<i32, crate::ClientError> {
         let mut response: Response = self
-            .post_with_form(
+            .post_with_form_str(
                 &RemoveLikedTracksRequest::new(user_id).path(),
                 vec![(
                     "track-ids",

@@ -29,7 +29,7 @@ impl YandexMusicClient {
         value: &str,
     ) -> Result<Playlist, crate::ClientError> {
         let response: Response = self
-            .post_with_form(
+            .post_with_form_str(
                 &RenamePlaylistRequest::new(user_id, kind).path(),
                 vec![("value", value)],
             )

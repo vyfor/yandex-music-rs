@@ -35,7 +35,7 @@ impl YandexMusicClient {
         revision: i32,
     ) -> Result<Playlist, crate::ClientError> {
         let response: Response = self
-            .post_with_form(
+            .post_with_form_str(
                 &ModifyPlaylistRequest::new(user_id, kind).path(),
                 vec![
                     ("diff", &serde_json::to_string(&diff)?),

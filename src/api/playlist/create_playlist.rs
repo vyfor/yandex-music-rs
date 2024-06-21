@@ -28,7 +28,7 @@ impl YandexMusicClient {
         visibility: &str,
     ) -> Result<Playlist, crate::ClientError> {
         let response: Response = self
-            .post_with_form(
+            .post_with_form_str(
                 &CreatePlaylistRequest::new(user_id).path(),
                 vec![("title", title), ("visibility", visibility)],
             )
