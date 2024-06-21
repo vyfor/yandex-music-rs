@@ -18,7 +18,7 @@ impl YandexMusicClient {
         album_ids: &[i32],
     ) -> Result<Vec<Album>, crate::ClientError> {
         let response: Response = self
-            .post_with_form(
+            .post_with_form_str(
                 &AlbumsRequest {}.path(),
                 vec![(
                     "album-ids",

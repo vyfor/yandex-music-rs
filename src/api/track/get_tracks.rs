@@ -19,7 +19,7 @@ impl YandexMusicClient {
         with_positions: bool,
     ) -> Result<Vec<Track>, crate::ClientError> {
         let response: Response = self
-            .post_with_form(
+            .post_with_form_str(
                 &TracksRequest {}.path(),
                 vec![
                     (

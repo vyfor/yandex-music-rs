@@ -19,7 +19,7 @@ impl YandexMusicClient {
         language: &str,
     ) -> Result<PromoCode, crate::ClientError> {
         let response: Response = self
-            .post_with_form(
+            .post_with_form_str(
                 &ConsumePromoCodeRequest {}.path(),
                 vec![("code", code), ("language", language)],
             )
