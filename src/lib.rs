@@ -96,4 +96,42 @@ impl YandexMusicClient {
 
         Ok(response)
     }
+
+    async fn post<T: serde::de::DeserializeOwned>(
+        &self,
+        endpoint: &str,
+    ) -> Result<T, ClientError> {
+        let url = format!("{}{}", API_PATH, endpoint);
+
+        let response = self
+            .client
+            .post(url)
+            .send()
+            .await?
+            .error_for_status()?
+            .json::<T>()
+            .await?;
+
+        Ok(response)
+    }
+
+    async fn post_with_form<T: serde::de::DeserializeOwned>(
+        &self,
+        endpoint: &str,
+        form: Vec<(&str, &str)>,
+    ) -> Result<T, ClientError> {
+        let url = format!("{}{}", API_PATH, endpoint);
+
+        let response = self
+            .client
+            .post(url)
+            .form(form.as_slice())
+            .send()
+            .await?
+            .error_for_status()?
+            .json::<T>()
+            .await?;
+
+        Ok(response)
+    }
 }
