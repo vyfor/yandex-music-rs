@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::model::user::User;
 
@@ -90,6 +90,13 @@ pub struct TrackId {
 pub struct TrackWithAds {
     pub item_type: String,
     pub track: Track,
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackShort {
+    pub id: String,
+    pub album_id: String,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]

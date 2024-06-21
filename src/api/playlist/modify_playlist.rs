@@ -1,8 +1,6 @@
-use serde::Serialize;
-
 use crate::{
     api::{RequestPath, Response},
-    model::playlist::Playlist,
+    model::playlist::{ModifyPlaylistDiff, Playlist},
     YandexMusicClient,
 };
 
@@ -46,24 +44,4 @@ impl YandexMusicClient {
 
         Ok(serde_json::from_value::<Playlist>(response.result)?)
     }
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize)]
-pub struct ModifyPlaylist {
-    pub diff: ModifyPlaylistDiff,
-    pub revision: i32,
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize)]
-pub struct ModifyPlaylistDiff {
-    pub op: String,
-    pub at: i32,
-    pub tracks: Vec<TrackShort>,
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct TrackShort {
-    pub id: String,
-    pub album_id: String,
 }

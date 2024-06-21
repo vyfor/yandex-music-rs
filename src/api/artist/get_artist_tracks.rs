@@ -21,13 +21,11 @@ impl ArtistTracksRequest {
 
     pub fn with_page(mut self, page: u32) -> Self {
         self.page = page;
-
         self
     }
 
     pub fn with_page_size(mut self, page_size: u32) -> Self {
         self.page_size = page_size;
-
         self
     }
 }

@@ -1,7 +1,8 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::model::{
-    tag::Tag, track_model::cover::Cover, user_model::user::User,
+    tag::Tag, track::TrackShort, track_model::cover::Cover,
+    user_model::user::User,
 };
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
@@ -40,4 +41,17 @@ pub struct Playlist {
 pub struct PlaylistId {
     pub uid: i32,
     pub kind: i32,
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize)]
+pub struct ModifyPlaylist {
+    pub diff: ModifyPlaylistDiff,
+    pub revision: i32,
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize)]
+pub struct ModifyPlaylistDiff {
+    pub op: String,
+    pub at: i32,
+    pub tracks: Vec<TrackShort>,
 }
