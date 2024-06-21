@@ -2,7 +2,7 @@ use reqwest::header::{HeaderMap, HeaderValue};
 
 use crate::{
     api::{RequestPath, Response},
-    model::result::QueueStatus,
+    model::queue_model::status::QueueStatus,
     YandexMusicClient,
 };
 

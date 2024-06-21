@@ -1,8 +1,9 @@
 use serde::Deserialize;
 
 use crate::model::{
-    album::Album, artist::Artist, playlist::Playlist, track::Track,
-    video::Video,
+    album_model::album::Album, artist_model::artist::Artist,
+    info_model::video::Video, playlist_model::playlist::Playlist,
+    track_model::track::Track,
 };
 
 #[allow(clippy::large_enum_variant)]

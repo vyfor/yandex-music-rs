@@ -1,8 +1,9 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-use crate::model::user::User;
-
-use super::{album::Album, artist::Artist};
+use crate::model::{
+    album_model::album::Album, artist_model::artist::Artist,
+    user_model::user::User,
+};
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -31,7 +32,7 @@ pub struct Track {
     #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
     pub real_id: i32,
     pub og_image: Option<String>,
-    pub r#type: Option<String>,
+    pub item_type: Option<String>,
     pub cover_uri: Option<String>,
     pub major: Option<TrackMajor>,
     pub duration_ms: Option<i32>,
@@ -88,8 +89,15 @@ pub struct TrackId {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackWithAds {
-    pub r#type: String,
+    pub item_type: String,
     pub track: Track,
+}
+
+#[derive(Debug, PartialEq, Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackShort {
+    pub id: String,
+    pub album_id: String,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]

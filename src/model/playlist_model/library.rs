@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use super::track::PartialTrack;
+use crate::model::track_model::track::PartialTrack;
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

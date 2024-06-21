@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::settings::Settings,
+    model::common_model::settings::Settings,
     YandexMusicClient,
 };
 

@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::{icon::Icon, track::Track};
+use crate::model::{info_model::icon::Icon, track_model::track::Track};
 
 use super::{id::StationId, restrictions::StationRestrictions};
 
@@ -31,7 +31,7 @@ pub struct StationTracks {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Sequence {
-    pub r#type: String,
+    pub item_type: String,
     pub track: Track,
     pub liked: bool,
 }

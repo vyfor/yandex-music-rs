@@ -18,7 +18,7 @@ pub struct Search {
     pub videos: Option<SearchResult>,
     pub podcasts: Option<SearchResult>,
     pub podcast_episodes: Option<SearchResult>,
-    pub r#type: Option<String>,
+    pub item_type: Option<String>,
     pub page: Option<i32>,
     pub per_page: Option<i32>,
     pub misspell_result: Option<String>,

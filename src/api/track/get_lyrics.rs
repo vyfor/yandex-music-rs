@@ -1,6 +1,6 @@
 use crate::{
     api::{utils::create_sign, RequestPath, Response},
-    model::lyrics::{LyricsFormat, TrackLyrics},
+    model::info_model::lyrics::{LyricsFormat, TrackLyrics},
     YandexMusicClient,
 };
 
@@ -26,16 +26,13 @@ impl LyricsRequest {
 
 impl RequestPath for LyricsRequest {
     fn path(&self) -> String {
-        let mut base_path = format!(
+        let base_path = format!(
             "tracks/{}/lyrics?format={}&timeStamp={}&sign={}",
-            self.track_id, self.format, self.timestamp, self.sign.replace('+', "%2B")
+            self.track_id,
+            self.format,
+            self.timestamp,
+            self.sign.replace('+', "%2B")
         );
-
-        if base_path.ends_with('?') {
-            base_path.pop();
-        }
-
-        println!("{}", base_path);
 
         base_path
     }
@@ -45,12 +42,11 @@ impl YandexMusicClient {
     pub async fn get_lyrics(
         &self,
         track_id: i32,
+        format: LyricsFormat,
     ) -> Result<TrackLyrics, crate::ClientError> {
         let response: Response = self
-            .get(&LyricsRequest::new(track_id, LyricsFormat::TEXT).path())
+            .get(&LyricsRequest::new(track_id, format).path())
             .await?;
-
-        println!("{:#?}", response.result);
 
         Ok(serde_json::from_value::<TrackLyrics>(response.result)?)
     }

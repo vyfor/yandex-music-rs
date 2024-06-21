@@ -1,10 +1,10 @@
 use serde::Deserialize;
 
 use crate::model::{
-    album::AlbumEvent,
-    artist::ArtistEvent,
-    personal_playlist::PersonalPlaylist,
-    track::{Track, TrackWithAds},
+    album_model::event::AlbumEvent,
+    artist_model::event::ArtistEvent,
+    landing_model::personal_playlist::PersonalPlaylist,
+    track_model::track::{Track, TrackWithAds},
 };
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -33,7 +33,7 @@ pub struct Day {
 #[serde(rename_all = "camelCase")]
 pub struct DayEvent {
     pub id: String,
-    pub r#type: String,
+    pub item_type: String,
     pub type_for_from: Option<String>,
     pub title: Option<String>,
     #[serde(default)]

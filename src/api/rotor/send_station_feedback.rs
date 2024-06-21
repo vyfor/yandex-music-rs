@@ -1,6 +1,7 @@
-use serde::Serialize;
-
-use crate::{api::RequestPath, YandexMusicClient};
+use crate::{
+    api::RequestPath, model::rotor_model::feedback::StationFeedback,
+    YandexMusicClient,
+};
 
 pub struct StationFeedbackRequest {
     pub station_id: String,
@@ -61,14 +62,4 @@ impl YandexMusicClient {
         )
         .await
     }
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct StationFeedback {
-    pub r#type: String,
-    pub timestamp: String,
-    pub from: String,
-    pub track_id: String,
-    pub total_played_seconds: i32,
 }

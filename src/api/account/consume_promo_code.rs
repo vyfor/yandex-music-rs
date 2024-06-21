@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::promo_code::PromoCode,
+    model::account_model::promo_code::PromoCode,
     YandexMusicClient,
 };
 

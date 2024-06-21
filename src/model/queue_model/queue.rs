@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::track::TrackId;
+use crate::model::track_model::track::TrackId;
 
 use super::context::QueueContext;
 

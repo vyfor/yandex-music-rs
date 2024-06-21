@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::suggestion::SearchSuggestion,
+    model::search_model::suggestion::SearchSuggestion,
     YandexMusicClient,
 };
 

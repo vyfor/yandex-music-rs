@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::station::StationTracks,
+    model::rotor_model::station::StationTracks,
     YandexMusicClient,
 };
 
@@ -31,9 +31,15 @@ impl YandexMusicClient {
         &self,
         station_id: String,
     ) -> Result<StationTracks, crate::ClientError> {
-        let response: Response = self
-            .get(&StationTracksRequest::new(station_id).path())
-            .await?;
+        self.get_station_tracks_with(&StationTracksRequest::new(station_id))
+            .await
+    }
+
+    pub async fn get_station_tracks_with(
+        &self,
+        request: &StationTracksRequest,
+    ) -> Result<StationTracks, crate::ClientError> {
+        let response: Response = self.get(&request.path()).await?;
 
         Ok(serde_json::from_value::<StationTracks>(response.result)?)
     }

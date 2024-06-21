@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod info {
-    use yandex_music::YandexMusicClient;
+    use yandex_music::{
+        model::info_model::lyrics::LyricsFormat, YandexMusicClient,
+    };
 
     #[tokio::test]
     async fn get_track_lyrics_test() {
@@ -14,7 +16,10 @@ mod info {
 
         let client = YandexMusicClient::new(&api_key);
 
-        let result = client.get_lyrics(track_id).await.unwrap();
+        let result = client
+            .get_lyrics(track_id, LyricsFormat::TEXT)
+            .await
+            .unwrap();
         println!("{result:#?}");
     }
 }

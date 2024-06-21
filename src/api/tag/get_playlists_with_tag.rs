@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::tag::TaggedPlaylistIds,
+    model::info_model::tag::TaggedPlaylistIds,
     YandexMusicClient,
 };
 

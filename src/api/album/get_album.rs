@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::album::Album,
+    model::album_model::album::Album,
     YandexMusicClient,
 };
 

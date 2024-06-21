@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::playlist::PlaylistId;
+use crate::model::playlist_model::id::PlaylistId;
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

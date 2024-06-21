@@ -15,7 +15,7 @@ pub struct Settings {
 pub struct Product {
     pub product_id: String,
     pub offers_position_id: Option<String>,
-    pub r#type: String,
+    pub item_type: String,
     pub duration: i32,
     pub trial_duration: i32,
     pub feature: String,

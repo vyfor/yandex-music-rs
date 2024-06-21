@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::artist::{ArtistAlbums, SortBy},
+    model::artist_model::artist::{ArtistAlbums, SortBy},
     YandexMusicClient,
 };
 
@@ -21,21 +21,20 @@ impl ArtistAlbumsRequest {
         }
     }
 
-    pub fn page(mut self, page: u32) -> Self {
+    pub fn with_page(mut self, page: u32) -> Self {
         self.page = page;
 
         self
     }
 
-    pub fn page_size(mut self, page_size: u32) -> Self {
+    pub fn with_page_size(mut self, page_size: u32) -> Self {
         self.page_size = page_size;
 
         self
     }
 
-    pub fn sort_by(mut self, sort_by: SortBy) -> Self {
+    pub fn with_sort_by(mut self, sort_by: SortBy) -> Self {
         self.sort_by = Some(sort_by);
-
         self
     }
 }
@@ -77,9 +76,9 @@ impl YandexMusicClient {
         let response: Response = self
             .get(
                 &ArtistAlbumsRequest::new(artist_id)
-                    .page(page)
-                    .page_size(page_size)
-                    .sort_by(sort_by)
+                    .with_page(page)
+                    .with_page_size(page_size)
+                    .with_sort_by(sort_by)
                     .path(),
             )
             .await?;
