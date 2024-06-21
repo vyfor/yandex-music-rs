@@ -6,4 +6,5 @@ pub mod get_lyrics;
 pub mod get_similar_tracks;
 pub mod get_track;
 pub mod get_track_supplement;
+pub mod get_tracks;
 pub mod remove_liked_tracks;
