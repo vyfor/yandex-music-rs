@@ -12,7 +12,7 @@ pub struct StationRestrictions {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StationValues {
-    pub r#type: String,
+    pub item_type: String,
     pub name: String,
     pub possible_values: Vec<StationValue>,
 }
@@ -20,7 +20,7 @@ pub struct StationValues {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StationDiscreteScale {
-    pub r#type: String,
+    pub item_type: String,
     pub name: String,
     pub min: StationValue,
     pub max: StationValue,

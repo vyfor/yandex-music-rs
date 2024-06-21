@@ -160,6 +160,6 @@ pub struct ArtistDescription {
 pub struct ArtistLink {
     pub title: String,
     pub href: String,
-    pub r#type: String,
+    pub item_type: String,
     pub social_network: Option<String>,
 }

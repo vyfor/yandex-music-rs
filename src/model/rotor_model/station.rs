@@ -31,7 +31,7 @@ pub struct StationTracks {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Sequence {
-    pub r#type: String,
+    pub item_type: String,
     pub track: Track,
     pub liked: bool,
 }

@@ -8,7 +8,7 @@ use crate::model::playlist::{Playlist, PlaylistId};
 #[serde(rename_all = "camelCase")]
 pub struct LandingItem {
     pub id: Option<String>,
-    pub r#type: String,
+    pub item_type: String,
     pub type_for_from: String,
     pub title: String,
     pub menu: Option<LandingItemMenu>,

@@ -7,7 +7,7 @@ use crate::{
 pub struct SearchRequest {
     pub text: String,
     pub page: i32,
-    pub r#type: SearchType,
+    pub item_type: SearchType,
     pub nocorrect: bool,
 }
 
@@ -16,7 +16,7 @@ impl SearchRequest {
         Self {
             text,
             page: 0,
-            r#type: SearchType::All,
+            item_type: SearchType::All,
             nocorrect: false,
         }
     }
@@ -26,8 +26,8 @@ impl SearchRequest {
         self
     }
 
-    pub fn with_type(mut self, r#type: SearchType) -> Self {
-        self.r#type = r#type;
+    pub fn with_type(mut self, item_type: SearchType) -> Self {
+        self.item_type = item_type;
         self
     }
 
@@ -41,7 +41,7 @@ impl RequestPath for SearchRequest {
     fn path(&self) -> String {
         format!(
             "search/?text={}&page={}&type={}&nocorrect={}",
-            self.text, self.page, self.r#type, self.nocorrect
+            self.text, self.page, self.item_type, self.nocorrect
         )
     }
 }

@@ -33,7 +33,7 @@ pub struct Day {
 #[serde(rename_all = "camelCase")]
 pub struct DayEvent {
     pub id: String,
-    pub r#type: String,
+    pub item_type: String,
     pub type_for_from: Option<String>,
     pub title: Option<String>,
     #[serde(default)]

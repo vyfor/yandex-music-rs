@@ -43,7 +43,7 @@ pub struct Album {
     pub volumes: Vec<Vec<Track>>,
     pub year: Option<i32>,
     pub release_date: Option<String>,
-    pub r#type: Option<String>,
+    pub item_type: Option<String>,
     pub track_position: Option<TrackPosition>,
     #[serde(default)]
     pub regions: Vec<String>,

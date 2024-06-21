@@ -66,7 +66,7 @@ impl YandexMusicClient {
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StationFeedback {
-    pub r#type: String,
+    pub item_type: String,
     pub timestamp: String,
     pub from: String,
     pub track_id: String,

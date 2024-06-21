@@ -20,7 +20,7 @@ pub struct Landing {
 #[serde(rename_all = "camelCase")]
 pub struct LandingBlock {
     pub id: String,
-    pub r#type: String,
+    pub item_type: String,
     pub type_for_from: String,
     pub title: String,
     pub entities: Vec<BlockEntity>,
@@ -39,7 +39,7 @@ pub enum BlockData {
 #[serde(rename_all = "camelCase")]
 pub struct BlockEntity {
     pub id: String,
-    pub r#type: String,
+    pub item_type: String,
     pub data: EntityData,
 }
 
