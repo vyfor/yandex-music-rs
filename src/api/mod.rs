@@ -21,13 +21,13 @@ pub trait RequestPath {
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub struct InvocationInfo {
-    #[serde(deserialize_with = "deseralize_exec_duration_millis")]
+    #[serde(deserialize_with = "deserialize_exec_duration_millis")]
     pub exec_duration_millis: Option<i64>,
     pub hostname: String,
     pub req_id: String,
 }
 
-fn deseralize_exec_duration_millis<'de, D>(
+fn deserialize_exec_duration_millis<'de, D>(
     deserializer: D,
 ) -> Result<Option<i64>, D::Error>
 where
