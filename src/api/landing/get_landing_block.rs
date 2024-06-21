@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::landing_item::{LandingBlockType, LandingItem},
+    model::landing_model::landing_item::{LandingBlockType, LandingItem},
     YandexMusicClient,
 };
 

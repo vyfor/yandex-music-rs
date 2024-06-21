@@ -2,7 +2,7 @@ use std::fmt::Display;
 
 use serde::Deserialize;
 
-use crate::model::playlist::{Playlist, PlaylistId};
+use crate::model::playlist_model::{id::PlaylistId, playlist::Playlist};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

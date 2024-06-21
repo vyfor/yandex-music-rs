@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::station::StationTracks,
+    model::rotor_model::station::StationTracks,
     YandexMusicClient,
 };
 

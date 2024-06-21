@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::artist::{ArtistAlbums, SortBy},
+    model::artist_model::artist::{ArtistAlbums, SortBy},
     YandexMusicClient,
 };
 
@@ -23,11 +23,13 @@ impl ArtistAlbumsRequest {
 
     pub fn with_page(mut self, page: u32) -> Self {
         self.page = page;
+
         self
     }
 
     pub fn with_page_size(mut self, page_size: u32) -> Self {
         self.page_size = page_size;
+
         self
     }
 

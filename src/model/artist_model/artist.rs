@@ -3,11 +3,13 @@ use std::fmt::Display;
 use serde::Deserialize;
 
 use crate::model::{
-    chart_item::Chart, clip::TrackClip, pager::Pager, video::Video,
+    info_model::clip::TrackClip, info_model::pager::Pager,
+    info_model::video::Video, landing_model::chart_item::Chart,
 };
 
-use super::{
-    album::Album, cover::Cover, custom_wave::CustomWave, track::Track,
+use crate::model::{
+    album_model::album::Album, track_model::cover::Cover,
+    track_model::custom_wave::CustomWave, track_model::track::Track,
 };
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -89,15 +91,6 @@ pub struct ArtistTrackIds {
 pub struct ArtistTracks {
     pub pager: Pager,
     pub tracks: Vec<Track>,
-}
-
-#[derive(Debug, PartialEq, Clone, Deserialize)]
-#[serde(rename_all = "camelCase")]
-pub struct ArtistEvent {
-    pub artist: Option<Artist>,
-    pub tracks: Vec<Track>,
-    pub similar_to_artists_from_history: Vec<Artist>,
-    pub subscribed: bool,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]

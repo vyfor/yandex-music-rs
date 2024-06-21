@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::permission_alerts::PermissionAlerts,
+    model::common_model::permission_alerts::PermissionAlerts,
     YandexMusicClient,
 };
 

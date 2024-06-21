@@ -1,6 +1,6 @@
 use crate::{
     api::{utils::create_sign, RequestPath, Response},
-    model::lyrics::{LyricsFormat, TrackLyrics},
+    model::info_model::lyrics::{LyricsFormat, TrackLyrics},
     YandexMusicClient,
 };
 

@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::track::{Track, TrackId};
+use crate::model::track_model::track::{Track, TrackId};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct ChartItem {

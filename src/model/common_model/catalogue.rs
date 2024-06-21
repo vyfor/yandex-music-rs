@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::landing::LandingBlock;
+use crate::model::landing_model::landing::LandingBlock;
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

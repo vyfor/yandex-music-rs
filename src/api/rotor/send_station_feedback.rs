@@ -1,5 +1,6 @@
 use crate::{
-    api::RequestPath, model::feedback::StationFeedback, YandexMusicClient,
+    api::RequestPath, model::rotor_model::feedback::StationFeedback,
+    YandexMusicClient,
 };
 
 pub struct StationFeedbackRequest {

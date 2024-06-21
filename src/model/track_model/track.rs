@@ -1,8 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::model::user::User;
-
-use super::{album::Album, artist::Artist};
+use crate::model::{
+    album_model::album::Album, artist_model::artist::Artist,
+    user_model::user::User,
+};
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]

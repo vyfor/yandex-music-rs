@@ -1,8 +1,7 @@
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::model::{
-    tag::Tag, track::TrackShort, track_model::cover::Cover,
-    user_model::user::User,
+    info_model::tag::Tag, track_model::cover::Cover, user_model::user::User,
 };
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
@@ -35,23 +34,4 @@ pub struct Playlist {
     pub likes_count: i32,
     #[serde(default)]
     pub similar_playlists: Vec<Playlist>,
-}
-
-#[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
-pub struct PlaylistId {
-    pub uid: i32,
-    pub kind: i32,
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize)]
-pub struct ModifyPlaylist {
-    pub diff: ModifyPlaylistDiff,
-    pub revision: i32,
-}
-
-#[derive(Debug, PartialEq, Clone, Serialize)]
-pub struct ModifyPlaylistDiff {
-    pub op: String,
-    pub at: i32,
-    pub tracks: Vec<TrackShort>,
 }

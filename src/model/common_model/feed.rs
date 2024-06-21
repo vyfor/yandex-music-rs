@@ -1,10 +1,10 @@
 use serde::Deserialize;
 
 use crate::model::{
-    album::AlbumEvent,
-    artist::ArtistEvent,
-    personal_playlist::PersonalPlaylist,
-    track::{Track, TrackWithAds},
+    album_model::event::AlbumEvent,
+    artist_model::event::ArtistEvent,
+    landing_model::personal_playlist::PersonalPlaylist,
+    track_model::track::{Track, TrackWithAds},
 };
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]

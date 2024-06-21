@@ -1,6 +1,8 @@
 use serde::Deserialize;
 
-use crate::model::{album::Album, playlist::Playlist};
+use crate::model::{
+    album_model::album::Album, playlist_model::playlist::Playlist,
+};
 
 use super::{
     chart_item::ChartItem, mix_link::MixLink,

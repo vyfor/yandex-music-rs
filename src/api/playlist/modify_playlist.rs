@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::playlist::{ModifyPlaylistDiff, Playlist},
+    model::playlist_model::{modify::ModifyPlaylistDiff, playlist::Playlist},
     YandexMusicClient,
 };
 

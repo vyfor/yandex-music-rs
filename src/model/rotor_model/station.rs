@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::{icon::Icon, track::Track};
+use crate::model::{info_model::icon::Icon, track_model::track::Track};
 
 use super::{id::StationId, restrictions::StationRestrictions};
 
