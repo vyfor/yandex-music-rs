@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::playlist_model::playlist::Playlist,
     YandexMusicClient,
 };
@@ -22,19 +22,29 @@ impl RequestPath for RenamePlaylistRequest {
 }
 
 impl YandexMusicClient {
+    /// Rename playlist.
+    ///
+    /// ### Arguments
+    /// * `user_id` - The ID of the user.
+    /// * `kind` - The kind of the playlist.
+    /// * `value` - The new name of the playlist.
+    ///
+    /// ### Returns
+    /// * [Playlist] - The updated playlist.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn rename_playlist(
         &self,
         user_id: i32,
         kind: i32,
         value: &str,
     ) -> Result<Playlist, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .post_with_form_str(
                 &RenamePlaylistRequest::new(user_id, kind).path(),
                 vec![("value", value)],
             )
             .await?;
 
-        Ok(serde_json::from_value::<Playlist>(response.result)?)
+        Ok(serde_json::from_value::<Playlist>(response)?)
     }
 }

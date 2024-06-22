@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::playlist_model::{modify::ModifyPlaylistDiff, playlist::Playlist},
     YandexMusicClient,
 };
@@ -25,6 +25,17 @@ impl ModifyPlaylistRequest {
 }
 
 impl YandexMusicClient {
+    /// Add or remove tracks from playlist.
+    ///
+    /// ### Arguments
+    /// * `user_id` - The ID of the user.
+    /// * `kind` - The kind of the playlist.
+    /// * `diff` - The diff object of the playlist, indicating the changes.
+    /// * `revision` - The revision of the playlist.
+    ///
+    /// ### Returns
+    /// * [Playlist] - The updated playlist.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn modify_playlist(
         &self,
         user_id: i32,
@@ -32,7 +43,7 @@ impl YandexMusicClient {
         diff: ModifyPlaylistDiff,
         revision: i32,
     ) -> Result<Playlist, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .post_with_form_str(
                 &ModifyPlaylistRequest::new(user_id, kind).path(),
                 vec![
@@ -42,6 +53,6 @@ impl YandexMusicClient {
             )
             .await?;
 
-        Ok(serde_json::from_value::<Playlist>(response.result)?)
+        Ok(serde_json::from_value::<Playlist>(response)?)
     }
 }

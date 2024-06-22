@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::account_model::account_settings::AccountSettings,
     YandexMusicClient,
 };
@@ -13,12 +13,17 @@ impl RequestPath for AccountSettingsRequest {
 }
 
 impl YandexMusicClient {
+    /// Returns user's account settings.
+    ///
+    /// ### Returns
+    /// * [AccountSettings] - The user's account settings.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_account_settings(
         &self,
     ) -> Result<AccountSettings, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&AccountSettingsRequest {}.path()).await?;
 
-        Ok(serde_json::from_value::<AccountSettings>(response.result)?)
+        Ok(serde_json::from_value::<AccountSettings>(response)?)
     }
 }

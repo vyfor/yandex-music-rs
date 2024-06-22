@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::playlist_model::library::Library,
     YandexMusicClient,
 };
@@ -21,15 +21,23 @@ impl RequestPath for LikesPlaylistRequest {
 }
 
 impl YandexMusicClient {
+    /// Get liked tracks.
+    ///
+    /// ### Arguments
+    /// * `user_id` - The ID of the user.
+    ///
+    /// ### Returns
+    /// * [Library] - The liked tracks.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_liked_tracks(
         &self,
         user_id: i32,
     ) -> Result<Library, crate::ClientError> {
-        let mut response: Response =
+        let mut response =
             self.get(&LikesPlaylistRequest::new(user_id).path()).await?;
 
         Ok(serde_json::from_value::<Library>(
-            response.result["library"].take(),
+            response["library"].take(),
         )?)
     }
 }

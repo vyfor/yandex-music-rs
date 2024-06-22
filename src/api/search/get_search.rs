@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::search_model::search::{Search, SearchType},
     YandexMusicClient,
 };
@@ -47,6 +47,14 @@ impl RequestPath for SearchRequest {
 }
 
 impl YandexMusicClient {
+    /// Search text.
+    ///
+    /// ### Arguments
+    /// * `text` - The text to search.
+    ///
+    /// ### Returns
+    /// * [Search] - The search.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn search(
         &self,
         text: String,
@@ -54,12 +62,20 @@ impl YandexMusicClient {
         self.search_with(SearchRequest::new(text)).await
     }
 
+    /// Search with optional parameters.
+    ///
+    /// ### Arguments
+    /// * `request` - The request object.
+    ///
+    /// ### Returns
+    /// * [Search] - The search results.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn search_with(
         &self,
         request: SearchRequest,
     ) -> Result<Search, crate::ClientError> {
-        let response: Response = self.get(&request.path()).await?;
+        let response = self.get(&request.path()).await?;
 
-        Ok(serde_json::from_value::<Search>(response.result)?)
+        Ok(serde_json::from_value::<Search>(response)?)
     }
 }

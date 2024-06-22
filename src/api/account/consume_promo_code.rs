@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::account_model::promo_code::PromoCode,
     YandexMusicClient,
 };
@@ -13,18 +13,27 @@ impl RequestPath for ConsumePromoCodeRequest {
 }
 
 impl YandexMusicClient {
+    /// Redeems a promo code for the user's account.
+    ///
+    /// ### Arguments
+    /// * `code` - The promo code to be redeemed.
+    /// * `language` - The language to use for the request.
+    ///
+    /// ### Returns
+    /// * [PromoCode] - The promo code redeem status.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn consume_promo_code(
         &self,
         code: &str,
         language: &str,
     ) -> Result<PromoCode, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .post_with_form_str(
                 &ConsumePromoCodeRequest {}.path(),
                 vec![("code", code), ("language", language)],
             )
             .await?;
 
-        Ok(serde_json::from_value::<PromoCode>(response.result)?)
+        Ok(serde_json::from_value::<PromoCode>(response)?)
     }
 }

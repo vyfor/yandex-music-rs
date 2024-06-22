@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::common_model::catalogue::Catalogue,
     YandexMusicClient,
 };
@@ -13,12 +13,17 @@ impl RequestPath for NonMusicCatalogueRequest {
 }
 
 impl YandexMusicClient {
+    /// Get non-music catalogue.
+    ///
+    /// ### Returns
+    /// * [Catalogue] - The non-music catalogue.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_non_music_catalogue(
         &self,
     ) -> Result<Catalogue, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&NonMusicCatalogueRequest {}.path()).await?;
 
-        Ok(serde_json::from_value::<Catalogue>(response.result)?)
+        Ok(serde_json::from_value::<Catalogue>(response)?)
     }
 }

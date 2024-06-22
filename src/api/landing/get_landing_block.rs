@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::landing_model::landing_item::{LandingBlockType, LandingItem},
     YandexMusicClient,
 };
@@ -30,13 +30,21 @@ impl RequestPath for LandingBlockRequest {
 }
 
 impl YandexMusicClient {
+    /// Get landing block.
+    ///
+    /// ### Arguments
+    /// * `block` - The block type.
+    ///
+    /// ### Returns
+    /// * [LandingItem] - The landing block item.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_landing_block(
         &self,
         block: LandingBlockType,
     ) -> Result<LandingItem, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&LandingBlockRequest::new(block).path()).await?;
 
-        Ok(serde_json::from_value::<LandingItem>(response.result)?)
+        Ok(serde_json::from_value::<LandingItem>(response)?)
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    api::{self, RequestPath, Response},
+    api::{self, RequestPath},
     model::info_model::download_info::TrackDownloadInfo,
     YandexMusicClient,
 };
@@ -21,11 +21,20 @@ impl RequestPath for DownloadInfoRequest {
 }
 
 impl YandexMusicClient {
+    /// Get track download info.
+    /// Use [`get_direct_link`](TrackDownloadInfo::get_direct_link) to construct the link to download the track.
+    ///
+    /// ### Arguments
+    /// * `track_id` - The ID of the track.
+    ///
+    /// ### Returns
+    /// * [`Vec<TrackDownloadInfo>`] - A list of track download info.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_track_download_info(
         &self,
         track_id: i32,
     ) -> Result<Vec<TrackDownloadInfo>, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .get(
                 &api::track::get_download_info::DownloadInfoRequest::new(
                     track_id,
@@ -34,8 +43,6 @@ impl YandexMusicClient {
             )
             .await?;
 
-        Ok(serde_json::from_value::<Vec<TrackDownloadInfo>>(
-            response.result,
-        )?)
+        Ok(serde_json::from_value::<Vec<TrackDownloadInfo>>(response)?)
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    api::{utils::create_sign, RequestPath, Response},
+    api::{utils::create_sign, RequestPath},
     model::info_model::lyrics::{LyricsFormat, TrackLyrics},
     YandexMusicClient,
 };
@@ -39,15 +39,24 @@ impl RequestPath for LyricsRequest {
 }
 
 impl YandexMusicClient {
+    /// Get track lyrics.
+    ///
+    /// ### Arguments
+    /// * `track_id` - The ID of the track.
+    /// * `format` - The format of the lyrics.
+    ///
+    /// ### Returns
+    /// * [TrackLyrics] - The track lyrics.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_lyrics(
         &self,
         track_id: i32,
         format: LyricsFormat,
     ) -> Result<TrackLyrics, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .get(&LyricsRequest::new(track_id, format).path())
             .await?;
 
-        Ok(serde_json::from_value::<TrackLyrics>(response.result)?)
+        Ok(serde_json::from_value::<TrackLyrics>(response)?)
     }
 }

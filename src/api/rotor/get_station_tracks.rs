@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::rotor_model::station::StationTracks,
     YandexMusicClient,
 };
@@ -27,6 +27,14 @@ impl RequestPath for StationTracksRequest {
 }
 
 impl YandexMusicClient {
+    /// Get station tracks.
+    /// 
+    /// ### Arguments
+    /// * `station_id` - The ID of the station.
+    /// 
+    /// ### Returns
+    /// * [StationTracks] - The station tracks.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_station_tracks(
         &self,
         station_id: String,
@@ -35,12 +43,20 @@ impl YandexMusicClient {
             .await
     }
 
+    /// Get station tracks with optional parameters.
+    /// 
+    /// ### Arguments
+    /// * `request` - The request object.
+    /// 
+    /// ### Returns
+    /// * [StationTracks] - The station tracks.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_station_tracks_with(
         &self,
         request: &StationTracksRequest,
     ) -> Result<StationTracks, crate::ClientError> {
-        let response: Response = self.get(&request.path()).await?;
+        let response = self.get(&request.path()).await?;
 
-        Ok(serde_json::from_value::<StationTracks>(response.result)?)
+        Ok(serde_json::from_value::<StationTracks>(response)?)
     }
 }

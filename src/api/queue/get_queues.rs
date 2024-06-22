@@ -1,7 +1,7 @@
 use reqwest::header::{HeaderMap, HeaderValue};
 
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::queue_model::queue_item::QueueItem,
     YandexMusicClient,
 };
@@ -15,6 +15,14 @@ impl RequestPath for QueuesRequest {
 }
 
 impl YandexMusicClient {
+    /// Get queues.
+    ///
+    /// ### Arguments
+    /// * `device_id` - The ID of the device following the format: `os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=unknown; device_id=unknown; uuid=unknown`.
+    ///
+    /// ### Returns
+    /// * [`Vec<QueueItem>`] - The queues.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_queues(
         &self,
         device_id: &str,
@@ -23,10 +31,10 @@ impl YandexMusicClient {
         headers
             .insert("X-Yandex-Music-Device", HeaderValue::from_str(device_id)?);
 
-        let response: Response = self
+        let response = self
             .get_with_headers(&QueuesRequest {}.path(), headers)
             .await?;
 
-        Ok(serde_json::from_value::<Vec<QueueItem>>(response.result)?)
+        Ok(serde_json::from_value::<Vec<QueueItem>>(response)?)
     }
 }

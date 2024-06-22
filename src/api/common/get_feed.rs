@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::common_model::feed::Feed,
     YandexMusicClient,
 };
@@ -13,9 +13,14 @@ impl RequestPath for FeedRequest {
 }
 
 impl YandexMusicClient {
+    /// Get feed.
+    ///
+    /// ### Returns
+    /// * [Feed] - The feed.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_feed(&self) -> Result<Feed, crate::ClientError> {
-        let response: Response = self.get(&FeedRequest {}.path()).await?;
+        let response = self.get(&FeedRequest {}.path()).await?;
 
-        Ok(serde_json::from_value::<Feed>(response.result)?)
+        Ok(serde_json::from_value::<Feed>(response)?)
     }
 }

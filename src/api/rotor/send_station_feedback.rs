@@ -36,6 +36,14 @@ impl RequestPath for StationFeedbackRequest {
 }
 
 impl YandexMusicClient {
+    /// Send station feedback.
+    ///
+    /// ### Arguments
+    /// * `station_id` - The ID of the station.
+    /// * `data` - The feedback data.
+    ///
+    /// ### Returns
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn send_station_feedback(
         &self,
         station_id: String,
@@ -45,7 +53,9 @@ impl YandexMusicClient {
             &StationFeedbackRequest::new(station_id).path(),
             serde_json::to_value(data)?,
         )
-        .await
+        .await?;
+
+        Ok(())
     }
 
     pub async fn send_station_feedback_with_batch_id(
@@ -60,6 +70,8 @@ impl YandexMusicClient {
                 .path(),
             serde_json::to_value(data)?,
         )
-        .await
+        .await?;
+
+        Ok(())
     }
 }

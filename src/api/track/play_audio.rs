@@ -9,6 +9,24 @@ impl RequestPath for PlayAudioRequest {
 }
 
 impl YandexMusicClient {
+    /// Send sending the current state of the track being listened to.
+    ///
+    /// ### Arguments
+    /// * `track_id` - The ID of the track.
+    /// * `album_id` - The ID of the album.
+    /// * `playlist_id` - The ID of the playlist.
+    /// * `play_id` - The ID of the play.
+    /// * `from` - The source of the play.
+    /// * `from_cache` - Whether the track is played from the cache.
+    /// * `uid` - The ID of the user.
+    /// * `track_length_seconds` - The length of the track in seconds.
+    /// * `total_played_seconds` - The total played time in seconds.
+    /// * `end_position_seconds` - The end position in seconds.
+    /// * `timestamp` - The timestamp of the play.
+    /// * `client_now` - The current date time in ISO format.
+    ///
+    /// ### Returns
+    /// * [ClientError](crate::ClientError) - If the request fails.
     #[allow(clippy::too_many_arguments)]
     pub async fn play_audio(
         &self,
@@ -43,6 +61,9 @@ impl YandexMusicClient {
             form.push(("uid", uid.to_string()));
         }
 
-        self.post_with_form(&PlayAudioRequest {}.path(), form).await
+        self.post_with_form(&PlayAudioRequest {}.path(), form)
+            .await?;
+
+        Ok(())
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::common_model::permission_alerts::PermissionAlerts,
     YandexMusicClient,
 };
@@ -13,12 +13,17 @@ impl RequestPath for PermissionAlertsRequest {
 }
 
 impl YandexMusicClient {
+    /// Get permission alerts.
+    ///
+    /// ### Returns
+    /// * [PermissionAlerts] - The permission alerts.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_permission_alerts(
         &self,
     ) -> Result<PermissionAlerts, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&PermissionAlertsRequest {}.path()).await?;
 
-        Ok(serde_json::from_value::<PermissionAlerts>(response.result)?)
+        Ok(serde_json::from_value::<PermissionAlerts>(response)?)
     }
 }
