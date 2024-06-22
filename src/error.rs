@@ -1,5 +1,9 @@
 use std::{error::Error, fmt::Display};
 
+use serde::Deserialize;
+use serde_json::Value;
+
+/// A generic client error.
 #[derive(Debug)]
 pub enum ClientError {
     RequestError {
@@ -14,6 +18,31 @@ pub enum ClientError {
     InvalidHeader {
         error: reqwest::header::InvalidHeaderValue,
     },
+    /// An error returned by the Yandex Music API.
+    YandexMusicError {
+        error: YandexMusicError,
+    },
+}
+
+/// An error returned by the Yandex Music API.
+#[derive(Debug, Deserialize)]
+pub struct YandexMusicError {
+    pub name: String,
+    pub message: Option<String>,
+}
+
+impl Error for YandexMusicError {}
+
+impl Display for YandexMusicError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "name: {}. message: {:?}", self.name, self.message)
+    }
+}
+
+impl From<Value> for YandexMusicError {
+    fn from(value: Value) -> Self {
+        serde_json::from_value(value).unwrap()
+    }
 }
 
 impl Error for ClientError {
@@ -23,6 +52,7 @@ impl Error for ClientError {
             ClientError::JsonParseError { error } => Some(error),
             ClientError::XmlParseError { error } => Some(error),
             ClientError::InvalidHeader { error } => Some(error),
+            ClientError::YandexMusicError { error } => Some(error),
         }
     }
 }
@@ -34,6 +64,7 @@ impl Display for ClientError {
             ClientError::JsonParseError { error } => write!(f, "{error}"),
             ClientError::XmlParseError { error } => write!(f, "{error}"),
             ClientError::InvalidHeader { error } => write!(f, "{error}"),
+            ClientError::YandexMusicError { error } => write!(f, "{error}"),
         }
     }
 }
@@ -59,5 +90,11 @@ impl From<serde_xml_rs::Error> for ClientError {
 impl From<reqwest::header::InvalidHeaderValue> for ClientError {
     fn from(error: reqwest::header::InvalidHeaderValue) -> Self {
         ClientError::InvalidHeader { error }
+    }
+}
+
+impl From<YandexMusicError> for ClientError {
+    fn from(error: YandexMusicError) -> Self {
+        ClientError::YandexMusicError { error }
     }
 }
