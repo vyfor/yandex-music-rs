@@ -34,6 +34,6 @@ pub struct RotorAdParams {
     pub target_ref: String,
     pub other_params: String,
     pub ad_volume: i32,
-    pub genre_id: Option<String>,
+    pub genre_id: Option<i32>,
     pub genre_name: Option<String>,
 }

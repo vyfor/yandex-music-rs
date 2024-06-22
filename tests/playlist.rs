@@ -39,7 +39,7 @@ mod playlist {
     }
 
     #[tokio::test]
-    async fn get_disliked_tracks_test() {
+    async fn get_recommendations_test() {
         dotenv::dotenv().ok();
         let api_key = std::env::var("YANDEX_MUSIC_TOKEN")
             .expect("YANDEX_MUSIC_TOKEN must be set");
@@ -47,10 +47,17 @@ mod playlist {
             .expect("YANDEX_MUSIC_USER_ID must be set")
             .parse()
             .unwrap();
+        let playlist_kind = std::env::var("YANDEX_MUSIC_PLAYLIST_KIND")
+            .expect("YANDEX_MUSIC_PLAYLIST_KIND must be set")
+            .parse()
+            .unwrap();
 
         let client = YandexMusicClient::new(&api_key);
 
-        let result = client.get_disliked_tracks(user_id).await.unwrap();
+        let result = client
+            .get_recommendations(user_id, playlist_kind)
+            .await
+            .unwrap();
         println!("{result:#?}");
     }
 }

@@ -12,6 +12,7 @@ pub struct StationRestrictions {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StationValues {
+    #[serde(rename = "type")]
     pub item_type: String,
     pub name: String,
     pub possible_values: Vec<StationValue>,
@@ -20,6 +21,7 @@ pub struct StationValues {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StationDiscreteScale {
+    #[serde(rename = "type")]
     pub item_type: String,
     pub name: String,
     pub min: StationValue,
@@ -29,6 +31,7 @@ pub struct StationDiscreteScale {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct StationValue {
-    pub value: String,
     pub name: String,
+    #[serde(deserialize_with = "crate::model::utils::number_to_string")]
+    pub value: String,
 }

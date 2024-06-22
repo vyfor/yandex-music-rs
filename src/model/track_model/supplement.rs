@@ -1,11 +1,11 @@
 use serde::Deserialize;
 
-use super::{clip::TrackClip, video::Video};
+use crate::model::info_model::{clip::TrackClip, video::Video};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackSupplement {
-    pub id: i32,
+    pub id: String,
     #[serde(default)]
     pub lyrics: Vec<TrackSupplementLyrics>,
     #[serde(default)]

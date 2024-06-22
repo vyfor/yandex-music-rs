@@ -15,6 +15,7 @@ use crate::model::{
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Artist {
+    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
     pub id: i32,
     pub error: Option<String>,
     pub reason: Option<String>,
@@ -37,7 +38,7 @@ pub struct Artist {
     #[serde(default)]
     pub regions: Vec<String>,
     #[serde(default)]
-    pub decomposed: Vec<String>,
+    pub decomposed: Vec<Decomposed>,
     pub description: Option<ArtistDescription>,
     #[serde(default)]
     pub countries: Vec<String>,
@@ -48,6 +49,13 @@ pub struct Artist {
     pub aliases: Vec<String>,
     pub init_date: Option<String>,
     pub end_date: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(untagged)]
+pub enum Decomposed {
+    String(String),
+    Artist(Artist),
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -83,6 +91,7 @@ pub struct ArtistInfo {
 #[serde(rename_all = "camelCase")]
 pub struct ArtistTrackIds {
     pub artist: Artist,
+    #[serde(default)]
     pub tracks: Vec<String>,
 }
 
@@ -90,6 +99,7 @@ pub struct ArtistTrackIds {
 #[serde(rename_all = "camelCase")]
 pub struct ArtistTracks {
     pub pager: Pager,
+    #[serde(default)]
     pub tracks: Vec<Track>,
 }
 
@@ -135,10 +145,9 @@ pub struct ArtistCounts {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ArtistRatings {
-    pub tracks: i32,
-    pub direct_albums: i32,
-    pub also_albums: i32,
-    pub also_tracks: i32,
+    pub month: i32,
+    pub week: Option<i32>,
+    pub day: Option<i32>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -153,6 +162,7 @@ pub struct ArtistDescription {
 pub struct ArtistLink {
     pub title: String,
     pub href: String,
+    #[serde(rename = "type")]
     pub item_type: String,
     pub social_network: Option<String>,
 }

@@ -1,6 +1,6 @@
 use crate::{
     api::{RequestPath, Response},
-    model::rotor_model::station::Station,
+    model::rotor_model::rotor::Rotor,
     YandexMusicClient,
 };
 
@@ -37,21 +37,21 @@ impl RequestPath for AllStationsRequest {
 impl YandexMusicClient {
     pub async fn get_all_stations(
         &self,
-    ) -> Result<Vec<Station>, crate::ClientError> {
+    ) -> Result<Vec<Rotor>, crate::ClientError> {
         let response: Response =
             self.get(&AllStationsRequest::new().path()).await?;
 
-        Ok(serde_json::from_value::<Vec<Station>>(response.result)?)
+        Ok(serde_json::from_value::<Vec<Rotor>>(response.result)?)
     }
 
     pub async fn get_all_stations_with_language(
         &self,
         language: String,
-    ) -> Result<Vec<Station>, crate::ClientError> {
+    ) -> Result<Vec<Rotor>, crate::ClientError> {
         let response: Response = self
             .get(&AllStationsRequest::new().language(language).path())
             .await?;
 
-        Ok(serde_json::from_value::<Vec<Station>>(response.result)?)
+        Ok(serde_json::from_value::<Vec<Rotor>>(response.result)?)
     }
 }

@@ -20,6 +20,7 @@ pub struct Genre {
     pub url_part: Option<String>,
     pub color: Option<String>,
     pub radio_icon: Option<Icon>,
+    #[serde(default)]
     pub sub_genres: Vec<Genre>,
     #[serde(default)]
     pub hide_in_regions: Vec<i32>,
@@ -36,7 +37,7 @@ pub struct GenreTitle {
 #[serde(rename_all = "camelCase")]
 pub struct GenreImages {
     #[serde(rename = "208x208")]
-    pub _208x208: String,
+    pub _208x208: Option<String>,
     #[serde(rename = "300x300")]
-    pub _300x300: String,
+    pub _300x300: Option<String>,
 }

@@ -16,7 +16,7 @@ impl StationRequest {
 
 impl RequestPath for StationRequest {
     fn path(&self) -> String {
-        format!("/rotor/{}/info", self.station_id)
+        format!("/rotor/station/{}/info", self.station_id)
     }
 }
 
@@ -24,10 +24,10 @@ impl YandexMusicClient {
     pub async fn get_station(
         &self,
         station_id: String,
-    ) -> Result<Rotor, crate::ClientError> {
+    ) -> Result<Vec<Rotor>, crate::ClientError> {
         let response: Response =
             self.get(&StationRequest::new(station_id).path()).await?;
 
-        Ok(serde_json::from_value::<Rotor>(response.result)?)
+        Ok(serde_json::from_value::<Vec<Rotor>>(response.result)?)
     }
 }

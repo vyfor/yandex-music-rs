@@ -9,6 +9,7 @@ use super::artist::Artist;
 pub struct ArtistEvent {
     pub artist: Option<Artist>,
     pub tracks: Vec<Track>,
+    #[serde(default)]
     pub similar_to_artists_from_history: Vec<Artist>,
-    pub subscribed: bool,
+    pub subscribed: Option<bool>,
 }
