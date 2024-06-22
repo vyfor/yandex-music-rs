@@ -3,6 +3,7 @@ use serde::Deserialize;
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Cover {
+    #[serde(rename = "type")]
     pub item_type: Option<String>,
     pub uri: Option<String>,
     #[serde(default)]

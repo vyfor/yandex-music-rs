@@ -8,6 +8,7 @@ use crate::model::playlist_model::{id::PlaylistId, playlist::Playlist};
 #[serde(rename_all = "camelCase")]
 pub struct LandingItem {
     pub id: Option<String>,
+    #[serde(rename="type")]
     pub item_type: String,
     pub type_for_from: String,
     pub title: String,

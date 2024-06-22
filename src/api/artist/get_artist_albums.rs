@@ -8,16 +8,16 @@ pub struct ArtistAlbumsRequest {
     pub artist_id: i32,
     pub page: u32,
     pub page_size: u32,
-    pub sort_by: Option<SortBy>,
+    pub sort_by: SortBy,
 }
 
 impl ArtistAlbumsRequest {
-    pub fn new(artist_id: i32) -> Self {
+    pub fn new(artist_id: i32, sort_by: SortBy) -> Self {
         Self {
             artist_id,
             page: 0,
             page_size: 20,
-            sort_by: None,
+            sort_by,
         }
     }
 
@@ -32,24 +32,13 @@ impl ArtistAlbumsRequest {
 
         self
     }
-
-    pub fn with_sort_by(mut self, sort_by: SortBy) -> Self {
-        self.sort_by = Some(sort_by);
-        self
-    }
 }
 
 impl RequestPath for ArtistAlbumsRequest {
     fn path(&self) -> String {
         format!(
             "artists/{}/direct-albums?page={}&page-size={}&sort-by={}",
-            self.artist_id,
-            self.page,
-            self.page_size,
-            self.sort_by
-                .as_ref()
-                .map(|s| s.to_string())
-                .unwrap_or_default()
+            self.artist_id, self.page, self.page_size, self.sort_by
         )
     }
 }
@@ -58,9 +47,10 @@ impl YandexMusicClient {
     pub async fn get_artist_albums(
         &self,
         artist_id: i32,
+        sort_by: SortBy,
     ) -> Result<ArtistAlbums, crate::ClientError> {
         let response: Response = self
-            .get(&ArtistAlbumsRequest::new(artist_id).path())
+            .get(&ArtistAlbumsRequest::new(artist_id, sort_by).path())
             .await?;
 
         Ok(serde_json::from_value::<ArtistAlbums>(response.result)?)
@@ -75,10 +65,9 @@ impl YandexMusicClient {
     ) -> Result<ArtistAlbums, crate::ClientError> {
         let response: Response = self
             .get(
-                &ArtistAlbumsRequest::new(artist_id)
+                &ArtistAlbumsRequest::new(artist_id, sort_by)
                     .with_page(page)
                     .with_page_size(page_size)
-                    .with_sort_by(sort_by)
                     .path(),
             )
             .await?;

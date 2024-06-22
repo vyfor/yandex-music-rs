@@ -14,3 +14,15 @@ where
         _ => Err(D::Error::custom("expected number or string")),
     }
 }
+
+pub fn number_to_string<'de, D>(deserializer: D) -> Result<String, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value = Deserialize::deserialize(deserializer)?;
+    match value {
+        serde_json::Value::Number(num) => Ok(num.to_string()),
+        serde_json::Value::String(s) => Ok(s),
+        _ => Err(D::Error::custom("expected number or string")),
+    }
+}

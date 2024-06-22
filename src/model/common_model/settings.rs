@@ -3,8 +3,8 @@ use serde::Deserialize;
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Settings {
-    pub in_app_products: Vec<String>,
-    pub native_products: Vec<String>,
+    pub in_app_products: Vec<Product>,
+    pub native_products: Vec<Product>,
     pub web_payment_url: String,
     pub web_payment_month_product_price: Option<Price>,
     pub promo_codes_enabled: bool,
@@ -15,6 +15,7 @@ pub struct Settings {
 pub struct Product {
     pub product_id: String,
     pub offers_position_id: Option<String>,
+    #[serde(rename = "type")]
     pub item_type: String,
     pub duration: i32,
     pub trial_duration: i32,
@@ -49,6 +50,6 @@ pub struct Product {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Price {
-    pub amount: i32,
+    pub amount: f32,
     pub currency: String,
 }

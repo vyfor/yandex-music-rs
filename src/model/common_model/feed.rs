@@ -14,10 +14,19 @@ pub struct Feed {
     pub pumpkin: bool,
     pub is_wizard_passed: bool,
     pub generated_playlists: Vec<PersonalPlaylist>,
-    pub headlines: Vec<String>,
+    pub headlines: Vec<Headline>,
     pub today: String,
     pub days: Vec<Day>,
     pub next_revision: Option<String>,
+}
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Headline {
+    #[serde(rename = "type")]
+    pub item_type: String,
+    pub id: Option<String>,
+    pub message: Option<String>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -33,6 +42,7 @@ pub struct Day {
 #[serde(rename_all = "camelCase")]
 pub struct DayEvent {
     pub id: String,
+    #[serde(rename = "type")]
     pub item_type: String,
     pub type_for_from: Option<String>,
     pub title: Option<String>,

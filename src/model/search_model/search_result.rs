@@ -5,7 +5,8 @@ use super::search_result_item::SearchResultItem;
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SearchResult {
-    pub item_type: String,
+    #[serde(rename="type")]
+    pub item_type: Option<String>,
     pub total: i32,
     pub per_page: i32,
     pub order: i32,

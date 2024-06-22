@@ -32,12 +32,13 @@ pub struct Track {
     #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
     pub real_id: i32,
     pub og_image: Option<String>,
+    #[serde(rename = "type")]
     pub item_type: Option<String>,
     pub cover_uri: Option<String>,
     pub major: Option<TrackMajor>,
     pub duration_ms: Option<i32>,
     pub storage_dir: Option<String>,
-    pub file_size: Option<String>,
+    pub file_size: Option<i32>,
     pub substituted: Option<Box<Track>>,
     pub matched_track: Option<Box<Track>>,
     #[serde(default)]
@@ -89,6 +90,7 @@ pub struct TrackId {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackWithAds {
+    #[serde(rename = "type")]
     pub item_type: String,
     pub track: Track,
 }
