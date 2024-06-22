@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::album_model::album::Album,
     YandexMusicClient,
 };
@@ -13,11 +13,19 @@ impl RequestPath for AlbumsRequest {
 }
 
 impl YandexMusicClient {
+    /// Get a list of albums.
+    ///
+    /// ### Arguments
+    /// * `album_ids` - An array of IDs of the albums.
+    ///
+    /// ### Returns
+    /// * [`Vec<Album>`] - A list of albums.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_albums(
         &self,
         album_ids: &[i32],
     ) -> Result<Vec<Album>, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .post_with_form_str(
                 &AlbumsRequest {}.path(),
                 vec![(
@@ -30,6 +38,6 @@ impl YandexMusicClient {
             )
             .await?;
 
-        Ok(serde_json::from_value::<Vec<Album>>(response.result)?)
+        Ok(serde_json::from_value::<Vec<Album>>(response)?)
     }
 }

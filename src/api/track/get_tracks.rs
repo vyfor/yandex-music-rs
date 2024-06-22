@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::track_model::track::Track,
     YandexMusicClient,
 };
@@ -13,12 +13,21 @@ impl RequestPath for TracksRequest {
 }
 
 impl YandexMusicClient {
+    /// Get tracks.
+    ///
+    /// ### Arguments
+    /// * `track_ids` - An array of track IDs.
+    /// * `with_positions` - Whether to include track positions in the response.
+    ///
+    /// ### Returns
+    /// * [Vec<Track>] - The tracks.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_tracks(
         &self,
         track_ids: &[i32],
         with_positions: bool,
     ) -> Result<Vec<Track>, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .post_with_form_str(
                 &TracksRequest {}.path(),
                 vec![
@@ -34,6 +43,6 @@ impl YandexMusicClient {
             )
             .await?;
 
-        Ok(serde_json::from_value::<Vec<Track>>(response.result)?)
+        Ok(serde_json::from_value::<Vec<Track>>(response)?)
     }
 }

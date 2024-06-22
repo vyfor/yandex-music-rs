@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::album_model::album::Album,
     YandexMusicClient,
 };
@@ -21,13 +21,21 @@ impl RequestPath for AlbumRequest {
 }
 
 impl YandexMusicClient {
+    /// Get album with tracks.
+    ///
+    /// ### Arguments
+    /// * `album_id` - The ID of the album.
+    ///
+    /// ### Returns
+    /// * [Album] - The album.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_album_with_tracks(
         &self,
         album_id: i32,
     ) -> Result<Album, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&AlbumRequest::new(album_id).path()).await?;
 
-        Ok(serde_json::from_value::<Album>(response.result)?)
+        Ok(serde_json::from_value::<Album>(response)?)
     }
 }

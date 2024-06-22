@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::common_model::settings::Settings,
     YandexMusicClient,
 };
@@ -13,9 +13,14 @@ impl RequestPath for SettingsRequest {
 }
 
 impl YandexMusicClient {
+    /// Get settings.
+    ///
+    /// ### Returns
+    /// * [Settings] - The settings.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_settings(&self) -> Result<Settings, crate::ClientError> {
-        let response: Response = self.get(&SettingsRequest {}.path()).await?;
+        let response = self.get(&SettingsRequest {}.path()).await?;
 
-        Ok(serde_json::from_value::<Settings>(response.result)?)
+        Ok(serde_json::from_value::<Settings>(response)?)
     }
 }

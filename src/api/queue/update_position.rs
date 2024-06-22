@@ -1,7 +1,7 @@
 use reqwest::header::{HeaderMap, HeaderValue};
 
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::queue_model::status::QueueStatus,
     YandexMusicClient,
 };
@@ -36,6 +36,17 @@ impl RequestPath for UpdateQueuePositionRequest {
 }
 
 impl YandexMusicClient {
+    /// Update track position in the queue.
+    ///
+    /// ### Arguments
+    /// * `device_id` - The ID of the device following the format: `os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=unknown; device_id=unknown; uuid=unknown`.
+    /// * `queue_id` - The ID of the queue.
+    /// * `current_index` - The current index of the track in the queue.
+    /// * `is_interactive` - Whether the request is interactive.
+    ///
+    /// ### Returns
+    /// * [QueueStatus] - The queue status.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn update_queue_position(
         &self,
         device_id: &str,
@@ -47,7 +58,7 @@ impl YandexMusicClient {
         headers
             .insert("X-Yandex-Music-Device", HeaderValue::from_str(device_id)?);
 
-        let response: Response = self
+        let response = self
             .post_with_headers(
                 &UpdateQueuePositionRequest::new(
                     queue_id,
@@ -59,6 +70,6 @@ impl YandexMusicClient {
             )
             .await?;
 
-        Ok(serde_json::from_value::<QueueStatus>(response.result)?)
+        Ok(serde_json::from_value::<QueueStatus>(response)?)
     }
 }

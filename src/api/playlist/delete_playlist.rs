@@ -18,12 +18,22 @@ impl DeletePlaylistRequest {
 }
 
 impl YandexMusicClient {
+    /// Delete playlist.
+    ///
+    /// ### Arguments
+    /// * `user_id` - The ID of the user.
+    /// * `kind` - The kind of the playlist.
+    ///
+    /// ### Returns
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn delete_playlist(
         &self,
         user_id: i32,
         kind: i32,
     ) -> Result<(), crate::ClientError> {
         self.post(&DeletePlaylistRequest::new(user_id, kind).path())
-            .await
+            .await?;
+
+        Ok(())
     }
 }

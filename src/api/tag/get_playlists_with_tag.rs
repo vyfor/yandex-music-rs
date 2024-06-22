@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::info_model::tag::TaggedPlaylistIds,
     YandexMusicClient,
 };
@@ -21,15 +21,23 @@ impl RequestPath for TaggedPlaylistsRequest {
 }
 
 impl YandexMusicClient {
+    /// Get playlist IDs with the specified tag.
+    ///
+    /// ### Arguments
+    /// * `tag` - The tag name.
+    ///
+    /// ### Returns
+    /// * [TaggedPlaylistIds] - The playlist IDs with the specified tag.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_tagged_playlist_ids(
         &self,
         tag: String,
     ) -> Result<TaggedPlaylistIds, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&TaggedPlaylistsRequest::new(tag).path()).await?;
 
         Ok(serde_json::from_value::<TaggedPlaylistIds>(
-            response.result,
+            response,
         )?)
     }
 }

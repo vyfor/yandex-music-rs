@@ -1,6 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
-    model::search_model::suggestion::SearchSuggestion,
+    api::RequestPath, model::search_model::suggestion::SearchSuggestion,
     YandexMusicClient,
 };
 
@@ -21,13 +20,21 @@ impl RequestPath for SearchSuggestionRequest {
 }
 
 impl YandexMusicClient {
+    /// Get search suggestion.
+    ///
+    /// ### Arguments
+    /// * `text` - The text to get the search suggestion.
+    ///
+    /// ### Returns
+    /// * [SearchSuggestion] - The search suggestion for the text.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn search_suggestion(
         &self,
         text: String,
     ) -> Result<SearchSuggestion, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&SearchSuggestionRequest::new(text).path()).await?;
 
-        Ok(serde_json::from_value::<SearchSuggestion>(response.result)?)
+        Ok(serde_json::from_value::<SearchSuggestion>(response)?)
     }
 }

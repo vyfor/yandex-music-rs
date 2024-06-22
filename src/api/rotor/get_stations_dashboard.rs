@@ -1,6 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
-    model::rotor_model::dashboard::StationsDashboard,
+    api::RequestPath, model::rotor_model::dashboard::StationsDashboard,
     YandexMusicClient,
 };
 
@@ -16,11 +15,8 @@ impl YandexMusicClient {
     pub async fn get_stations_dashboard(
         &self,
     ) -> Result<StationsDashboard, crate::ClientError> {
-        let response: Response =
-            self.get(&StationsDashboardRequest {}.path()).await?;
+        let response = self.get(&StationsDashboardRequest {}.path()).await?;
 
-        Ok(serde_json::from_value::<StationsDashboard>(
-            response.result,
-        )?)
+        Ok(serde_json::from_value::<StationsDashboard>(response)?)
     }
 }

@@ -1,7 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
-    model::rotor_model::rotor::Rotor,
-    YandexMusicClient,
+    api::RequestPath, model::rotor_model::rotor::Rotor, YandexMusicClient,
 };
 
 pub struct StationRequest {
@@ -21,13 +19,21 @@ impl RequestPath for StationRequest {
 }
 
 impl YandexMusicClient {
+    /// Get station.
+    ///
+    /// ### Arguments
+    /// * `station_id` - The ID of the station.
+    ///
+    /// ### Returns
+    /// * [`Vec<Rotor>`] - A list of stations.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_station(
         &self,
         station_id: String,
     ) -> Result<Vec<Rotor>, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&StationRequest::new(station_id).path()).await?;
 
-        Ok(serde_json::from_value::<Vec<Rotor>>(response.result)?)
+        Ok(serde_json::from_value::<Vec<Rotor>>(response)?)
     }
 }

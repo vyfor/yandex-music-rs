@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::queue_model::queue::Queue,
     YandexMusicClient,
 };
@@ -21,13 +21,21 @@ impl RequestPath for QueueRequest {
 }
 
 impl YandexMusicClient {
+    /// Get queue.
+    /// 
+    /// ### Arguments
+    /// * `queue_id` - The ID of the queue.
+    /// 
+    /// ### Returns
+    /// * [Queue] - The queue.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_queue(
         &self,
         queue_id: String,
     ) -> Result<Queue, crate::ClientError> {
-        let response: Response =
+        let response =
             self.get(&QueueRequest::new(queue_id).path()).await?;
 
-        Ok(serde_json::from_value::<Queue>(response.result)?)
+        Ok(serde_json::from_value::<Queue>(response)?)
     }
 }

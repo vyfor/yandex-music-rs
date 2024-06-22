@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::artist_model::artist::{ArtistAlbums, SortBy},
     YandexMusicClient,
 };
@@ -44,26 +44,42 @@ impl RequestPath for ArtistAlbumsRequest {
 }
 
 impl YandexMusicClient {
+    /// Get artist albums.
+    ///
+    /// ### Arguments
+    /// * `artist_id` - The ID of the artist.
+    /// * `sort_by` - The order of sorting albums.
     pub async fn get_artist_albums(
         &self,
         artist_id: i32,
         sort_by: SortBy,
     ) -> Result<ArtistAlbums, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .get(&ArtistAlbumsRequest::new(artist_id, sort_by).path())
             .await?;
 
-        Ok(serde_json::from_value::<ArtistAlbums>(response.result)?)
+        Ok(serde_json::from_value::<ArtistAlbums>(response)?)
     }
 
+    /// Get artist albums with pagination.
+    ///
+    /// ### Arguments
+    /// * `artist_id` - The ID of the artist.
+    /// * `sort_by` - The order of sorting albums.
+    /// * `page` - The zero-indexed page number.
+    /// * `page_size` - The page size.
+    ///
+    /// ### Returns
+    /// * [ArtistAlbums] - The artist albums.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_artist_albums_with_page(
         &self,
         artist_id: i32,
+        sort_by: SortBy,
         page: u32,
         page_size: u32,
-        sort_by: SortBy,
     ) -> Result<ArtistAlbums, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .get(
                 &ArtistAlbumsRequest::new(artist_id, sort_by)
                     .with_page(page)
@@ -72,6 +88,6 @@ impl YandexMusicClient {
             )
             .await?;
 
-        Ok(serde_json::from_value::<ArtistAlbums>(response.result)?)
+        Ok(serde_json::from_value::<ArtistAlbums>(response)?)
     }
 }

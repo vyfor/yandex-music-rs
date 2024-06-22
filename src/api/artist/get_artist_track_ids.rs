@@ -1,5 +1,5 @@
 use crate::{
-    api::{RequestPath, Response},
+    api::RequestPath,
     model::artist_model::artist::ArtistTrackIds,
     YandexMusicClient,
 };
@@ -21,14 +21,22 @@ impl RequestPath for ArtistTrackIdsRequest {
 }
 
 impl YandexMusicClient {
+    /// Get artist track ids.
+    ///
+    /// ### Arguments
+    /// * `artist_id` - The ID of the artist.
+    ///
+    /// ### Returns
+    /// * [ArtistTrackIds] - The artist track ids.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_artist_track_ids(
         &self,
         artist_id: i32,
     ) -> Result<ArtistTrackIds, crate::ClientError> {
-        let response: Response = self
+        let response = self
             .get(&ArtistTrackIdsRequest::new(artist_id).path())
             .await?;
 
-        Ok(serde_json::from_value::<ArtistTrackIds>(response.result)?)
+        Ok(serde_json::from_value::<ArtistTrackIds>(response)?)
     }
 }

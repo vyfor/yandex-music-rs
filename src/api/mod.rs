@@ -1,6 +1,8 @@
 use serde::Deserialize;
 use serde_json::Value;
 
+use crate::error::YandexMusicError;
+
 pub mod account;
 pub mod album;
 pub mod artist;
@@ -46,5 +48,6 @@ where
 #[serde(rename_all = "camelCase")]
 pub struct Response {
     pub invocation_info: InvocationInfo,
-    pub result: Value,
+    pub result: Option<Value>,
+    pub error: Option<YandexMusicError>,
 }

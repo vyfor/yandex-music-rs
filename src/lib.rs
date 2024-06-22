@@ -1,5 +1,7 @@
+use api::Response;
 use error::ClientError;
 use reqwest::header::{HeaderMap, HeaderValue};
+use serde_json::Value;
 
 pub mod api;
 pub mod error;
@@ -7,11 +9,14 @@ pub mod model;
 
 pub const API_PATH: &str = "https://api.music.yandex.net:443/";
 
+/// A client to interact with the Yandex Music API.
 pub struct YandexMusicClient {
+    /// Internal reqwest client.
     pub client: reqwest::Client,
 }
 
 impl YandexMusicClient {
+    /// Create a new client with a token and default headers.
     pub fn new(token: &str) -> Self {
         let mut headers = HeaderMap::with_capacity(1);
         headers.insert(
@@ -33,6 +38,7 @@ impl YandexMusicClient {
         }
     }
 
+    /// Create a new client with a token, proxy and default headers.
     pub fn with_proxy(token: &str, proxy: reqwest::Proxy) -> Self {
         let mut headers = HeaderMap::with_capacity(1);
         headers.insert(
@@ -55,143 +61,166 @@ impl YandexMusicClient {
         }
     }
 
+    /// Create a new client with a custom reqwest client.
     pub fn with_client(client: reqwest::Client) -> Self {
         Self { client }
     }
 
-    async fn get<T: serde::de::DeserializeOwned>(
-        &self,
-        endpoint: &str,
-    ) -> Result<T, ClientError> {
+    async fn get(&self, endpoint: &str) -> Result<Value, ClientError> {
         let url = format!("{}{}", API_PATH, endpoint);
 
-        let response = self
+        let response: Response = self
             .client
             .get(url)
             .send()
             .await?
             .error_for_status()?
-            .json::<T>()
+            .json()
             .await?;
 
-        Ok(response)
+        if let Some(error) = response.error {
+            return Err(error.into());
+        }
+
+        Ok(response.result.unwrap())
     }
 
-    async fn get_with_headers<T: serde::de::DeserializeOwned>(
+    async fn get_with_headers(
         &self,
         endpoint: &str,
         headers: HeaderMap,
-    ) -> Result<T, ClientError> {
+    ) -> Result<Value, ClientError> {
         let url = format!("{}{}", API_PATH, endpoint);
 
-        let response = self
+        let response: Response = self
             .client
             .get(url)
             .headers(headers)
             .send()
             .await?
             .error_for_status()?
-            .json::<T>()
+            .json()
             .await?;
 
-        Ok(response)
+        if let Some(error) = response.error {
+            return Err(error.into());
+        }
+
+        Ok(response.result.unwrap())
     }
 
-    async fn post<T: serde::de::DeserializeOwned>(
-        &self,
-        endpoint: &str,
-    ) -> Result<T, ClientError> {
+    async fn post(&self, endpoint: &str) -> Result<Value, ClientError> {
         let url = format!("{}{}", API_PATH, endpoint);
 
-        let response = self
+        let response: Response = self
             .client
             .post(url)
             .send()
             .await?
             .error_for_status()?
-            .json::<T>()
+            .json()
             .await?;
 
-        Ok(response)
+        if let Some(error) = response.error {
+            return Err(error.into());
+        }
+
+        Ok(response.result.unwrap())
     }
 
-    async fn post_with_headers<T: serde::de::DeserializeOwned>(
+    async fn post_with_headers(
         &self,
         endpoint: &str,
         headers: HeaderMap,
-    ) -> Result<T, ClientError> {
+    ) -> Result<Value, ClientError> {
         let url = format!("{}{}", API_PATH, endpoint);
 
-        let response = self
+        let response: Response = self
             .client
             .post(url)
             .headers(headers)
             .send()
             .await?
             .error_for_status()?
-            .json::<T>()
+            .json()
             .await?;
 
-        Ok(response)
+        if let Some(error) = response.error {
+            return Err(error.into());
+        }
+
+        Ok(response.result.unwrap())
     }
 
-    async fn post_with_form<T: serde::de::DeserializeOwned>(
+    async fn post_with_form(
         &self,
         endpoint: &str,
         form: Vec<(&str, String)>,
-    ) -> Result<T, ClientError> {
+    ) -> Result<Value, ClientError> {
         let url = format!("{}{}", API_PATH, endpoint);
 
-        let response = self
+        let response: Response = self
             .client
             .post(url)
             .form(&form)
             .send()
             .await?
             .error_for_status()?
-            .json::<T>()
+            .json()
             .await?;
 
-        Ok(response)
+        if let Some(error) = response.error {
+            return Err(error.into());
+        }
+
+        Ok(response.result.unwrap())
     }
 
-    async fn post_with_form_str<T: serde::de::DeserializeOwned>(
+    async fn post_with_form_str(
         &self,
         endpoint: &str,
         form: Vec<(&str, &str)>,
-    ) -> Result<T, ClientError> {
+    ) -> Result<Value, ClientError> {
         let url = format!("{}{}", API_PATH, endpoint);
 
-        let response = self
+        let response: Response = self
             .client
             .post(url)
             .form(&form)
             .send()
             .await?
             .error_for_status()?
-            .json::<T>()
+            .json()
             .await?;
 
-        Ok(response)
+        if let Some(error) = response.error {
+            return Err(error.into());
+        }
+
+        Ok(response.result.unwrap())
     }
 
-    async fn post_with_json<T: serde::de::DeserializeOwned>(
+    async fn post_with_json(
         &self,
         endpoint: &str,
         json: serde_json::Value,
-    ) -> Result<T, ClientError> {
+    ) -> Result<Value, ClientError> {
         let url = format!("{}{}", API_PATH, endpoint);
 
-        let response = self
+        let response: Response = self
             .client
             .post(url)
             .json(&json)
             .send()
             .await?
             .error_for_status()?
-            .json::<T>()
+            .json()
             .await?;
 
-        Ok(response)
+        if let Some(error) = response.error {
+            return Err(error.into());
+        }
+
+        Ok(response.result.unwrap())
     }
 }
