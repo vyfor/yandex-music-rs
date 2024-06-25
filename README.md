@@ -9,7 +9,7 @@ A wrapper around the [Yandex Music API](https://music.yandex.ru) in Rust. Not af
 ## Installation
 
 ```bash
-cargo install yandex-music
+cargo yandex-music
 ```
 
 ## Usage
