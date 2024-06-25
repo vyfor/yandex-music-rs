@@ -49,6 +49,10 @@ impl YandexMusicClient {
     /// ### Arguments
     /// * `artist_id` - The ID of the artist.
     /// * `sort_by` - The order of sorting albums.
+    ///
+    /// ### Returns
+    /// * [ArtistAlbums] - The artist albums.
+    /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_artist_albums(
         &self,
         artist_id: i32,
