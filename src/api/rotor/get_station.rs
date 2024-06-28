@@ -14,7 +14,7 @@ impl StationRequest {
 
 impl RequestPath for StationRequest {
     fn path(&self) -> String {
-        format!("/rotor/station/{}/info", self.station_id)
+        format!("rotor/station/{}/info", self.station_id)
     }
 }
 

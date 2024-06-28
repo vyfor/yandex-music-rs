@@ -1,7 +1,5 @@
 use crate::{
-    api::RequestPath,
-    model::track_model::track::Track,
-    YandexMusicClient,
+    api::RequestPath, model::track_model::track::Track, YandexMusicClient,
 };
 
 pub struct TrackRequest {
@@ -16,16 +14,16 @@ impl TrackRequest {
 
 impl RequestPath for TrackRequest {
     fn path(&self) -> String {
-        format!("/tracks/{}", self.track_id)
+        format!("tracks/{}", self.track_id)
     }
 }
 
 impl YandexMusicClient {
     /// Get track.
-    /// 
+    ///
     /// ### Arguments
     /// * `track_id` - The ID of the track.
-    /// 
+    ///
     /// ### Returns
     /// * [Track] - The track.
     /// * [ClientError](crate::ClientError) - If the request fails.
@@ -33,8 +31,7 @@ impl YandexMusicClient {
         &self,
         track_id: i32,
     ) -> Result<Vec<Track>, crate::ClientError> {
-        let response =
-            self.get(&TrackRequest::new(track_id).path()).await?;
+        let response = self.get(&TrackRequest::new(track_id).path()).await?;
 
         Ok(serde_json::from_value::<Vec<Track>>(response)?)
     }

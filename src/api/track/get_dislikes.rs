@@ -16,7 +16,7 @@ impl DislikesPlaylistRequest {
 
 impl RequestPath for DislikesPlaylistRequest {
     fn path(&self) -> String {
-        format!("/users/{}/dislikes/tracks", self.user_id)
+        format!("users/{}/dislikes/tracks", self.user_id)
     }
 }
 

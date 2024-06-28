@@ -16,7 +16,7 @@ impl AllPlaylistsRequest {
 
 impl RequestPath for AllPlaylistsRequest {
     fn path(&self) -> String {
-        format!("/users/{}/playlists/list", self.user_id)
+        format!("users/{}/playlists/list", self.user_id)
     }
 }
 

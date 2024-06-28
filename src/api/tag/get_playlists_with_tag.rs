@@ -16,7 +16,7 @@ impl TaggedPlaylistsRequest {
 
 impl RequestPath for TaggedPlaylistsRequest {
     fn path(&self) -> String {
-        format!("/tags/{}/playlist-ids", self.tag)
+        format!("tags/{}/playlist-ids", self.tag)
     }
 }
 
