@@ -1,10 +1,15 @@
 use serde::Deserialize;
 
 use crate::model::{
-    info_model::tag::Tag, track_model::cover::Cover, user_model::user::User,
+    info_model::tag::Tag,
+    track_model::{
+        cover::Cover,
+        track::{PartialTrack, Track},
+    },
+    user_model::user::User,
 };
 
-#[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
+#[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Playlist {
     pub playlist_uuid: String,
@@ -22,6 +27,7 @@ pub struct Playlist {
     pub is_premiere: bool,
     pub kind: i32,
     pub og_image: String,
+    pub tracks: Option<TracksType>,
     pub owner: User,
     pub revision: i32,
     pub snapshot: i32,
@@ -34,4 +40,11 @@ pub struct Playlist {
     pub likes_count: i32,
     #[serde(default)]
     pub similar_playlists: Vec<Playlist>,
+}
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(untagged)]
+pub enum TracksType {
+    Full(Vec<Track>),
+    Partial(Vec<PartialTrack>),
 }
