@@ -47,6 +47,7 @@ pub struct BlockEntity {
     pub data: EntityData,
 }
 
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum EntityData {

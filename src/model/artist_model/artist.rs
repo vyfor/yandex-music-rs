@@ -51,6 +51,7 @@ pub struct Artist {
     pub end_date: Option<String>,
 }
 
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(untagged)]
 pub enum Decomposed {

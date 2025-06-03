@@ -67,7 +67,7 @@ impl YandexMusicClient {
     }
 
     async fn get(&self, endpoint: &str) -> Result<Value, ClientError> {
-        let url = format!("{}{}", API_PATH, endpoint);
+        let url = format!("{API_PATH}{endpoint}");
 
         let response: Response = self
             .client
@@ -90,7 +90,7 @@ impl YandexMusicClient {
         endpoint: &str,
         headers: HeaderMap,
     ) -> Result<Value, ClientError> {
-        let url = format!("{}{}", API_PATH, endpoint);
+        let url = format!("{API_PATH}{endpoint}");
 
         let response: Response = self
             .client
@@ -110,7 +110,7 @@ impl YandexMusicClient {
     }
 
     async fn post(&self, endpoint: &str) -> Result<Value, ClientError> {
-        let url = format!("{}{}", API_PATH, endpoint);
+        let url = format!("{API_PATH}{endpoint}");
 
         let response: Response = self
             .client
@@ -133,7 +133,7 @@ impl YandexMusicClient {
         endpoint: &str,
         headers: HeaderMap,
     ) -> Result<Value, ClientError> {
-        let url = format!("{}{}", API_PATH, endpoint);
+        let url = format!("{API_PATH}{endpoint}");
 
         let response: Response = self
             .client
@@ -157,7 +157,7 @@ impl YandexMusicClient {
         endpoint: &str,
         form: Vec<(&str, String)>,
     ) -> Result<Value, ClientError> {
-        let url = format!("{}{}", API_PATH, endpoint);
+        let url = format!("{API_PATH}{endpoint}");
 
         let response: Response = self
             .client
@@ -181,7 +181,7 @@ impl YandexMusicClient {
         endpoint: &str,
         form: Vec<(&str, &str)>,
     ) -> Result<Value, ClientError> {
-        let url = format!("{}{}", API_PATH, endpoint);
+        let url = format!("{API_PATH}{endpoint}");
 
         let response: Response = self
             .client
@@ -205,7 +205,7 @@ impl YandexMusicClient {
         endpoint: &str,
         json: serde_json::Value,
     ) -> Result<Value, ClientError> {
-        let url = format!("{}{}", API_PATH, endpoint);
+        let url = format!("{API_PATH}{endpoint}");
 
         let response: Response = self
             .client

@@ -19,7 +19,7 @@ impl RequestPath for LandingBlockRequest {
         match &self.block {
             LandingBlockType::Chart(chart_type) => {
                 if let Some(chart_type) = chart_type {
-                    format!("landing3/chart/{}", chart_type)
+                    format!("landing3/chart/{chart_type}")
                 } else {
                     "landing3/chart".to_string()
                 }
