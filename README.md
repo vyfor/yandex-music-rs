@@ -4,7 +4,7 @@
 [docs badge]: https://img.shields.io/badge/docs.rs-rustdoc-green
 [docs.rs]: https://docs.rs/yandex-music
 
-A wrapper around the [Yandex Music API](https://music.yandex.ru) in Rust. Not affiliated with Yandex in any way.
+A wrapper around the [Yandex Music API](https://music.yandex.ru) in Rust. Made exclusively for educational purposes only. Not affiliated with Yandex in any way.
 
 ## Installation
 
