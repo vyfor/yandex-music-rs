@@ -17,6 +17,18 @@ pub struct PartialTrack {
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
+pub struct TrackWithInfo {
+    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
+    pub id: i32,
+    pub original_index: i32,
+    pub timestamp: String,
+    pub track: Track,
+    pub recenet: bool,
+    pub original_shuffle_index: i32,
+}
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct Track {
     #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
     pub id: i32,

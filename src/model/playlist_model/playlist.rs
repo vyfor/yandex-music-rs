@@ -4,7 +4,7 @@ use crate::model::{
     info_model::tag::Tag,
     track_model::{
         cover::Cover,
-        track::{PartialTrack, Track},
+        track::{PartialTrack, Track, TrackWithInfo},
     },
     user_model::user::User,
 };
@@ -46,5 +46,6 @@ pub struct Playlist {
 #[serde(untagged)]
 pub enum TracksType {
     Full(Vec<Track>),
+    TrackWithInfo(Vec<TrackWithInfo>),
     Partial(Vec<PartialTrack>),
 }
