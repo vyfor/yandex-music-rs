@@ -23,7 +23,7 @@ pub struct TrackWithInfo {
     pub original_index: i32,
     pub timestamp: String,
     pub track: Track,
-    pub recenet: bool,
+    pub recent: bool,
     pub original_shuffle_index: i32,
 }
 
