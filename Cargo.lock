@@ -1559,7 +1559,7 @@ checksum = "791978798f0597cfc70478424c2b4fdc2b7a8024aaff78497ef00f24ef674193"
 
 [[package]]
 name = "yandex-music"
-version = "0.2.7"
+version = "0.2.8"
 dependencies = [
  "base64",
  "dotenv",

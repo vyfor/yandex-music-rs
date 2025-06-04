@@ -7,7 +7,7 @@ keywords = ["yandex", "music", "api", "client", "http"]
 license = "MIT"
 name = "yandex-music"
 repository = "https://github.com/vyfor/yandex-music-rs"
-version = "0.2.7"
+version = "0.2.8"
 
 [lib]
 crate-type = ["lib"]
