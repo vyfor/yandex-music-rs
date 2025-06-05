@@ -10,8 +10,9 @@ use crate::model::{
 pub struct PartialTrack {
     #[serde(deserialize_with = "crate::model::utils::number_to_string")]
     pub id: String,
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub album_id: i32,
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::model::utils::opt_string_to_i32")]
+    pub album_id: Option<i32>,
     pub timestamp: String,
 }
 
@@ -97,6 +98,7 @@ pub struct TrackId {
     pub id: Option<String>,
     #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
     pub track_id: Option<String>,
+    #[serde(deserialize_with = "crate::model::utils::opt_string_to_i32")]
     pub album_id: Option<i32>,
     pub from: Option<String>,
 }
@@ -114,7 +116,9 @@ pub struct TrackWithAds {
 pub struct TrackShort {
     #[serde(deserialize_with = "crate::model::utils::number_to_string")]
     pub id: String,
-    pub album_id: String,
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
+    pub album_id: Option<String>,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
