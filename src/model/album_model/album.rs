@@ -9,7 +9,9 @@ use crate::model::{
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Album {
-    pub id: i32,
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::model::utils::opt_string_to_i32")]
+    pub id: Option<i32>,
     pub error: Option<String>,
     pub title: Option<String>,
     pub track_count: Option<i32>,
@@ -43,7 +45,7 @@ pub struct Album {
     pub volumes: Vec<Vec<Track>>,
     pub year: Option<i32>,
     pub release_date: Option<String>,
-    #[serde(rename="type")]
+    #[serde(rename = "type")]
     pub item_type: Option<String>,
     pub track_position: Option<TrackPosition>,
     #[serde(default)]
