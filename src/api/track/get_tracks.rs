@@ -1,7 +1,5 @@
 use crate::{
-    api::RequestPath,
-    model::track_model::track::Track,
-    YandexMusicClient,
+    api::RequestPath, model::track_model::track::Track, YandexMusicClient,
 };
 
 pub struct TracksRequest {}
@@ -24,7 +22,7 @@ impl YandexMusicClient {
     /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_tracks(
         &self,
-        track_ids: &[i32],
+        track_ids: &[String],
         with_positions: bool,
     ) -> Result<Vec<Track>, crate::ClientError> {
         let response = self
@@ -35,7 +33,7 @@ impl YandexMusicClient {
                         "track-ids",
                         &track_ids
                             .iter()
-                            .map(|&id| id.to_string() + ",")
+                            .map(|id| id.to_string() + ",")
                             .collect::<String>(),
                     ),
                     ("with-positions", &with_positions.to_string()),

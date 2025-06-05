@@ -8,8 +8,8 @@ use crate::model::{
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct PartialTrack {
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub id: i32,
+    #[serde(deserialize_with = "crate::model::utils::number_to_string")]
+    pub id: String,
     #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
     pub album_id: i32,
     pub timestamp: String,
@@ -18,8 +18,8 @@ pub struct PartialTrack {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackWithInfo {
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub id: i32,
+    #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
+    pub id: Option<String>,
     pub original_index: i32,
     pub timestamp: String,
     pub track: Track,
@@ -30,8 +30,8 @@ pub struct TrackWithInfo {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Track {
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub id: i32,
+    #[serde(deserialize_with = "crate::model::utils::number_to_string")]
+    pub id: String,
     pub title: Option<String>,
     pub available: Option<bool>,
     #[serde(default)]
@@ -41,8 +41,8 @@ pub struct Track {
     pub available_for_premium_users: Option<bool>,
     pub lyrics_available: Option<bool>,
     pub best: Option<bool>,
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub real_id: i32,
+    #[serde(deserialize_with = "crate::model::utils::number_to_string")]
+    pub real_id: String,
     pub og_image: Option<String>,
     #[serde(rename = "type")]
     pub item_type: Option<String>,
@@ -93,8 +93,10 @@ pub struct Track {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackId {
-    pub id: Option<i32>,
-    pub track_id: Option<i32>,
+    #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
+    pub id: Option<String>,
+    #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
+    pub track_id: Option<String>,
     pub album_id: Option<i32>,
     pub from: Option<String>,
 }
@@ -110,6 +112,7 @@ pub struct TrackWithAds {
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackShort {
+    #[serde(deserialize_with = "crate::model::utils::number_to_string")]
     pub id: String,
     pub album_id: String,
 }
@@ -117,7 +120,8 @@ pub struct TrackShort {
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackMajor {
-    pub id: i32,
+    #[serde(deserialize_with = "crate::model::utils::number_to_string")]
+    pub id: String,
     pub name: String,
     pub pretty_name: Option<String>,
 }

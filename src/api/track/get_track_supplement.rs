@@ -1,15 +1,14 @@
 use crate::{
-    api::RequestPath,
-    model::track_model::supplement::TrackSupplement,
+    api::RequestPath, model::track_model::supplement::TrackSupplement,
     YandexMusicClient,
 };
 
 pub struct TrackSupplementRequest {
-    pub track_id: i32,
+    pub track_id: String,
 }
 
 impl TrackSupplementRequest {
-    pub fn new(track_id: i32) -> Self {
+    pub fn new(track_id: String) -> Self {
         Self { track_id }
     }
 }
@@ -31,7 +30,7 @@ impl YandexMusicClient {
     /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_track_supplement(
         &self,
-        track_id: i32,
+        track_id: String,
     ) -> Result<TrackSupplement, crate::ClientError> {
         let response = self
             .get(&TrackSupplementRequest::new(track_id).path())

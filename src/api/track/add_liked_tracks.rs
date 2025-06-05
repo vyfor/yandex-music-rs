@@ -1,7 +1,4 @@
-use crate::{
-    api::RequestPath,
-    YandexMusicClient,
-};
+use crate::{api::RequestPath, YandexMusicClient};
 
 pub struct AddLikedTracksRequest {
     pub user_id: i32,
@@ -31,7 +28,7 @@ impl YandexMusicClient {
     pub async fn add_liked_tracks(
         &self,
         user_id: i32,
-        track_ids: &[i32],
+        track_ids: &[String],
     ) -> Result<i32, crate::ClientError> {
         let mut response = self
             .post_with_form_str(
@@ -40,14 +37,12 @@ impl YandexMusicClient {
                     "track-ids",
                     &track_ids
                         .iter()
-                        .map(|&id| id.to_string() + ",")
+                        .map(|id| id.to_string() + ",")
                         .collect::<String>(),
                 )],
             )
             .await?;
 
-        Ok(serde_json::from_value::<i32>(
-            response["revision"].take(),
-        )?)
+        Ok(serde_json::from_value::<i32>(response["revision"].take())?)
     }
 }

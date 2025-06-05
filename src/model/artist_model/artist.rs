@@ -15,8 +15,9 @@ use crate::model::{
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Artist {
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub id: i32,
+    #[serde(default)]
+    #[serde(deserialize_with = "crate::model::utils::opt_string_to_i32")]
+    pub id: Option<i32>,
     pub error: Option<String>,
     pub reason: Option<String>,
     pub name: Option<String>,

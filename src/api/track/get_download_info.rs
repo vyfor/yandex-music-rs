@@ -5,11 +5,11 @@ use crate::{
 };
 
 pub struct DownloadInfoRequest {
-    pub track_id: i32,
+    pub track_id: String,
 }
 
 impl DownloadInfoRequest {
-    pub fn new(track_id: i32) -> Self {
+    pub fn new(track_id: String) -> Self {
         Self { track_id }
     }
 }
@@ -32,7 +32,7 @@ impl YandexMusicClient {
     /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_track_download_info(
         &self,
-        track_id: i32,
+        track_id: String,
     ) -> Result<Vec<TrackDownloadInfo>, crate::ClientError> {
         let response = self
             .get(

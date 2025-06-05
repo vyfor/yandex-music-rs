@@ -1,6 +1,5 @@
 use crate::{
-    api::RequestPath,
-    model::playlist_model::library::Library,
+    api::RequestPath, model::playlist_model::library::Library,
     YandexMusicClient,
 };
 

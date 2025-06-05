@@ -5,15 +5,15 @@ use crate::{
 };
 
 pub struct LyricsRequest {
-    pub track_id: i32,
+    pub track_id: String,
     pub format: LyricsFormat,
     pub timestamp: u64,
     pub sign: String,
 }
 
 impl LyricsRequest {
-    pub fn new(track_id: i32, format: LyricsFormat) -> Self {
-        let (timestamp, sign) = create_sign(track_id);
+    pub fn new(track_id: String, format: LyricsFormat) -> Self {
+        let (timestamp, sign) = create_sign(track_id.clone());
 
         Self {
             track_id,
@@ -50,7 +50,7 @@ impl YandexMusicClient {
     /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_lyrics(
         &self,
-        track_id: i32,
+        track_id: String,
         format: LyricsFormat,
     ) -> Result<TrackLyrics, crate::ClientError> {
         let response = self

@@ -1,15 +1,14 @@
 use crate::{
-    api::RequestPath,
-    model::track_model::similar_tracks::SimilarTracks,
+    api::RequestPath, model::track_model::similar_tracks::SimilarTracks,
     YandexMusicClient,
 };
 
 pub struct SimilarTracksRequest {
-    pub track_id: i32,
+    pub track_id: String,
 }
 
 impl SimilarTracksRequest {
-    pub fn new(track_id: i32) -> Self {
+    pub fn new(track_id: String) -> Self {
         Self { track_id }
     }
 }
@@ -31,7 +30,7 @@ impl YandexMusicClient {
     /// * [ClientError](crate::ClientError) - If the request fails.
     pub async fn get_similar_tracks(
         &self,
-        track_id: i32,
+        track_id: String,
     ) -> Result<SimilarTracks, crate::ClientError> {
         let response = self
             .get(&SimilarTracksRequest::new(track_id).path())

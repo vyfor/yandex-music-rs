@@ -5,7 +5,7 @@ use std::time::SystemTime;
 
 const SIGN_KEY: &str = "p93jhgh689SBReK6ghtw62";
 
-pub fn create_sign(track_id: i32) -> (u64, String) {
+pub fn create_sign(track_id: String) -> (u64, String) {
     let timestamp = SystemTime::now()
         .duration_since(SystemTime::UNIX_EPOCH)
         .unwrap()
