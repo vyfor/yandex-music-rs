@@ -1,50 +1,57 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::playlist_model::playlist::Playlist,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
 };
 
-pub struct ChangePlaylistVisibilityRequest {
+/// Request for changing a playlist's visibility.
+pub struct ChangePlaylistVisibilityOptions {
+    /// The ID of the user who owns the playlist.
     pub user_id: i32,
+    /// The kind (ID) of the playlist.
     pub kind: i32,
+    /// The new visibility value ("public" or "private").
+    pub value: String,
 }
 
-impl ChangePlaylistVisibilityRequest {
-    pub fn new(user_id: i32, kind: i32) -> Self {
-        Self { user_id, kind }
+impl ChangePlaylistVisibilityOptions {
+    /// Create a new request to change a playlist's visibility.
+    pub fn new(user_id: i32, kind: i32, value: impl Into<String>) -> Self {
+        Self {
+            user_id,
+            kind,
+            value: value.into(),
+        }
     }
 }
 
-impl RequestPath for ChangePlaylistVisibilityRequest {
-    fn path(&self) -> String {
-        format!("users/{}/playlists/{}/visibility", self.user_id, self.kind)
+impl Endpoint for ChangePlaylistVisibilityOptions {
+    type Options = [(&'static str, String); 1];
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("users/{}/playlists/{}/visibility", self.user_id, self.kind).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default().with_form_data([("value", self.value.clone())])
     }
 }
 
 impl YandexMusicClient {
-    /// Change playlist visibility.
+    /// Change the visibility of a playlist.
     ///
     /// ### Arguments
-    /// * `user_id` - The ID of the user.
-    /// * `kind` - The kind of the playlist.
-    /// * `value` - Either `"public"` or `"private"`.
+    /// * `options` - The request options containing user ID, playlist kind, and visibility value.
     ///
     /// ### Returns
-    /// * [Playlist] - The updated playlist.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Playlist, ClientError>` - The updated playlist or an error if the request fails.
     pub async fn change_playlist_visibility(
         &self,
-        user_id: i32,
-        kind: i32,
-        value: &str,
+        options: &ChangePlaylistVisibilityOptions,
     ) -> Result<Playlist, crate::ClientError> {
-        let response = self
-            .post_with_form_str(
-                &ChangePlaylistVisibilityRequest::new(user_id, kind).path(),
-                vec![("value", value)],
-            )
-            .await?;
-
-        Ok(serde_json::from_value::<Playlist>(response)?)
+        self.request::<Playlist, _>(options).await
     }
 }

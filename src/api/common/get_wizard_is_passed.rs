@@ -1,26 +1,52 @@
-use crate::{api::RequestPath, YandexMusicClient};
+use std::borrow::Cow;
 
-pub struct IsWizardPassedRequest {}
+use reqwest::Method;
+use serde_json::Value;
 
-impl RequestPath for IsWizardPassedRequest {
-    fn path(&self) -> String {
-        String::from("feed/wizard/is-passed")
+use crate::{
+    api::Endpoint,
+    client::request::RequestOptions,
+    error::{ClientError, YandexMusicError},
+    YandexMusicClient,
+};
+
+/// Request for checking if the user has completed the wizard.
+pub struct GetWizardIsPassedOptions;
+
+impl Default for GetWizardIsPassedOptions {
+    fn default() -> Self {
+        Self
+    }
+}
+
+impl Endpoint for GetWizardIsPassedOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "feed/wizard/is-passed".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get whether the user has passed the wizard.
+    /// Check if the user has completed the wizard.
     ///
     /// ### Returns
-    /// * [bool] - Whether the user has passed the wizard.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_is_wizard_passed(
-        &self,
-    ) -> Result<bool, crate::ClientError> {
-        let mut response = self.get(&IsWizardPassedRequest {}.path()).await?;
+    /// * `Result<bool, ClientError>` - `true` if the wizard has been completed, `false` otherwise.
+    pub async fn get_wizard_is_passed(&self) -> Result<bool, crate::ClientError> {
+        let response = self.request::<Value, _>(&GetWizardIsPassedOptions).await?;
 
-        Ok(serde_json::from_value::<bool>(
-            response["isWizardPassed"].take(),
-        )?)
+        response["isWizardPassed"]
+            .as_bool()
+            .ok_or(ClientError::YandexMusicError {
+                error: YandexMusicError {
+                    name: "InvalidValue".to_string(),
+                    message: Some("isWizardPassed is not a boolean".to_string()),
+                },
+            })
     }
 }

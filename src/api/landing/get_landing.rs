@@ -1,48 +1,56 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::landing_model::landing::{Landing, LandingType},
+    api::Endpoint,
+    client::request::RequestOptions,
+    model::landing::{Landing, LandingType},
     YandexMusicClient,
 };
 
-pub struct LandingRequest {
-    blocks: Vec<LandingType>,
+pub struct GetLandingOptions {
+    /// The blocks to include in the landing page.
+    pub blocks: Vec<String>,
 }
 
-impl LandingRequest {
-    pub fn new(blocks: Vec<LandingType>) -> Self {
-        Self { blocks }
+impl GetLandingOptions {
+    /// Create a new request for getting landing page data.
+    pub fn new<I>(blocks: I) -> Self
+    where
+        I: IntoIterator<Item = LandingType>,
+    {
+        Self {
+            blocks: blocks.into_iter().map(|b| b.to_string()).collect(),
+        }
     }
 }
 
-impl RequestPath for LandingRequest {
-    fn path(&self) -> String {
-        format!(
-            "landing3?blocks={}",
-            self.blocks
-                .iter()
-                .map(|x| x.as_str())
-                .collect::<Vec<_>>()
-                .join(","),
-        )
+impl Endpoint for GetLandingOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("landing3?blocks={}", self.blocks.join(",")).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get landing object.
+    /// Get landing page data with the specified blocks.
     ///
     /// ### Arguments
-    /// * `blocks` - The blocks.
+    /// * `options` - The request options containing the blocks to include.
     ///
     /// ### Returns
-    /// * [Landing] - The landing object.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * [Landing] - The landing page data.
     pub async fn get_landing(
         &self,
-        blocks: Vec<LandingType>,
+        options: &GetLandingOptions,
     ) -> Result<Landing, crate::ClientError> {
-        let response =
-            self.get(&LandingRequest::new(blocks).path()).await?;
-
-        Ok(serde_json::from_value::<Landing>(response)?)
+        self.request::<Landing, _>(options).await
     }
 }

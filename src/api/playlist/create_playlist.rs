@@ -1,49 +1,60 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::playlist_model::playlist::Playlist,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
 };
 
-pub struct CreatePlaylistRequest {
+/// Request for creating a new playlist.
+pub struct CreatePlaylistOptions {
+    /// The ID of the user who will own the playlist.
     pub user_id: i32,
+    /// The title of the new playlist.
+    pub title: String,
+    /// The visibility of the playlist. Must be either "public" or "private".
+    pub visibility: String,
 }
 
-impl CreatePlaylistRequest {
-    pub fn new(user_id: i32) -> Self {
-        Self { user_id }
+impl CreatePlaylistOptions {
+    /// Create a new request for creating a playlist.
+    pub fn new(user_id: i32, title: impl Into<String>, visibility: impl Into<String>) -> Self {
+        Self {
+            user_id,
+            title: title.into(),
+            visibility: visibility.into(),
+        }
     }
 }
 
-impl RequestPath for CreatePlaylistRequest {
-    fn path(&self) -> String {
-        format!("users/{}/playlists/create", self.user_id)
+impl Endpoint for CreatePlaylistOptions {
+    type Options = [(&'static str, String); 2];
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("users/{}/playlists/create", self.user_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default().with_form_data([
+            ("title", self.title.clone()),
+            ("visibility", self.visibility.clone()),
+        ])
     }
 }
 
 impl YandexMusicClient {
-    /// Create a new playlist.
+    /// Create a new playlist with the specified title and visibility.
     ///
     /// ### Arguments
-    /// * `user_id` - The ID of the user.
-    /// * `title` - The title of the playlist.
-    /// * `visibility` - Either `"public"` or `"private"`.
+    /// * `options` - The request options containing user ID, title, and visibility.
     ///
     /// ### Returns
-    /// * [Playlist] - The created playlist.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Playlist, ClientError>` - The newly created playlist or an error if the request fails.
     pub async fn create_playlist(
         &self,
-        user_id: i32,
-        title: &str,
-        visibility: &str,
+        options: &CreatePlaylistOptions,
     ) -> Result<Playlist, crate::ClientError> {
-        let response = self
-            .post_with_form_str(
-                &CreatePlaylistRequest::new(user_id).path(),
-                vec![("title", title), ("visibility", visibility)],
-            )
-            .await?;
-
-        Ok(serde_json::from_value::<Playlist>(response)?)
+        self.request::<Playlist, _>(options).await
     }
 }

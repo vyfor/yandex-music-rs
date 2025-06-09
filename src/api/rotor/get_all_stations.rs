@@ -1,67 +1,54 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::rotor_model::rotor::Rotor, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::rotor::Rotor, YandexMusicClient,
 };
 
-pub struct AllStationsRequest {
-    pub language: String,
+/// Request for retrieving all available radio stations.
+#[derive(Default)]
+pub struct GetAllStationsOptions {
+    /// The language (country code) for the station names and descriptions.
+    pub language: Option<String>,
 }
 
-impl AllStationsRequest {
-    pub fn new() -> Self {
-        Self {
-            language: String::from("en"),
-        }
-    }
-
-    pub fn language(mut self, language: String) -> Self {
-        self.language = language;
-
+impl GetAllStationsOptions {
+    pub fn language(mut self, language: impl Into<String>) -> Self {
+        self.language = Some(language.into());
         self
     }
 }
 
-impl Default for AllStationsRequest {
-    fn default() -> Self {
-        Self::new()
-    }
-}
+impl Endpoint for GetAllStationsOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
 
-impl RequestPath for AllStationsRequest {
-    fn path(&self) -> String {
-        String::from("rotor/stations/list")
+    fn path(&self) -> Cow<'static, str> {
+        if let Some(language) = &self.language {
+            format!("rotor/stations/list?language={language}").into()
+        } else {
+            "rotor/stations/list".into()
+        }
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get all stations.
-    ///
-    /// ### Returns
-    /// * [`Vec<Rotor>`] - A list of stations.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_all_stations(
-        &self,
-    ) -> Result<Vec<Rotor>, crate::ClientError> {
-        let response = self.get(&AllStationsRequest::new().path()).await?;
-
-        Ok(serde_json::from_value::<Vec<Rotor>>(response)?)
-    }
-
-    /// Get all stations with language.
+    /// Retrieve all available radio stations.
     ///
     /// ### Arguments
-    /// * `language` - The language of the stations.
+    /// * `options` - The request options containing language preference.
     ///
     /// ### Returns
-    /// * [`Vec<Rotor>`] - A list of stations.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_all_stations_with_language(
+    /// * `Result<Vec<Rotor>, ClientError>` - A list of radio stations or an error if the request fails.
+    pub async fn get_all_stations(
         &self,
-        language: String,
+        options: &GetAllStationsOptions,
     ) -> Result<Vec<Rotor>, crate::ClientError> {
-        let response = self
-            .get(&AllStationsRequest::new().language(language).path())
-            .await?;
-
-        Ok(serde_json::from_value::<Vec<Rotor>>(response)?)
+        self.request::<Vec<Rotor>, _>(options).await
     }
 }

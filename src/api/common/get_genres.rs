@@ -1,26 +1,39 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::common_model::genre::Genre,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::common::genre::Genre, YandexMusicClient,
 };
 
-pub struct GenresRequest {}
+/// Request for getting a list of all available genres.
+pub struct GetGenresOptions;
 
-impl RequestPath for GenresRequest {
-    fn path(&self) -> String {
-        String::from("genres")
+impl Default for GetGenresOptions {
+    fn default() -> Self {
+        Self
+    }
+}
+
+impl Endpoint for GetGenresOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "genres".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get genres.
+    /// Get a list of all available genres.
     ///
     /// ### Returns
-    /// * [`Vec<Genre>`] - The list of genres.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Vec<Genre>, ClientError>` - A list of genres or an error if the request fails.
     pub async fn get_genres(&self) -> Result<Vec<Genre>, crate::ClientError> {
-        let response = self.get(&GenresRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<Vec<Genre>>(response)?)
+        self.request::<Vec<Genre>, _>(&GetGenresOptions).await
     }
 }

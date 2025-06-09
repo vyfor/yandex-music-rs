@@ -1,58 +1,70 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::playlist_model::{modify::ModifyPlaylistDiff, playlist::Playlist},
+    api::Endpoint,
+    client::request::RequestOptions,
+    model::playlist::{modify::ModifyPlaylistDiff, Playlist},
     YandexMusicClient,
 };
 
-pub struct ModifyPlaylistRequest {
+/// Request for modifying a playlist by adding or removing tracks.
+pub struct ModifyPlaylistOptions<'a> {
+    /// The ID of the user who owns the playlist.
     pub user_id: i32,
+    /// The kind (ID) of the playlist to modify.
     pub kind: i32,
+    /// The diff object containing the changes to apply.
+    pub diff: &'a ModifyPlaylistDiff,
+    /// The current revision of the playlist.
+    pub revision: i32,
 }
 
-impl RequestPath for ModifyPlaylistRequest {
-    fn path(&self) -> String {
+impl<'a> ModifyPlaylistOptions<'a> {
+    /// Create a new request to modify a playlist.
+    pub fn new(user_id: i32, kind: i32, diff: &'a ModifyPlaylistDiff, revision: i32) -> Self {
+        Self {
+            user_id,
+            kind,
+            diff,
+            revision,
+        }
+    }
+}
+
+impl<'a> Endpoint for ModifyPlaylistOptions<'a> {
+    type Options = [(&'static str, String); 2];
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
         format!(
             "users/{}/playlists/{}/change-relative",
             self.user_id, self.kind
         )
+        .into()
     }
-}
 
-impl ModifyPlaylistRequest {
-    pub fn new(user_id: i32, kind: i32) -> Self {
-        Self { user_id, kind }
+    fn options(&self) -> RequestOptions<Self::Options> {
+        let diff_str = serde_json::to_string(self.diff).unwrap_or_else(|_| String::from("{}"));
+
+        RequestOptions::default()
+            .with_form_data([("diff", diff_str), ("revision", self.revision.to_string())])
     }
 }
 
 impl YandexMusicClient {
-    /// Add or remove tracks from playlist.
+    /// Modify a playlist by adding or removing tracks using a diff object.
     ///
     /// ### Arguments
-    /// * `user_id` - The ID of the user.
-    /// * `kind` - The kind of the playlist.
-    /// * `diff` - The diff object of the playlist, indicating the changes.
-    /// * `revision` - The revision of the playlist.
+    /// * `options` - The request options containing user ID, playlist kind, diff, and revision.
     ///
     /// ### Returns
-    /// * [Playlist] - The updated playlist.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Playlist, ClientError>` - The updated playlist or an error if the request fails.
     pub async fn modify_playlist(
         &self,
-        user_id: i32,
-        kind: i32,
-        diff: ModifyPlaylistDiff,
-        revision: i32,
+        options: &ModifyPlaylistOptions<'_>,
     ) -> Result<Playlist, crate::ClientError> {
-        let response = self
-            .post_with_form_str(
-                &ModifyPlaylistRequest::new(user_id, kind).path(),
-                vec![
-                    ("diff", &serde_json::to_string(&diff)?),
-                    ("revision", &revision.to_string()),
-                ],
-            )
-            .await?;
-
-        Ok(serde_json::from_value::<Playlist>(response)?)
+        self.request::<Playlist, _>(options).await
     }
 }

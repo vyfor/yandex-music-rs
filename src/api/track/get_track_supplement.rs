@@ -1,41 +1,55 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::track_model::supplement::TrackSupplement,
+    api::Endpoint, client::request::RequestOptions, model::track::supplement::TrackSupplement,
     YandexMusicClient,
 };
 
-pub struct TrackSupplementRequest {
+/// Request for retrieving supplementary information about a track.
+pub struct GetTrackSupplementOptions {
+    /// The ID of the track to get supplementary information for.
     pub track_id: String,
 }
 
-impl TrackSupplementRequest {
-    pub fn new(track_id: String) -> Self {
-        Self { track_id }
+impl GetTrackSupplementOptions {
+    /// Create a new request to get supplementary information for a track.
+    pub fn new(track_id: impl Into<String>) -> Self {
+        Self {
+            track_id: track_id.into(),
+        }
     }
 }
 
-impl RequestPath for TrackSupplementRequest {
-    fn path(&self) -> String {
-        format!("tracks/{}/supplement", self.track_id)
+impl Endpoint for GetTrackSupplementOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("tracks/{}/supplement", self.track_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get additional information about the track.
+    /// Retrieve supplementary information about a track.
+    ///
+    /// This includes additional metadata like lyrics, videos, and other related content
+    /// that isn't part of the basic track information.
     ///
     /// ### Arguments
-    /// * `track_id` - The ID of the track.
+    /// * `options` - The request options containing the track ID.
     ///
     /// ### Returns
-    /// * [TrackSupplement] - The track supplement.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<TrackSupplement, ClientError>` - The track supplement information or an error if the request fails.
     pub async fn get_track_supplement(
         &self,
-        track_id: String,
+        options: &GetTrackSupplementOptions,
     ) -> Result<TrackSupplement, crate::ClientError> {
-        let response = self
-            .get(&TrackSupplementRequest::new(track_id).path())
-            .await?;
-
-        Ok(serde_json::from_value::<TrackSupplement>(response)?)
+        self.request::<TrackSupplement, _>(options).await
     }
 }

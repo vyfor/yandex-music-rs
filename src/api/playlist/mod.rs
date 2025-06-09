@@ -5,5 +5,6 @@ pub mod get_all_playlists;
 pub mod get_playlist;
 pub mod get_playlists;
 pub mod get_recommendations;
+pub mod get_tagged_playlists;
 pub mod modify_playlist;
 pub mod rename_playlist;

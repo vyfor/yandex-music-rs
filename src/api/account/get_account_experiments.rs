@@ -1,26 +1,37 @@
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap};
 
-use crate::{api::RequestPath, YandexMusicClient};
+use reqwest::Method;
 
-pub struct AccountExperimentsRequest {}
+use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
 
-impl RequestPath for AccountExperimentsRequest {
-    fn path(&self) -> String {
-        String::from("account/experiments")
+#[derive(Default)]
+pub struct GetAccountExperimentsOptions;
+
+impl Endpoint for GetAccountExperimentsOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "account/experiments".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
     /// Returns a list of user's account experiments.
     ///
+    /// ### Arguments
+    /// * `options` - The request options containing the user ID.
+    ///
     /// ### Returns
-    /// * [HashMap<String, String>] - A list of user's account experiments.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<HashMap<String, String>, ClientError>` - The list of user's account experiments or an error if the request fails.
     pub async fn get_account_experiments(
         &self,
     ) -> Result<HashMap<String, String>, crate::ClientError> {
-        let response = self.get(&AccountExperimentsRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<HashMap<String, String>>(response)?)
+        self.request::<HashMap<String, String>, _>(&GetAccountExperimentsOptions)
+            .await
     }
 }

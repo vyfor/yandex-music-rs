@@ -1,62 +1,80 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::rotor_model::station::StationTracks,
+    api::Endpoint, client::request::RequestOptions, model::rotor::station::StationTracks,
     YandexMusicClient,
 };
 
-pub struct StationTracksRequest {
+/// Request for retrieving tracks from a specific radio station.
+pub struct GetStationTracksOptions {
+    /// The ID of the station to get tracks from.
     pub station_id: String,
+    /// Whether to include additional settings in the response.
     pub settings2: bool,
-    pub queue: String,
+    /// Queue identifier for pagination or continuation.
+    pub queue: Option<String>,
 }
 
-impl StationTracksRequest {
-    pub fn new(station_id: String) -> Self {
+impl GetStationTracksOptions {
+    /// Create a new request to get tracks from a station.
+    pub fn new(station_id: impl Into<String>) -> Self {
         Self {
-            station_id,
-            settings2: true,
-            queue: String::new(),
+            station_id: station_id.into(),
+            settings2: false,
+            queue: None,
         }
+    }
+
+    /// Set whether to include additional settings in the response.
+    pub fn settings2(mut self, settings: bool) -> Self {
+        self.settings2 = settings;
+        self
+    }
+
+    /// Set the queue identifier for pagination or continuation.
+    pub fn queue(mut self, queue: impl Into<String>) -> Self {
+        self.queue = Some(queue.into());
+        self
     }
 }
 
-impl RequestPath for StationTracksRequest {
-    fn path(&self) -> String {
-        format!("rotor/station/{}/tracks", self.station_id)
+impl Endpoint for GetStationTracksOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        let mut path = format!("rotor/station/{}/tracks", self.station_id);
+
+        if self.settings2 {
+            path.push_str("?settings2=true");
+        }
+
+        if let Some(queue) = &self.queue {
+            path.push_str(&format!("&queue={queue}"));
+        }
+
+        path.into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get station tracks.
-    /// 
+    /// Retrieve tracks from a specific radio station.
+    ///
     /// ### Arguments
-    /// * `station_id` - The ID of the station.
-    /// 
+    /// * `options` - The request options containing station ID and query parameters.
+    ///
     /// ### Returns
-    /// * [StationTracks] - The station tracks.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<StationTracks, ClientError>` - The station tracks or an error if the request fails.
     pub async fn get_station_tracks(
         &self,
-        station_id: String,
+        options: &GetStationTracksOptions,
     ) -> Result<StationTracks, crate::ClientError> {
-        self.get_station_tracks_with(&StationTracksRequest::new(station_id))
-            .await
-    }
-
-    /// Get station tracks with optional parameters.
-    /// 
-    /// ### Arguments
-    /// * `request` - The request object.
-    /// 
-    /// ### Returns
-    /// * [StationTracks] - The station tracks.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_station_tracks_with(
-        &self,
-        request: &StationTracksRequest,
-    ) -> Result<StationTracks, crate::ClientError> {
-        let response = self.get(&request.path()).await?;
-
-        Ok(serde_json::from_value::<StationTracks>(response)?)
+        self.request::<StationTracks, _>(options).await
     }
 }

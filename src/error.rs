@@ -6,19 +6,23 @@ use serde_json::Value;
 /// A generic client error.
 #[derive(Debug)]
 pub enum ClientError {
+    /// Error during HTTP request
     RequestError {
         error: reqwest::Error,
     },
+    /// Error parsing JSON response
     JsonParseError {
         error: serde_json::Error,
     },
+    /// Error parsing XML response
     XmlParseError {
         error: serde_xml_rs::Error,
     },
+    /// Invalid header value
     InvalidHeader {
         error: reqwest::header::InvalidHeaderValue,
     },
-    /// An error returned by the Yandex Music API.
+    /// An error returned by the Yandex Music API
     YandexMusicError {
         error: YandexMusicError,
     },

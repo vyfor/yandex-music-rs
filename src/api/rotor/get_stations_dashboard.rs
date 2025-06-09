@@ -1,22 +1,35 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::rotor_model::dashboard::StationsDashboard,
+    api::Endpoint, client::request::RequestOptions, model::rotor::dashboard::StationsDashboard,
     YandexMusicClient,
 };
 
-pub struct StationsDashboardRequest {}
+#[derive(Default)]
+pub struct GetStationsDashboardOptions;
 
-impl RequestPath for StationsDashboardRequest {
-    fn path(&self) -> String {
-        String::from("/rotor/stations/dashboard")
+impl Endpoint for GetStationsDashboardOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "rotor/stations/dashboard".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    pub async fn get_stations_dashboard(
-        &self,
-    ) -> Result<StationsDashboard, crate::ClientError> {
-        let response = self.get(&StationsDashboardRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<StationsDashboard>(response)?)
+    /// Retrieve the radio stations dashboard with recommended stations.
+    ///
+    /// ### Returns
+    /// * `Result<StationsDashboard, ClientError>` - The stations dashboard or an error if the request fails.
+    pub async fn get_stations_dashboard(&self) -> Result<StationsDashboard, crate::ClientError> {
+        self.request::<StationsDashboard, _>(&GetStationsDashboardOptions)
+            .await
     }
 }

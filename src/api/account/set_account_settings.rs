@@ -1,14 +1,33 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+use serde_json::Value;
+
 use crate::{
-    api::RequestPath,
-    model::account_model::account_settings::AccountSettings,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions,
+    model::account::account_settings::AccountSettings, YandexMusicClient,
 };
 
-pub struct SetAccountSettingsRequest {}
+pub struct SetAccountSettingsOptions {
+    pub data: AccountSettings,
+}
 
-impl RequestPath for SetAccountSettingsRequest {
-    fn path(&self) -> String {
-        String::from("account/settings")
+impl SetAccountSettingsOptions {
+    pub fn new(data: AccountSettings) -> Self {
+        Self { data }
+    }
+}
+
+impl Endpoint for SetAccountSettingsOptions {
+    type Options = Value;
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        "account/settings".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default().with_json_data(serde_json::to_value(&self.data).unwrap())
     }
 }
 
@@ -16,22 +35,14 @@ impl YandexMusicClient {
     /// Sets user's account settings.
     ///
     /// ### Arguments
-    /// * `data` - The account settings to be set.
+    /// * `options` - The request options containing the account settings to be set.
     ///
     /// ### Returns
-    /// * [AccountSettings] - The user's updated account settings.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<AccountSettings, ClientError>` - The user's updated account settings or an error if the request fails.
     pub async fn set_account_settings(
         &self,
-        data: AccountSettings,
+        options: &SetAccountSettingsOptions,
     ) -> Result<AccountSettings, crate::ClientError> {
-        let response = self
-            .post_with_json(
-                &SetAccountSettingsRequest {}.path(),
-                serde_json::to_value(data)?,
-            )
-            .await?;
-
-        Ok(serde_json::from_value::<AccountSettings>(response)?)
+        self.request::<AccountSettings, _>(options).await
     }
 }

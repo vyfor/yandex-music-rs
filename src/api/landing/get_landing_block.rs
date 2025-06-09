@@ -1,50 +1,57 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::landing_model::landing_item::{LandingBlockType, LandingItem},
+    api::Endpoint,
+    client::request::RequestOptions,
+    model::landing::landing_item::{LandingBlockType, LandingItem},
     YandexMusicClient,
 };
 
-pub struct LandingBlockRequest {
-    block: LandingBlockType,
+/// Request for getting a specific landing block.
+pub struct GetLandingBlockOptions {
+    /// The type of landing block to retrieve.
+    pub block: LandingBlockType,
 }
 
-impl LandingBlockRequest {
+impl GetLandingBlockOptions {
+    /// Create a new request for getting a specific landing block.
     pub fn new(block: LandingBlockType) -> Self {
         Self { block }
     }
 }
 
-impl RequestPath for LandingBlockRequest {
-    fn path(&self) -> String {
+impl Endpoint for GetLandingBlockOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
         match &self.block {
-            LandingBlockType::Chart(chart_type) => {
-                if let Some(chart_type) = chart_type {
-                    format!("landing3/chart/{chart_type}")
-                } else {
-                    "landing3/chart".to_string()
-                }
+            LandingBlockType::Chart(Some(chart_type)) => {
+                format!("landing3/chart/{chart_type}").into()
             }
-            _ => format!("landing3/{}", self.block),
+            _ => format!("landing3/{}", self.block).into(),
         }
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get landing block.
+    /// Retrieve a specific landing block by its type.
     ///
     /// ### Arguments
-    /// * `block` - The block type.
+    /// * `options` - The request options containing the block type to retrieve.
     ///
     /// ### Returns
-    /// * [LandingItem] - The landing block item.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<LandingItem, ClientError>` - The landing block data or an error if the request fails.
     pub async fn get_landing_block(
         &self,
-        block: LandingBlockType,
+        options: &GetLandingBlockOptions,
     ) -> Result<LandingItem, crate::ClientError> {
-        let response =
-            self.get(&LandingBlockRequest::new(block).path()).await?;
-
-        Ok(serde_json::from_value::<LandingItem>(response)?)
+        self.request::<LandingItem, _>(options).await
     }
 }

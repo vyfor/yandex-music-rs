@@ -1,21 +1,30 @@
 use crate::{
-    api::RequestPath, model::search_model::suggestion::SearchSuggestion,
+    api::Endpoint, client::request::RequestOptions, model::search::suggestion::SearchSuggestion,
     YandexMusicClient,
 };
+use reqwest::Method;
+use std::borrow::Cow;
 
-pub struct SearchSuggestionRequest {
+pub struct GetSearchSuggestionOptions {
     pub part: String,
 }
 
-impl SearchSuggestionRequest {
-    pub fn new(part: String) -> Self {
-        Self { part }
+impl GetSearchSuggestionOptions {
+    pub fn new(part: impl Into<String>) -> Self {
+        Self { part: part.into() }
     }
 }
 
-impl RequestPath for SearchSuggestionRequest {
-    fn path(&self) -> String {
-        format!("search/suggest?part={}", self.part)
+impl Endpoint for GetSearchSuggestionOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("search/suggest?part={}", self.part).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
@@ -23,18 +32,14 @@ impl YandexMusicClient {
     /// Get search suggestion.
     ///
     /// ### Arguments
-    /// * `text` - The text to get the search suggestion.
+    /// * `options` - The request options containing the search text.
     ///
     /// ### Returns
-    /// * [SearchSuggestion] - The search suggestion for the text.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn search_suggestion(
+    /// * `Result<SearchSuggestion, ClientError>` - The search suggestion or an error if the request fails.
+    pub async fn get_search_suggestion(
         &self,
-        text: String,
+        options: &GetSearchSuggestionOptions,
     ) -> Result<SearchSuggestion, crate::ClientError> {
-        let response =
-            self.get(&SearchSuggestionRequest::new(text).path()).await?;
-
-        Ok(serde_json::from_value::<SearchSuggestion>(response)?)
+        self.request::<SearchSuggestion, _>(options).await
     }
 }

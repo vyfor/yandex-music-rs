@@ -1,18 +1,42 @@
-use crate::{api::RequestPath, YandexMusicClient};
+use reqwest::Method;
+use serde_json::Value;
+use std::borrow::Cow;
 
-pub struct AddLikedTracksRequest {
+use crate::{
+    api::Endpoint,
+    client::request::RequestOptions,
+    error::{ClientError, YandexMusicError},
+    YandexMusicClient,
+};
+
+pub struct AddLikedTracksOptions {
     pub user_id: i32,
+    pub track_ids: Vec<String>,
 }
 
-impl AddLikedTracksRequest {
-    pub fn new(user_id: i32) -> Self {
-        Self { user_id }
+impl AddLikedTracksOptions {
+    pub fn new<S, I>(user_id: i32, track_ids: I) -> Self
+    where
+        S: Into<String>,
+        I: IntoIterator<Item = S>,
+    {
+        Self {
+            user_id,
+            track_ids: track_ids.into_iter().map(|s| s.into()).collect(),
+        }
     }
 }
 
-impl RequestPath for AddLikedTracksRequest {
-    fn path(&self) -> String {
-        format!("users/{}/likes/tracks/add-multiple", self.user_id)
+impl Endpoint for AddLikedTracksOptions {
+    type Options = [(&'static str, String); 1];
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("users/{}/likes/tracks/add-multiple", self.user_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default().with_form_data([("track-ids", self.track_ids.join(","))])
     }
 }
 
@@ -20,29 +44,24 @@ impl YandexMusicClient {
     /// Add tracks to the list of liked tracks.
     ///
     /// ### Arguments
-    /// * `user_id` - The ID of the user.
-    /// * `track_ids` - An array of track IDs to add.
+    /// * `options` - The request options containing the user ID and track IDs.
     ///
     /// ### Returns
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<i64, ClientError>` - The revision number of the liked tracks list or an error if the request fails.
     pub async fn add_liked_tracks(
         &self,
-        user_id: i32,
-        track_ids: &[String],
-    ) -> Result<i32, crate::ClientError> {
-        let mut response = self
-            .post_with_form_str(
-                &AddLikedTracksRequest::new(user_id).path(),
-                vec![(
-                    "track-ids",
-                    &track_ids
-                        .iter()
-                        .map(|id| id.to_string() + ",")
-                        .collect::<String>(),
-                )],
-            )
-            .await?;
+        options: &AddLikedTracksOptions,
+    ) -> Result<i64, crate::ClientError> {
+        let mut response = self.request::<Value, _>(options).await?;
 
-        Ok(serde_json::from_value::<i32>(response["revision"].take())?)
+        response["revision"]
+            .take()
+            .as_i64()
+            .ok_or(ClientError::YandexMusicError {
+                error: YandexMusicError {
+                    name: "InvalidValue".to_string(),
+                    message: Some("Revision is not an integer".to_string()),
+                },
+            })
     }
 }

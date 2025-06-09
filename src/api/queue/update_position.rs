@@ -1,75 +1,74 @@
-use reqwest::header::{HeaderMap, HeaderValue};
+use std::borrow::Cow;
+
+use reqwest::{header::HeaderValue, Method};
 
 use crate::{
-    api::RequestPath,
-    model::queue_model::status::QueueStatus,
+    api::Endpoint, client::request::RequestOptions, model::queue::status::QueueStatus,
     YandexMusicClient,
 };
 
-pub struct UpdateQueuePositionRequest {
+/// Request for updating the current track position in a queue.
+pub struct UpdateQueuePositionOptions {
+    /// The ID of the queue to update.
     pub queue_id: String,
+    /// The current track index in the queue.
     pub current_index: String,
+    /// Whether the update is triggered by user interaction.
     pub is_interactive: bool,
+    /// The device ID in the format: `os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=unknown; device_id=unknown; uuid=unknown`
+    pub device_id: String,
 }
 
-impl UpdateQueuePositionRequest {
+impl UpdateQueuePositionOptions {
+    /// Create a new request to update the queue position.
     pub fn new(
-        queue_id: String,
-        current_index: String,
+        queue_id: impl Into<String>,
+        current_index: impl Into<String>,
         is_interactive: bool,
+        device_id: impl Into<String>,
     ) -> Self {
         Self {
-            queue_id,
-            current_index,
+            queue_id: queue_id.into(),
+            current_index: current_index.into(),
             is_interactive,
+            device_id: device_id.into(),
         }
     }
 }
 
-impl RequestPath for UpdateQueuePositionRequest {
-    fn path(&self) -> String {
+impl Endpoint for UpdateQueuePositionOptions {
+    type Options = ();
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
         format!(
             "queues/{}/update-position?currentIndex={}&isInteractive={}",
             self.queue_id, self.current_index, self.is_interactive
         )
+        .into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        let mut headers = reqwest::header::HeaderMap::new();
+        if let Ok(header_value) = HeaderValue::from_str(&self.device_id) {
+            headers.insert("X-Yandex-Music-Device", header_value);
+        }
+        RequestOptions::default().with_headers(headers)
     }
 }
 
 impl YandexMusicClient {
-    /// Update track position in the queue.
+    /// Update the current track position in a queue.
     ///
     /// ### Arguments
-    /// * `device_id` - The ID of the device following the format: `os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=unknown; device_id=unknown; uuid=unknown`.
-    /// * `queue_id` - The ID of the queue.
-    /// * `current_index` - The current index of the track in the queue.
-    /// * `is_interactive` - Whether the request is interactive.
+    /// * `options` - The request options containing queue ID, current index, interaction flag, and device ID.
     ///
     /// ### Returns
-    /// * [QueueStatus] - The queue status.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<QueueStatus, ClientError>` - The updated queue status or an error if the request fails.
     pub async fn update_queue_position(
         &self,
-        device_id: &str,
-        queue_id: String,
-        current_index: String,
-        is_interactive: bool,
+        options: &UpdateQueuePositionOptions,
     ) -> Result<QueueStatus, crate::ClientError> {
-        let mut headers = HeaderMap::new();
-        headers
-            .insert("X-Yandex-Music-Device", HeaderValue::from_str(device_id)?);
-
-        let response = self
-            .post_with_headers(
-                &UpdateQueuePositionRequest::new(
-                    queue_id,
-                    current_index,
-                    is_interactive,
-                )
-                .path(),
-                headers,
-            )
-            .await?;
-
-        Ok(serde_json::from_value::<QueueStatus>(response)?)
+        self.request::<QueueStatus, _>(options).await
     }
 }

@@ -1,22 +1,33 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::artist_model::artist::ArtistInfo,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::artist::ArtistInfo, YandexMusicClient,
 };
 
-pub struct ArtistRequest {
-    pub artist_id: i32,
+pub struct GetArtistOptions {
+    pub artist_id: String,
 }
 
-impl ArtistRequest {
-    pub fn new(artist_id: i32) -> Self {
-        Self { artist_id }
+impl GetArtistOptions {
+    pub fn new(artist_id: impl Into<String>) -> Self {
+        Self {
+            artist_id: artist_id.into(),
+        }
     }
 }
 
-impl RequestPath for ArtistRequest {
-    fn path(&self) -> String {
-        format!("artists/{}", self.artist_id)
+impl Endpoint for GetArtistOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("artists/{}", self.artist_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
@@ -24,18 +35,14 @@ impl YandexMusicClient {
     /// Get artist info.
     ///
     /// ### Arguments
-    /// * `artist_id` - The ID of the artist.
+    /// * `options` - The request options containing the artist ID.
     ///
     /// ### Returns
-    /// * [ArtistInfo] - The artist info.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<ArtistInfo, ClientError>` - The artist info or an error if the request fails.
     pub async fn get_artist(
         &self,
-        artist_id: i32,
+        options: &GetArtistOptions,
     ) -> Result<ArtistInfo, crate::ClientError> {
-        let response =
-            self.get(&ArtistRequest::new(artist_id).path()).await?;
-
-        Ok(serde_json::from_value::<ArtistInfo>(response)?)
+        self.request::<ArtistInfo, _>(options).await
     }
 }

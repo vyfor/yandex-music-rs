@@ -1,7 +1,10 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
 use serde::Deserialize;
 use serde_json::Value;
 
-use crate::error::YandexMusicError;
+use crate::{client::request::RequestOptions, error::YandexMusicError};
 
 pub mod account;
 pub mod album;
@@ -12,12 +15,14 @@ pub mod playlist;
 pub mod queue;
 pub mod rotor;
 pub mod search;
-pub mod tag;
 pub mod track;
 pub mod utils;
 
-pub trait RequestPath {
-    fn path(&self) -> String;
+pub trait Endpoint {
+    type Options;
+    const METHOD: Method;
+    fn path(&self) -> Cow<'static, str>;
+    fn options(&self) -> RequestOptions<Self::Options>;
 }
 
 #[derive(Debug, Deserialize)]
@@ -29,9 +34,7 @@ pub struct InvocationInfo {
     pub req_id: String,
 }
 
-fn deserialize_exec_duration_millis<'de, D>(
-    deserializer: D,
-) -> Result<Option<i64>, D::Error>
+fn deserialize_exec_duration_millis<'de, D>(deserializer: D) -> Result<Option<i64>, D::Error>
 where
     D: serde::Deserializer<'de>,
 {

@@ -1,29 +1,41 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::common_model::catalogue::Catalogue,
+    api::Endpoint, client::request::RequestOptions, model::common::catalogue::Catalogue,
     YandexMusicClient,
 };
 
-pub struct NonMusicCatalogueRequest {}
+/// Request for getting the non-music catalogue.
+pub struct GetNonMusicCatalogueOptions;
 
-impl RequestPath for NonMusicCatalogueRequest {
-    fn path(&self) -> String {
-        String::from("non-music/catalogue")
+impl Default for GetNonMusicCatalogueOptions {
+    fn default() -> Self {
+        Self
+    }
+}
+
+impl Endpoint for GetNonMusicCatalogueOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "non-music/catalogue".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get non-music catalogue.
+    /// Get the non-music catalogue.
     ///
     /// ### Returns
-    /// * [Catalogue] - The non-music catalogue.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_non_music_catalogue(
-        &self,
-    ) -> Result<Catalogue, crate::ClientError> {
-        let response =
-            self.get(&NonMusicCatalogueRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<Catalogue>(response)?)
+    /// * `Result<Catalogue, ClientError>` - The non-music catalogue or an error if the request fails.
+    pub async fn get_non_music_catalogue(&self) -> Result<Catalogue, crate::ClientError> {
+        self.request::<Catalogue, _>(&GetNonMusicCatalogueOptions)
+            .await
     }
 }

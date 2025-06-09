@@ -1,41 +1,48 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::queue_model::queue::Queue,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::queue::Queue, YandexMusicClient,
 };
 
-pub struct QueueRequest {
+/// Request for getting a queue by its ID.
+pub struct GetQueueOptions {
+    /// The ID of the queue to retrieve.
     pub queue_id: String,
 }
 
-impl QueueRequest {
-    pub fn new(queue_id: String) -> Self {
-        Self { queue_id }
+impl GetQueueOptions {
+    /// Create a new request to get a queue by its ID.
+    pub fn new(queue_id: impl Into<String>) -> Self {
+        Self {
+            queue_id: queue_id.into(),
+        }
     }
 }
 
-impl RequestPath for QueueRequest {
-    fn path(&self) -> String {
-        format!("queues/{}", self.queue_id)
+impl Endpoint for GetQueueOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("queues/{}", self.queue_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get queue.
-    /// 
+    /// Retrieve a queue by its ID.
+    ///
     /// ### Arguments
-    /// * `queue_id` - The ID of the queue.
-    /// 
+    /// * `options` - The request options containing the queue ID.
+    ///
     /// ### Returns
-    /// * [Queue] - The queue.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_queue(
-        &self,
-        queue_id: String,
-    ) -> Result<Queue, crate::ClientError> {
-        let response =
-            self.get(&QueueRequest::new(queue_id).path()).await?;
-
-        Ok(serde_json::from_value::<Queue>(response)?)
+    /// * `Result<Queue, ClientError>` - The queue or an error if the request fails.
+    pub async fn get_queue(&self, options: &GetQueueOptions) -> Result<Queue, crate::ClientError> {
+        self.request::<Queue, _>(options).await
     }
 }

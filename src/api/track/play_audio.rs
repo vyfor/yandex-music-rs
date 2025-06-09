@@ -1,69 +1,103 @@
-use crate::{api::RequestPath, YandexMusicClient};
+use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
+use reqwest::Method;
+use std::borrow::Cow;
 
-pub struct PlayAudioRequest {}
+#[derive(Default)]
+pub struct PlayAudioOptions {
+    pub track_id: Option<String>,
+    pub album_id: Option<String>,
+    pub playlist_id: Option<String>,
+    pub play_id: Option<String>,
+    pub from: String,
+    pub from_cache: Option<bool>,
+    pub uid: Option<i32>,
+    pub track_length_seconds: Option<i32>,
+    pub total_played_seconds: Option<i32>,
+    pub end_position_seconds: Option<i32>,
+    pub timestamp: Option<String>,
+    pub client_now: Option<String>,
+}
 
-impl RequestPath for PlayAudioRequest {
-    fn path(&self) -> String {
-        String::from("play-audio")
+impl PlayAudioOptions {
+    pub fn new(from: impl Into<String>) -> Self {
+        Self {
+            from: from.into(),
+            ..Default::default()
+        }
+    }
+
+    pub fn track_id(mut self, track_id: impl Into<String>) -> Self {
+        self.track_id = Some(track_id.into());
+        self
+    }
+
+    pub fn album_id(mut self, album_id: impl Into<String>) -> Self {
+        self.album_id = Some(album_id.into());
+        self
+    }
+
+    pub fn playlist_id(mut self, playlist_id: impl Into<String>) -> Self {
+        self.playlist_id = Some(playlist_id.into());
+        self
+    }
+
+    pub fn play_id(mut self, play_id: impl Into<String>) -> Self {
+        self.play_id = Some(play_id.into());
+        self
+    }
+
+    pub fn from_cache(mut self, from_cache: bool) -> Self {
+        self.from_cache = Some(from_cache);
+        self
+    }
+
+    pub fn uid(mut self, uid: i32) -> Self {
+        self.uid = Some(uid);
+        self
+    }
+
+    pub fn track_length_seconds(mut self, track_length_seconds: i32) -> Self {
+        self.track_length_seconds = Some(track_length_seconds);
+        self
+    }
+
+    pub fn total_played_seconds(mut self, total_played_seconds: i32) -> Self {
+        self.total_played_seconds = Some(total_played_seconds);
+        self
+    }
+
+    pub fn end_position_seconds(mut self, end_position_seconds: i32) -> Self {
+        self.end_position_seconds = Some(end_position_seconds);
+        self
+    }
+
+    pub fn timestamp(mut self, timestamp: impl Into<String>) -> Self {
+        self.timestamp = Some(timestamp.into());
+        self
+    }
+
+    pub fn client_now(mut self, client_now: impl Into<String>) -> Self {
+        self.client_now = Some(client_now.into());
+        self
+    }
+}
+
+impl Endpoint for PlayAudioOptions {
+    type Options = ();
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        "play-audio".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
     /// Send sending the current state of the track being listened to.
-    ///
-    /// ### Arguments
-    /// * `track_id` - The ID of the track.
-    /// * `album_id` - The ID of the album.
-    /// * `playlist_id` - The ID of the playlist.
-    /// * `play_id` - The ID of the play.
-    /// * `from` - The source of the play.
-    /// * `from_cache` - Whether the track is played from the cache.
-    /// * `uid` - The ID of the user.
-    /// * `track_length_seconds` - The length of the track in seconds.
-    /// * `total_played_seconds` - The total played time in seconds.
-    /// * `end_position_seconds` - The end position in seconds.
-    /// * `timestamp` - The timestamp of the play.
-    /// * `client_now` - The current date time in ISO format.
-    ///
-    /// ### Returns
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    #[allow(clippy::too_many_arguments)]
-    pub async fn play_audio(
-        &self,
-        track_id: String,
-        album_id: String,
-        playlist_id: Option<String>,
-        play_id: String,
-        from: String,
-        from_cache: bool,
-        uid: Option<i32>,
-        track_length_seconds: i32,
-        total_played_seconds: i32,
-        end_position_seconds: i32,
-        timestamp: String,
-        client_now: String,
-    ) -> Result<(), crate::ClientError> {
-        let mut form: Vec<(&str, String)> = Vec::with_capacity(12);
-        form.push(("track_id", track_id));
-        form.push(("album_id", album_id));
-        form.push(("play_id", play_id));
-        form.push(("from", from));
-        form.push(("from_cache", from_cache.to_string()));
-        form.push(("track_length_seconds", track_length_seconds.to_string()));
-        form.push(("total_played_seconds", total_played_seconds.to_string()));
-        form.push(("end_position_seconds", end_position_seconds.to_string()));
-        form.push(("timestamp", timestamp));
-        form.push(("client_now", client_now));
-        if let Some(playlist_id) = playlist_id {
-            form.push(("playlist_id", playlist_id));
-        }
-        if let Some(uid) = uid {
-            form.push(("uid", uid.to_string()));
-        }
-
-        self.post_with_form(&PlayAudioRequest {}.path(), form)
-            .await?;
-
-        Ok(())
+    pub async fn play_audio(&self, options: &PlayAudioOptions) -> Result<(), crate::ClientError> {
+        self.request::<(), _>(options).await
     }
 }

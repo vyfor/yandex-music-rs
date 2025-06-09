@@ -1,22 +1,30 @@
-use crate::{
-    api::RequestPath,
-    model::artist_model::artist::ArtistTrackIds,
-    YandexMusicClient,
-};
+use crate::client::request::RequestOptions;
+use crate::{api::Endpoint, model::artist::ArtistTrackIds, YandexMusicClient};
+use reqwest::Method;
+use std::borrow::Cow;
 
-pub struct ArtistTrackIdsRequest {
-    pub artist_id: i32,
+pub struct ArtistTrackIdsOptions {
+    pub artist_id: String,
 }
 
-impl ArtistTrackIdsRequest {
-    pub fn new(artist_id: i32) -> Self {
-        Self { artist_id }
+impl ArtistTrackIdsOptions {
+    pub fn new(artist_id: impl Into<String>) -> Self {
+        Self {
+            artist_id: artist_id.into(),
+        }
     }
 }
 
-impl RequestPath for ArtistTrackIdsRequest {
-    fn path(&self) -> String {
-        format!("artists/{}/track-ids-by-rating", self.artist_id)
+impl Endpoint for ArtistTrackIdsOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("artists/{}/track-ids-by-rating", self.artist_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
@@ -24,19 +32,14 @@ impl YandexMusicClient {
     /// Get artist track ids.
     ///
     /// ### Arguments
-    /// * `artist_id` - The ID of the artist.
+    /// * `options` - The request options containing the artist ID.
     ///
     /// ### Returns
-    /// * [ArtistTrackIds] - The artist track ids.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<ArtistTrackIds, ClientError>` - The artist track ids or an error if the request fails.
     pub async fn get_artist_track_ids(
         &self,
-        artist_id: i32,
+        options: &ArtistTrackIdsOptions,
     ) -> Result<ArtistTrackIds, crate::ClientError> {
-        let response = self
-            .get(&ArtistTrackIdsRequest::new(artist_id).path())
-            .await?;
-
-        Ok(serde_json::from_value::<ArtistTrackIds>(response)?)
+        self.request::<ArtistTrackIds, _>(options).await
     }
 }
