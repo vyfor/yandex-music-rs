@@ -1,14 +1,25 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::account_model::account_settings::AccountSettings,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions,
+    model::account::account_settings::AccountSettings, YandexMusicClient,
 };
 
-pub struct AccountSettingsRequest {}
+#[derive(Default)]
+pub struct GetAccountSettingsOptions;
 
-impl RequestPath for AccountSettingsRequest {
-    fn path(&self) -> String {
-        String::from("account/settings")
+impl Endpoint for GetAccountSettingsOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "account/settings".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
@@ -16,14 +27,9 @@ impl YandexMusicClient {
     /// Returns user's account settings.
     ///
     /// ### Returns
-    /// * [AccountSettings] - The user's account settings.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_account_settings(
-        &self,
-    ) -> Result<AccountSettings, crate::ClientError> {
-        let response =
-            self.get(&AccountSettingsRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<AccountSettings>(response)?)
+    /// * `Result<AccountSettings, ClientError>` - The user's account settings or an error if the request fails.
+    pub async fn get_account_settings(&self) -> Result<AccountSettings, crate::ClientError> {
+        self.request::<AccountSettings, _>(&GetAccountSettingsOptions)
+            .await
     }
 }

@@ -1,40 +1,56 @@
-use reqwest::header::{HeaderMap, HeaderValue};
+use std::borrow::Cow;
+
+use reqwest::{header::HeaderValue, Method};
 
 use crate::{
-    api::RequestPath,
-    model::queue_model::queue_item::QueueItem,
+    api::Endpoint, client::request::RequestOptions, model::queue::queue_item::QueueItem,
     YandexMusicClient,
 };
 
-pub struct QueuesRequest {}
+/// Request for retrieving all available queues.
+pub struct GetQueuesOptions {
+    /// The device ID in the format: `os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=unknown; device_id=unknown; uuid=unknown`
+    pub device_id: String,
+}
 
-impl RequestPath for QueuesRequest {
-    fn path(&self) -> String {
-        String::from("queues")
+impl GetQueuesOptions {
+    /// Create a new request to get all available queues.
+    pub fn new(device_id: impl Into<String>) -> Self {
+        Self {
+            device_id: device_id.into(),
+        }
+    }
+}
+
+impl Endpoint for GetQueuesOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "queues".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        let mut headers = reqwest::header::HeaderMap::new();
+        if let Ok(header_value) = HeaderValue::from_str(&self.device_id) {
+            headers.insert("X-Yandex-Music-Device", header_value);
+        }
+        RequestOptions::default().with_headers(headers)
     }
 }
 
 impl YandexMusicClient {
-    /// Get queues.
+    /// Retrieve all available queues for the specified device.
     ///
     /// ### Arguments
-    /// * `device_id` - The ID of the device following the format: `os=unknown; os_version=unknown; manufacturer=unknown; model=unknown; clid=unknown; device_id=unknown; uuid=unknown`.
+    /// * `options` - The request options containing the device ID.
     ///
     /// ### Returns
-    /// * [`Vec<QueueItem>`] - The queues.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Vec<QueueItem>, ClientError>` - A list of queue items or an error if the request fails.
     pub async fn get_queues(
         &self,
-        device_id: &str,
+        options: &GetQueuesOptions,
     ) -> Result<Vec<QueueItem>, crate::ClientError> {
-        let mut headers = HeaderMap::new();
-        headers
-            .insert("X-Yandex-Music-Device", HeaderValue::from_str(device_id)?);
-
-        let response = self
-            .get_with_headers(&QueuesRequest {}.path(), headers)
-            .await?;
-
-        Ok(serde_json::from_value::<Vec<QueueItem>>(response)?)
+        self.request::<Vec<QueueItem>, _>(options).await
     }
 }

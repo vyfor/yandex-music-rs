@@ -1,19 +1,31 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::{utils::create_sign, RequestPath},
-    model::info_model::lyrics::{LyricsFormat, TrackLyrics},
+    api::{utils::create_sign, Endpoint},
+    client::request::RequestOptions,
+    model::info::lyrics::{LyricsFormat, TrackLyrics},
     YandexMusicClient,
 };
 
-pub struct LyricsRequest {
+/// Request for retrieving lyrics for a track.
+pub struct GetLyricsOptions {
+    /// The ID of the track to get lyrics for.
     pub track_id: String,
+    /// The desired format for the lyrics.
     pub format: LyricsFormat,
+    /// Timestamp for the request signature.
     pub timestamp: u64,
+    /// Cryptographic signature for the request.
     pub sign: String,
 }
 
-impl LyricsRequest {
-    pub fn new(track_id: String, format: LyricsFormat) -> Self {
-        let (timestamp, sign) = create_sign(track_id.clone());
+impl GetLyricsOptions {
+    /// Create a new request to get lyrics for a track.
+    pub fn new(track_id: impl Into<String>, format: LyricsFormat) -> Self {
+        let track_id = track_id.into();
+        let (timestamp, sign) = create_sign(track_id.as_str());
 
         Self {
             track_id,
@@ -24,39 +36,36 @@ impl LyricsRequest {
     }
 }
 
-impl RequestPath for LyricsRequest {
-    fn path(&self) -> String {
-        let base_path = format!(
-            "tracks/{}/lyrics?format={}&timeStamp={}&sign={}",
-            self.track_id,
-            self.format,
-            self.timestamp,
-            self.sign.replace('+', "%2B")
-        );
+impl Endpoint for GetLyricsOptions {
+    type Options = [(&'static str, String); 3];
+    const METHOD: Method = Method::GET;
 
-        base_path
+    fn path(&self) -> Cow<'static, str> {
+        format!("tracks/{}/lyrics", self.track_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        let sign = self.sign.replace('+', "%2B");
+        RequestOptions::default().with_form_data([
+            ("format", self.format.to_string()),
+            ("timeStamp", self.timestamp.to_string()),
+            ("sign", sign),
+        ])
     }
 }
 
 impl YandexMusicClient {
-    /// Get track lyrics.
+    /// Retrieve lyrics for a specific track.
     ///
     /// ### Arguments
-    /// * `track_id` - The ID of the track.
-    /// * `format` - The format of the lyrics.
+    /// * `options` - The request options containing track ID and lyrics format.
     ///
     /// ### Returns
-    /// * [TrackLyrics] - The track lyrics.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<TrackLyrics, ClientError>` - The track lyrics or an error if the request fails.
     pub async fn get_lyrics(
         &self,
-        track_id: String,
-        format: LyricsFormat,
+        options: &GetLyricsOptions,
     ) -> Result<TrackLyrics, crate::ClientError> {
-        let response = self
-            .get(&LyricsRequest::new(track_id, format).path())
-            .await?;
-
-        Ok(serde_json::from_value::<TrackLyrics>(response)?)
+        self.request::<TrackLyrics, _>(options).await
     }
 }

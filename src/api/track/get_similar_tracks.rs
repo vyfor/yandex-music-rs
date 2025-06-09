@@ -1,41 +1,55 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::track_model::similar_tracks::SimilarTracks,
+    api::Endpoint, client::request::RequestOptions, model::track::similar_tracks::SimilarTracks,
     YandexMusicClient,
 };
 
-pub struct SimilarTracksRequest {
+/// Request for retrieving tracks similar to a specific track.
+pub struct GetSimilarTracksOptions {
+    /// The ID of the track to find similar tracks for.
     pub track_id: String,
 }
 
-impl SimilarTracksRequest {
-    pub fn new(track_id: String) -> Self {
-        Self { track_id }
+impl GetSimilarTracksOptions {
+    /// Create a new request to find similar tracks.
+    pub fn new(track_id: impl Into<String>) -> Self {
+        Self {
+            track_id: track_id.into(),
+        }
     }
 }
 
-impl RequestPath for SimilarTracksRequest {
-    fn path(&self) -> String {
-        format!("tracks/{}/similar", self.track_id)
+impl Endpoint for GetSimilarTracksOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("tracks/{}/similar", self.track_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get similar tracks.
+    /// Retrieve a list of tracks that are similar to the specified track.
+    ///
+    /// This endpoint uses Yandex Music's recommendation algorithm to find
+    /// tracks that are musically similar to the specified track.
     ///
     /// ### Arguments
-    /// * `track_id` - The ID of the track.
+    /// * `options` - The request options containing the track ID.
     ///
     /// ### Returns
-    /// * [SimilarTracks] - The similar tracks.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<SimilarTracks, ClientError>` - The similar tracks or an error if the request fails.
     pub async fn get_similar_tracks(
         &self,
-        track_id: String,
+        options: &GetSimilarTracksOptions,
     ) -> Result<SimilarTracks, crate::ClientError> {
-        let response = self
-            .get(&SimilarTracksRequest::new(track_id).path())
-            .await?;
-
-        Ok(serde_json::from_value::<SimilarTracks>(response)?)
+        self.request::<SimilarTracks, _>(options).await
     }
 }

@@ -1,48 +1,59 @@
+use crate::client::request::RequestOptions;
 use crate::{
-    api::RequestPath,
-    model::search_model::search::{Search, SearchType},
+    api::Endpoint,
+    model::search::{Search, SearchType},
     YandexMusicClient,
 };
+use reqwest::Method;
+use std::borrow::Cow;
 
-pub struct SearchRequest {
+pub struct SearchOptions {
     pub text: String,
     pub page: i32,
     pub item_type: SearchType,
     pub nocorrect: bool,
 }
 
-impl SearchRequest {
-    pub fn new(text: String) -> Self {
+impl SearchOptions {
+    pub fn new(text: impl Into<String>) -> Self {
         Self {
-            text,
+            text: text.into(),
             page: 0,
             item_type: SearchType::All,
             nocorrect: false,
         }
     }
 
-    pub fn with_page(mut self, page: i32) -> Self {
+    pub fn page(mut self, page: i32) -> Self {
         self.page = page;
         self
     }
 
-    pub fn with_type(mut self, item_type: SearchType) -> Self {
+    pub fn item_type(mut self, item_type: SearchType) -> Self {
         self.item_type = item_type;
         self
     }
 
-    pub fn with_nocorrect(mut self, nocorrect: bool) -> Self {
+    pub fn nocorrect(mut self, nocorrect: bool) -> Self {
         self.nocorrect = nocorrect;
         self
     }
 }
 
-impl RequestPath for SearchRequest {
-    fn path(&self) -> String {
+impl Endpoint for SearchOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
         format!(
             "search/?text={}&page={}&type={}&nocorrect={}",
             self.text, self.page, self.item_type, self.nocorrect
         )
+        .into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
@@ -50,32 +61,11 @@ impl YandexMusicClient {
     /// Search text.
     ///
     /// ### Arguments
-    /// * `text` - The text to search.
+    /// * `options` - The request options containing search text and optional parameters.
     ///
     /// ### Returns
-    /// * [Search] - The search.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn search(
-        &self,
-        text: String,
-    ) -> Result<Search, crate::ClientError> {
-        self.search_with(SearchRequest::new(text)).await
-    }
-
-    /// Search with optional parameters.
-    ///
-    /// ### Arguments
-    /// * `request` - The request object.
-    ///
-    /// ### Returns
-    /// * [Search] - The search results.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn search_with(
-        &self,
-        request: SearchRequest,
-    ) -> Result<Search, crate::ClientError> {
-        let response = self.get(&request.path()).await?;
-
-        Ok(serde_json::from_value::<Search>(response)?)
+    /// * `Result<Search, ClientError>` - The search results or an error if the request fails.
+    pub async fn search(&self, options: &SearchOptions) -> Result<Search, crate::ClientError> {
+        self.request::<Search, _>(options).await
     }
 }

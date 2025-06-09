@@ -1,38 +1,54 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::track_model::track::Track, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::track::Track, YandexMusicClient,
 };
 
-pub struct TrackRequest {
+/// Request for retrieving track information.
+pub struct GetTrackOptions {
+    /// The ID of the track to retrieve.
     pub track_id: String,
 }
 
-impl TrackRequest {
-    pub fn new(track_id: String) -> Self {
-        Self { track_id }
+impl GetTrackOptions {
+    /// Create a new request to get track information.
+    pub fn new(track_id: impl Into<String>) -> Self {
+        Self {
+            track_id: track_id.into(),
+        }
     }
 }
 
-impl RequestPath for TrackRequest {
-    fn path(&self) -> String {
-        format!("tracks/{}", self.track_id)
+impl Endpoint for GetTrackOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("tracks/{}", self.track_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get track.
+    /// Retrieve detailed information about a specific track.
+    ///
+    /// This endpoint returns metadata about a track, including its title, duration,
+    /// artists, album, and availability information.
     ///
     /// ### Arguments
-    /// * `track_id` - The ID of the track.
+    /// * `options` - The request options containing the track ID.
     ///
     /// ### Returns
-    /// * [Track] - The track.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Vec<Track>, ClientError>` - A vector containing the requested track or an error if the request fails.
     pub async fn get_track(
         &self,
-        track_id: String,
+        options: &GetTrackOptions,
     ) -> Result<Vec<Track>, crate::ClientError> {
-        let response = self.get(&TrackRequest::new(track_id).path()).await?;
-
-        Ok(serde_json::from_value::<Vec<Track>>(response)?)
+        self.request::<Vec<Track>, _>(options).await
     }
 }

@@ -1,22 +1,31 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::playlist_model::playlist::Playlist,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
 };
 
-pub struct AllPlaylistsRequest {
+pub struct GetAllPlaylistsOptions {
     pub user_id: i32,
 }
 
-impl AllPlaylistsRequest {
+impl GetAllPlaylistsOptions {
     pub fn new(user_id: i32) -> Self {
         Self { user_id }
     }
 }
 
-impl RequestPath for AllPlaylistsRequest {
-    fn path(&self) -> String {
-        format!("users/{}/playlists/list", self.user_id)
+impl Endpoint for GetAllPlaylistsOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("users/{}/playlists/list", self.user_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
@@ -24,18 +33,14 @@ impl YandexMusicClient {
     /// Get all playlists.
     ///
     /// ### Arguments
-    /// * `user_id` - The ID of the user.
+    /// * `options` - The request options containing user ID.
     ///
     /// ### Returns
-    /// * [`Vec<Playlist>`] - A list of playlists.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Vec<Playlist>, ClientError>` - A list of playlists or an error if the request fails.
     pub async fn get_all_playlists(
         &self,
-        user_id: i32,
+        options: &GetAllPlaylistsOptions,
     ) -> Result<Vec<Playlist>, crate::ClientError> {
-        let response =
-            self.get(&AllPlaylistsRequest::new(user_id).path()).await?;
-
-        Ok(serde_json::from_value::<Vec<Playlist>>(response)?)
+        self.request::<Vec<Playlist>, _>(options).await
     }
 }

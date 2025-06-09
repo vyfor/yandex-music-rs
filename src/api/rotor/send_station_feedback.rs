@@ -1,77 +1,76 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::rotor_model::feedback::StationFeedback,
+    api::Endpoint, client::request::RequestOptions, model::rotor::feedback::StationFeedback,
     YandexMusicClient,
 };
 
-pub struct StationFeedbackRequest {
+/// Request for sending feedback about a radio station's track.
+pub struct GetStationFeedbackOptions {
+    /// The ID of the station to provide feedback for.
     pub station_id: String,
+    /// Optional batch ID for grouping related feedback.
     pub batch_id: Option<String>,
+    /// The feedback data containing track information and user action.
+    pub feedback: StationFeedback,
 }
 
-impl StationFeedbackRequest {
-    pub fn new(station_id: String) -> Self {
+impl GetStationFeedbackOptions {
+    /// Create a new feedback request for a station.
+    pub fn new(station_id: impl Into<String>, feedback: StationFeedback) -> Self {
         Self {
-            station_id,
+            station_id: station_id.into(),
             batch_id: None,
+            feedback,
         }
     }
 
-    pub fn with_batch_id(mut self, batch_id: String) -> Self {
-        self.batch_id = Some(batch_id);
+    /// Set the batch ID for grouping related feedback.
+    pub fn batch_id(mut self, batch_id: impl Into<String>) -> Self {
+        self.batch_id = Some(batch_id.into());
         self
     }
 }
 
-impl RequestPath for StationFeedbackRequest {
-    fn path(&self) -> String {
-        format!(
-            "rotor/station/{}/feedback?batch-id={}",
-            self.station_id,
-            self.batch_id
-                .as_ref()
-                .map(|s| s.to_owned())
-                .unwrap_or_default()
-        )
+impl Endpoint for GetStationFeedbackOptions {
+    type Options = ();
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        if let Some(batch_id) = &self.batch_id {
+            format!(
+                "rotor/station/{}/feedback?batch-id={}",
+                self.station_id, batch_id
+            )
+            .into()
+        } else {
+            format!("rotor/station/{}/feedback", self.station_id).into()
+        }
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default().with_json_data(serde_json::to_value(&self.feedback).unwrap())
     }
 }
 
 impl YandexMusicClient {
-    /// Send station feedback.
+    /// Send feedback about a track played on a radio station.
+    ///
+    /// This is used to provide feedback to the recommendation algorithm
+    /// about user interactions with tracks (like/dislike, skip, etc.).
     ///
     /// ### Arguments
-    /// * `station_id` - The ID of the station.
-    /// * `data` - The feedback data.
+    /// * `options` - The request options containing station ID, feedback data, and optional batch ID.
     ///
     /// ### Returns
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<(), ClientError>` - An empty result or an error if the request fails.
     pub async fn send_station_feedback(
         &self,
-        station_id: String,
-        data: StationFeedback,
+        options: &GetStationFeedbackOptions,
     ) -> Result<(), crate::ClientError> {
-        self.post_with_json(
-            &StationFeedbackRequest::new(station_id).path(),
-            serde_json::to_value(data)?,
-        )
-        .await?;
-
-        Ok(())
-    }
-
-    pub async fn send_station_feedback_with_batch_id(
-        &self,
-        station_id: String,
-        batch_id: String,
-        data: StationFeedback,
-    ) -> Result<(), crate::ClientError> {
-        self.post_with_json(
-            &StationFeedbackRequest::new(station_id)
-                .with_batch_id(batch_id)
-                .path(),
-            serde_json::to_value(data)?,
-        )
-        .await?;
-
+        self.request::<(), _>(options).await?;
         Ok(())
     }
 }

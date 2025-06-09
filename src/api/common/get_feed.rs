@@ -1,26 +1,38 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::common_model::feed::Feed,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::common::feed::Feed, YandexMusicClient,
 };
 
-pub struct FeedRequest {}
+pub struct GetFeedOptions;
 
-impl RequestPath for FeedRequest {
-    fn path(&self) -> String {
-        String::from("feed")
+impl Default for GetFeedOptions {
+    fn default() -> Self {
+        Self
+    }
+}
+
+impl Endpoint for GetFeedOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "feed".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get feed.
+    /// Get the user's feed.
     ///
     /// ### Returns
-    /// * [Feed] - The feed.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Feed, ClientError>` - The user's feed or an error if the request fails.
     pub async fn get_feed(&self) -> Result<Feed, crate::ClientError> {
-        let response = self.get(&FeedRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<Feed>(response)?)
+        self.request::<Feed, _>(&GetFeedOptions).await
     }
 }

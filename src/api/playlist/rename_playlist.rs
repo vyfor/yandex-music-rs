@@ -1,50 +1,57 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::playlist_model::playlist::Playlist,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
 };
 
-pub struct RenamePlaylistRequest {
+/// Request for renaming a playlist.
+pub struct RenamePlaylistOptions<'a> {
+    /// The ID of the user who owns the playlist.
     pub user_id: i32,
+    /// The kind (ID) of the playlist to rename.
     pub kind: i32,
+    /// The new name for the playlist.
+    pub value: &'a str,
 }
 
-impl RenamePlaylistRequest {
-    pub fn new(user_id: i32, kind: i32) -> Self {
-        Self { user_id, kind }
+impl<'a> RenamePlaylistOptions<'a> {
+    /// Create a new request to rename a playlist.
+    pub fn new(user_id: i32, kind: i32, value: &'a str) -> Self {
+        Self {
+            user_id,
+            kind,
+            value,
+        }
     }
 }
 
-impl RequestPath for RenamePlaylistRequest {
-    fn path(&self) -> String {
-        format!("users/{}/playlists/{}/name", self.user_id, self.kind)
+impl<'a> Endpoint for RenamePlaylistOptions<'a> {
+    type Options = [(&'static str, &'a str); 1];
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("users/{}/playlists/{}/name", self.user_id, self.kind).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default().with_form_data([("value", self.value)])
     }
 }
 
 impl YandexMusicClient {
-    /// Rename playlist.
+    /// Rename a playlist with a new name.
     ///
     /// ### Arguments
-    /// * `user_id` - The ID of the user.
-    /// * `kind` - The kind of the playlist.
-    /// * `value` - The new name of the playlist.
+    /// * `options` - The request options containing user ID, playlist kind, and new name.
     ///
     /// ### Returns
-    /// * [Playlist] - The updated playlist.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Playlist, ClientError>` - The updated playlist or an error if the request fails.
     pub async fn rename_playlist(
         &self,
-        user_id: i32,
-        kind: i32,
-        value: &str,
+        options: &RenamePlaylistOptions<'_>,
     ) -> Result<Playlist, crate::ClientError> {
-        let response = self
-            .post_with_form_str(
-                &RenamePlaylistRequest::new(user_id, kind).path(),
-                vec![("value", value)],
-            )
-            .await?;
-
-        Ok(serde_json::from_value::<Playlist>(response)?)
+        self.request::<Playlist, _>(options).await
     }
 }

@@ -1,17 +1,27 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::playlist_model::playlist::Playlist,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
 };
 
-pub struct PlaylistsRequest {
+/// Request for getting user's playlists.
+pub struct GetPlaylistsOptions {
+    /// The ID of the user whose playlists to retrieve.
     pub user_id: i32,
+    /// Specific playlist kinds to include. If empty, all playlists are returned.
     pub kinds: Vec<i32>,
+    /// Whether to include mixed content in the response.
     pub mixed: bool,
+    /// Whether to include tracks in the response.
     pub with_tracks: bool,
+    /// Whether to include rich track information.
     pub rich_tracks: bool,
 }
 
-impl PlaylistsRequest {
+impl GetPlaylistsOptions {
+    /// Create a new request for getting user's playlists.
     pub fn new(user_id: i32) -> Self {
         Self {
             user_id,
@@ -22,62 +32,70 @@ impl PlaylistsRequest {
         }
     }
 
-    pub fn kinds(mut self, kinds: Vec<i32>) -> Self {
-        self.kinds = kinds;
+    /// Set specific playlist kinds to include.
+    pub fn kinds<I>(mut self, kinds: I) -> Self
+    where
+        I: IntoIterator<Item = i32>,
+    {
+        self.kinds = kinds.into_iter().collect();
         self
     }
 
+    /// Set whether to include mixed content.
     pub fn mixed(mut self, mixed: bool) -> Self {
         self.mixed = mixed;
         self
     }
 
+    /// Set whether to include tracks in the response.
     pub fn with_tracks(mut self, with_tracks: bool) -> Self {
         self.with_tracks = with_tracks;
         self
     }
 
+    /// Set whether to include rich track information.
     pub fn rich_tracks(mut self, rich_tracks: bool) -> Self {
         self.rich_tracks = rich_tracks;
         self
     }
 }
 
-impl RequestPath for PlaylistsRequest {
-    fn path(&self) -> String {
-        format!("users/{}/playlists", self.user_id)
+impl Endpoint for GetPlaylistsOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        let kinds = self
+            .kinds
+            .iter()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>()
+            .join(",");
+
+        format!(
+            "users/{}/playlists?kinds={}&mixed={}&withTracks={}&richTracks={}",
+            self.user_id, kinds, self.mixed, self.with_tracks, self.rich_tracks
+        )
+        .into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get playlists.
+    /// Retrieve a list of playlists for a specific user.
     ///
     /// ### Arguments
-    /// * `request` - The request parameters.
+    /// * `options` - The request options containing user ID and query parameters.
     ///
     /// ### Returns
-    /// * [`Vec<Playlist>`] - A list of playlists.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Vec<Playlist>, ClientError>` - A list of playlists or an error if the request fails.
     pub async fn get_playlists(
         &self,
-        request: &PlaylistsRequest,
+        options: &GetPlaylistsOptions,
     ) -> Result<Vec<Playlist>, crate::ClientError> {
-        let response = self
-            .get(&format!(
-                "{}?kinds={}&mixed={}&withTracks={}&richTracks={}",
-                request.path(),
-                request
-                    .kinds
-                    .iter()
-                    .map(ToString::to_string)
-                    .collect::<Vec<_>>()
-                    .join(","),
-                request.mixed,
-                request.with_tracks,
-                request.rich_tracks
-            ))
-            .await?;
-
-        Ok(serde_json::from_value::<Vec<Playlist>>(response)?)
+        self.request::<Vec<Playlist>, _>(options).await
     }
 }

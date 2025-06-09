@@ -1,28 +1,35 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::account_model::status::AccountStatus,
+    api::Endpoint, client::request::RequestOptions, model::account::status::AccountStatus,
     YandexMusicClient,
 };
 
-pub struct StationAccountStatusRequest {}
+#[derive(Default)]
+pub struct GetStationAccountStatusOptions;
 
-impl RequestPath for StationAccountStatusRequest {
-    fn path(&self) -> String {
-        String::from("rotor/account/status")
+impl Endpoint for GetStationAccountStatusOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "rotor/account/status".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get station account status.
+    /// Retrieve the account status for radio stations.
     ///
     /// ### Returns
-    /// * [AccountStatus] - The station account status.
-    /// * [ClientError](crate::ClientError) - If the request fails.
-    pub async fn get_station_account_status(
-        &self,
-    ) -> Result<AccountStatus, crate::ClientError> {
-        let response = self.get(&StationAccountStatusRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<AccountStatus>(response)?)
+    /// * `Result<AccountStatus, ClientError>` - The account status or an error if the request fails.
+    pub async fn get_station_account_status(&self) -> Result<AccountStatus, crate::ClientError> {
+        self.request::<AccountStatus, _>(&GetStationAccountStatusOptions)
+            .await
     }
 }

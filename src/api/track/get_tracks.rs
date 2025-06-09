@@ -1,46 +1,71 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::track_model::track::Track, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::track::Track, YandexMusicClient,
 };
 
-pub struct TracksRequest {}
+/// Request for retrieving multiple tracks by their IDs.
+pub struct GetTracksOptions {
+    /// Array of track IDs to retrieve.
+    pub track_ids: Vec<String>,
+    /// Whether to include track positions in the response.
+    pub with_positions: bool,
+}
 
-impl RequestPath for TracksRequest {
-    fn path(&self) -> String {
-        String::from("tracks")
+impl GetTracksOptions {
+    /// Create a new request to get multiple tracks.
+    pub fn new<I, S>(track_ids: I) -> Self
+    where
+        I: IntoIterator<Item = S>,
+        S: Into<String>,
+    {
+        Self {
+            track_ids: track_ids.into_iter().map(|s| s.into()).collect(),
+            with_positions: false,
+        }
+    }
+
+    /// Set whether to include track positions in the response.
+    pub fn with_positions(mut self, with_positions: bool) -> Self {
+        self.with_positions = with_positions;
+        self
+    }
+}
+
+impl Endpoint for GetTracksOptions {
+    type Options = [(&'static str, String); 2];
+    const METHOD: Method = Method::POST;
+
+    fn path(&self) -> Cow<'static, str> {
+        "tracks".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        let track_ids = self.track_ids.join(",") + ",";
+        RequestOptions::default().with_form_data([
+            ("track-ids", track_ids),
+            ("with-positions", self.with_positions.to_string()),
+        ])
     }
 }
 
 impl YandexMusicClient {
-    /// Get tracks.
+    /// Retrieve multiple tracks by their IDs in a single request.
+    ///
+    /// This endpoint is more efficient than making individual requests for each track
+    /// when you need to fetch multiple tracks at once.
     ///
     /// ### Arguments
-    /// * `track_ids` - An array of track IDs.
-    /// * `with_positions` - Whether to include track positions in the response.
+    /// * `options` - The request options containing track IDs and position flag.
     ///
     /// ### Returns
-    /// * [Vec<Track>] - The tracks.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Vec<Track>, ClientError>` - A vector of the requested tracks or an error if the request fails.
     pub async fn get_tracks(
         &self,
-        track_ids: &[String],
-        with_positions: bool,
+        options: &GetTracksOptions,
     ) -> Result<Vec<Track>, crate::ClientError> {
-        let response = self
-            .post_with_form_str(
-                &TracksRequest {}.path(),
-                vec![
-                    (
-                        "track-ids",
-                        &track_ids
-                            .iter()
-                            .map(|id| id.to_string() + ",")
-                            .collect::<String>(),
-                    ),
-                    ("with-positions", &with_positions.to_string()),
-                ],
-            )
-            .await?;
-
-        Ok(serde_json::from_value::<Vec<Track>>(response)?)
+        self.request::<Vec<Track>, _>(options).await
     }
 }

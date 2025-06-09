@@ -1,26 +1,40 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath,
-    model::common_model::settings::Settings,
+    api::Endpoint, client::request::RequestOptions, model::common::settings::Settings,
     YandexMusicClient,
 };
 
-pub struct SettingsRequest {}
+/// Request for getting the application settings.
+pub struct GetSettingsOptions;
 
-impl RequestPath for SettingsRequest {
-    fn path(&self) -> String {
-        String::from("settings")
+impl Default for GetSettingsOptions {
+    fn default() -> Self {
+        Self
+    }
+}
+
+impl Endpoint for GetSettingsOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        "settings".into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get settings.
+    /// Get the current application settings.
     ///
     /// ### Returns
-    /// * [Settings] - The settings.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Settings, ClientError>` - The application settings or an error if the request fails.
     pub async fn get_settings(&self) -> Result<Settings, crate::ClientError> {
-        let response = self.get(&SettingsRequest {}.path()).await?;
-
-        Ok(serde_json::from_value::<Settings>(response)?)
+        self.request::<Settings, _>(&GetSettingsOptions).await
     }
 }

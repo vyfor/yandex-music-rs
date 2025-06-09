@@ -8,7 +8,7 @@ mod common {
         let api_key = std::env::var("YANDEX_MUSIC_TOKEN")
             .expect("YANDEX_MUSIC_TOKEN must be set");
 
-        let client = YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
 
         let result = client.get_feed().await.unwrap();
         println!("{result:#?}");
@@ -20,7 +20,7 @@ mod common {
         let api_key = std::env::var("YANDEX_MUSIC_TOKEN")
             .expect("YANDEX_MUSIC_TOKEN must be set");
 
-        let client = YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
 
         let result = client.get_genres().await.unwrap();
         println!("{result:#?}");
@@ -32,7 +32,7 @@ mod common {
         let api_key = std::env::var("YANDEX_MUSIC_TOKEN")
             .expect("YANDEX_MUSIC_TOKEN must be set");
 
-        let client = YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
 
         let result = client.get_non_music_catalogue().await.unwrap();
         println!("{result:#?}");
@@ -44,7 +44,7 @@ mod common {
         let api_key = std::env::var("YANDEX_MUSIC_TOKEN")
             .expect("YANDEX_MUSIC_TOKEN must be set");
 
-        let client = YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
 
         let result = client.get_permission_alerts().await.unwrap();
         println!("{result:#?}");
@@ -56,7 +56,7 @@ mod common {
         let api_key = std::env::var("YANDEX_MUSIC_TOKEN")
             .expect("YANDEX_MUSIC_TOKEN must be set");
 
-        let client = YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
 
         let result = client.get_settings().await.unwrap();
         println!("{result:#?}");
@@ -68,9 +68,9 @@ mod common {
         let api_key = std::env::var("YANDEX_MUSIC_TOKEN")
             .expect("YANDEX_MUSIC_TOKEN must be set");
 
-        let client = YandexMusicClient::new(&api_key);
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
 
-        let result = client.get_is_wizard_passed().await.unwrap();
+        let result = client.get_wizard_is_passed().await.unwrap();
         println!("{result:#?}");
     }
 }

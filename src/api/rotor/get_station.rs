@@ -1,39 +1,51 @@
+use std::borrow::Cow;
+
+use reqwest::Method;
+
 use crate::{
-    api::RequestPath, model::rotor_model::rotor::Rotor, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::rotor::Rotor, YandexMusicClient,
 };
 
-pub struct StationRequest {
+#[derive(Default)]
+pub struct GetStationOptions {
+    /// The ID of the station to retrieve information for.
     pub station_id: String,
 }
 
-impl StationRequest {
-    pub fn new(station_id: String) -> Self {
-        Self { station_id }
+impl GetStationOptions {
+    /// Create a new request to get station information.
+    pub fn new(station_id: impl Into<String>) -> Self {
+        Self {
+            station_id: station_id.into(),
+        }
     }
 }
 
-impl RequestPath for StationRequest {
-    fn path(&self) -> String {
-        format!("rotor/station/{}/info", self.station_id)
+impl Endpoint for GetStationOptions {
+    type Options = ();
+    const METHOD: Method = Method::GET;
+
+    fn path(&self) -> Cow<'static, str> {
+        format!("rotor/station/{}/info", self.station_id).into()
+    }
+
+    fn options(&self) -> RequestOptions<Self::Options> {
+        RequestOptions::default()
     }
 }
 
 impl YandexMusicClient {
-    /// Get station.
+    /// Retrieve detailed information about a specific radio station.
     ///
     /// ### Arguments
-    /// * `station_id` - The ID of the station.
+    /// * `options` - The request options containing the station ID.
     ///
     /// ### Returns
-    /// * [`Vec<Rotor>`] - A list of stations.
-    /// * [ClientError](crate::ClientError) - If the request fails.
+    /// * `Result<Vec<Rotor>, ClientError>` - A list of station information or an error if the request fails.
     pub async fn get_station(
         &self,
-        station_id: String,
+        options: &GetStationOptions,
     ) -> Result<Vec<Rotor>, crate::ClientError> {
-        let response =
-            self.get(&StationRequest::new(station_id).path()).await?;
-
-        Ok(serde_json::from_value::<Vec<Rotor>>(response)?)
+        self.request::<Vec<Rotor>, _>(options).await
     }
 }
