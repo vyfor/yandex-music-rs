@@ -41,16 +41,11 @@ impl Endpoint for GetLyricsOptions {
     const METHOD: Method = Method::GET;
 
     fn path(&self) -> Cow<'static, str> {
-        format!("tracks/{}/lyrics", self.track_id).into()
+        format!("tracks/{}/lyrics", self.track_id,).into()
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
-        let sign = self.sign.replace('+', "%2B");
-        RequestOptions::default().with_form_data([
-            ("format", self.format.to_string()),
-            ("timeStamp", self.timestamp.to_string()),
-            ("sign", sign),
-        ])
+        RequestOptions::default()
     }
 }
 
@@ -66,6 +61,15 @@ impl YandexMusicClient {
         &self,
         options: &GetLyricsOptions,
     ) -> Result<TrackLyrics, crate::ClientError> {
-        self.request::<TrackLyrics, _>(options).await
+        let (timestamp, sign) = create_sign(options.track_id.as_str());
+        let url = format!(
+            "tracks/{}/lyrics?format={}&timeStamp={}&sign={}",
+            options.track_id,
+            options.format,
+            timestamp,
+            sign.replace("+", "%2B")
+        );
+
+        self.request_with_url::<TrackLyrics, _>(url, options).await
     }
 }

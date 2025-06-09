@@ -1,10 +1,11 @@
 use std::borrow::Cow;
 
 use reqwest::Method;
+use serde_json::Value;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions, model::playlist::library::Library,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions,
+    model::playlist::library::Library, YandexMusicClient,
 };
 
 /// Request for retrieving a user's disliked tracks.
@@ -47,6 +48,10 @@ impl YandexMusicClient {
         &self,
         options: &GetDislikedTracksOptions,
     ) -> Result<Library, crate::ClientError> {
-        self.request::<Library, _>(options).await
+        let mut response = self.request::<Value, _>(options).await?;
+
+        Ok(serde_json::from_value::<Library>(
+            response["library"].take(),
+        )?)
     }
 }

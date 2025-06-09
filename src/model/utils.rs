@@ -1,4 +1,6 @@
-use serde::de::{self, Deserializer, Error};
+use std::fmt;
+
+use serde::de::{self, Deserializer, Error, MapAccess, SeqAccess, Visitor};
 use serde::Deserialize;
 
 pub fn string_to_i32<'de, D>(deserializer: D) -> Result<i32, D::Error>
@@ -57,4 +59,57 @@ where
         serde_json::Value::String(s) => Ok(Some(s)),
         _ => Ok(None),
     }
+}
+
+pub fn deserialize_maybe_vec<'de, D, T>(
+    deserializer: D,
+) -> Result<Vec<T>, D::Error>
+where
+    D: Deserializer<'de>,
+    T: Deserialize<'de>,
+{
+    struct MaybeVecVisitor<T>(std::marker::PhantomData<T>);
+
+    impl<'de, T> Visitor<'de> for MaybeVecVisitor<T>
+    where
+        T: Deserialize<'de>,
+    {
+        type Value = Vec<T>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("null, an object, or a sequence of objects")
+        }
+
+        fn visit_unit<E>(self) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            Ok(Vec::new())
+        }
+
+        fn visit_none<E>(self) -> Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            Ok(Vec::new())
+        }
+
+        fn visit_seq<A>(self, seq: A) -> Result<Self::Value, A::Error>
+        where
+            A: SeqAccess<'de>,
+        {
+            Deserialize::deserialize(de::value::SeqAccessDeserializer::new(seq))
+        }
+
+        fn visit_map<A>(self, map: A) -> Result<Self::Value, A::Error>
+        where
+            A: MapAccess<'de>,
+        {
+            Ok(vec![Deserialize::deserialize(
+                de::value::MapAccessDeserializer::new(map),
+            )?])
+        }
+    }
+
+    deserializer.deserialize_any(MaybeVecVisitor(std::marker::PhantomData))
 }

@@ -114,6 +114,7 @@ pub trait IntoApiParam<T> {
 pub(crate) async fn send_request<P, T>(
     client: &reqwest::Client,
     endpoint: &P,
+    url: Option<String>,
 ) -> Result<T, ClientError>
 where
     P: Endpoint,
@@ -122,7 +123,11 @@ where
 {
     let method = <P as Endpoint>::METHOD;
     let options = endpoint.options();
-    let url = format!("{}{}", API_PATH, endpoint.path());
+    let url = if let Some(url) = url {
+        url
+    } else {
+        format!("{}{}", API_PATH, endpoint.path())
+    };
     let mut request_builder = client.request(method, url);
 
     if let Some(headers) = options.headers {
@@ -150,14 +155,17 @@ where
         return Err(error.into());
     }
 
-    let result = response
-        .result
-        .ok_or_else(|| ClientError::YandexMusicError {
-            error: YandexMusicError {
-                name: "MissingResult".to_string(),
-                message: Some("API response contains no result".to_string()),
-            },
-        })?;
+    let result =
+        response
+            .result
+            .ok_or_else(|| ClientError::YandexMusicError {
+                error: YandexMusicError {
+                    name: "MissingResult".to_string(),
+                    message: Some(
+                        "API response contains no result".to_string(),
+                    ),
+                },
+            })?;
 
     Ok(serde_json::from_value(result)?)
 }

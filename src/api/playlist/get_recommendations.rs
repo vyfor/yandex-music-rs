@@ -1,6 +1,7 @@
 use crate::client::request::RequestOptions;
 use crate::{api::Endpoint, model::track::Track, YandexMusicClient};
 use reqwest::Method;
+use serde_json::Value;
 use std::borrow::Cow;
 
 pub struct GetRecommendationsOptions {
@@ -43,6 +44,10 @@ impl YandexMusicClient {
         &self,
         options: &GetRecommendationsOptions,
     ) -> Result<Vec<Track>, crate::ClientError> {
-        self.request::<Vec<Track>, _>(options).await
+        let mut response = self.request::<Value, _>(options).await?;
+
+        Ok(serde_json::from_value::<Vec<Track>>(
+            response["tracks"].take(),
+        )?)
     }
 }
