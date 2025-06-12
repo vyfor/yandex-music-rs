@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use reqwest::header::{HeaderMap, HeaderValue, AUTHORIZATION};
 
 use crate::{error::ClientError, YandexMusicClient, DEFAULT_CLIENT_ID};
@@ -5,9 +7,9 @@ use crate::{error::ClientError, YandexMusicClient, DEFAULT_CLIENT_ID};
 /// Configuration for creating a YandexMusicClient.
 pub struct ClientBuilder<'a> {
     /// OAuth token for authentication
-    token: &'a str,
-    /// Custom client identifier
-    client_id: &'a str,
+    token: Cow<'a, str>,
+    // Custom client identifier
+    client_id: Cow<'a, str>,
     /// Optional proxy configuration
     proxy: Option<reqwest::Proxy>,
     /// Custom reqwest client (overrides other options if provided)
@@ -16,18 +18,18 @@ pub struct ClientBuilder<'a> {
 
 impl<'a> ClientBuilder<'a> {
     /// Create new client builder with default values.
-    pub fn new(token: &'a str) -> Self {
+    pub fn new(token: impl Into<Cow<'a, str>>) -> Self {
         Self {
-            token,
-            client_id: DEFAULT_CLIENT_ID,
+            token: token.into(),
+            client_id: Cow::Borrowed(DEFAULT_CLIENT_ID),
             proxy: None,
             custom_client: None,
         }
     }
 
     /// Set a custom client identifier.
-    pub fn client_id(mut self, client_id: &'a str) -> Self {
-        self.client_id = client_id;
+    pub fn client_id(mut self, client_id: impl Into<Cow<'a, str>>) -> Self {
+        self.client_id = client_id.into();
         self
     }
 
@@ -59,7 +61,7 @@ impl<'a> ClientBuilder<'a> {
 
         headers.insert(
             "X-Yandex-Music-Client",
-            HeaderValue::from_str(self.client_id)?,
+            HeaderValue::from_str(self.client_id.as_ref())?,
         );
 
         let mut builder = reqwest::Client::builder().default_headers(headers);
