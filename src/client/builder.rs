@@ -8,7 +8,7 @@ use crate::{error::ClientError, YandexMusicClient, DEFAULT_CLIENT_ID};
 pub struct ClientBuilder<'a> {
     /// OAuth token for authentication
     token: Cow<'a, str>,
-    // Custom client identifier
+    /// Custom client identifier
     client_id: Cow<'a, str>,
     /// Optional proxy configuration
     proxy: Option<reqwest::Proxy>,
