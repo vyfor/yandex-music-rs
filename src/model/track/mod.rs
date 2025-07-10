@@ -124,6 +124,22 @@ pub struct TrackShort {
     pub album_id: Option<String>,
 }
 
+impl TrackShort {
+    pub fn new(id: impl Into<String>, album_id: Option<String>) -> Self {
+        Self {
+            id: id.into(),
+            album_id,
+        }
+    }
+
+    pub fn from_id(id: impl Into<String>) -> Self {
+        Self {
+            id: id.into(),
+            album_id: None,
+        }
+    }
+}
+
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackMajor {

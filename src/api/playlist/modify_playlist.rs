@@ -1,11 +1,12 @@
 use std::borrow::Cow;
 
 use reqwest::Method;
+use serde_json::json;
 
 use crate::{
     api::Endpoint,
     client::request::RequestOptions,
-    model::playlist::{modify::ModifyPlaylistDiff, Playlist},
+    model::playlist::{modify::Diff, Playlist},
     YandexMusicClient,
 };
 
@@ -16,14 +17,14 @@ pub struct ModifyPlaylistOptions<'a> {
     /// The kind (ID) of the playlist to modify.
     pub kind: i32,
     /// The diff object containing the changes to apply.
-    pub diff: &'a ModifyPlaylistDiff,
+    pub diff: &'a Diff,
     /// The current revision of the playlist.
     pub revision: i32,
 }
 
 impl<'a> ModifyPlaylistOptions<'a> {
     /// Create a new request to modify a playlist.
-    pub fn new(user_id: i32, kind: i32, diff: &'a ModifyPlaylistDiff, revision: i32) -> Self {
+    pub fn new(user_id: i32, kind: i32, diff: &'a Diff, revision: i32) -> Self {
         Self {
             user_id,
             kind,
@@ -46,7 +47,10 @@ impl<'a> Endpoint for ModifyPlaylistOptions<'a> {
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
-        let diff_str = serde_json::to_string(self.diff).unwrap_or_else(|_| String::from("{}"));
+        let diff_str = json!({
+            "diff": self.diff,
+        })
+        .to_string();
 
         RequestOptions::default()
             .with_form_data([("diff", diff_str), ("revision", self.revision.to_string())])
