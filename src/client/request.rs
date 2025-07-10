@@ -144,28 +144,38 @@ where
         RequestBody::Empty => {}
     }
 
-    let response: Response = request_builder
-        .send()
-        .await?
-        .error_for_status()?
-        .json()
-        .await?;
+    let response = request_builder.send().await?;
+    let status_code = response.status();
+
+    if !status_code.is_success() {
+        if let Ok(res) = response.json::<Response>().await {
+            if let Some(err) = res.error {
+                return Err(err.into());
+            }
+        }
+
+        return Err(ClientError::YandexMusicError {
+            error: YandexMusicError {
+                name: "RequestFailed".to_string(),
+                message: Some(format!("Request failed with status code: {status_code}")),
+            },
+        });
+    }
+
+    let response: Response = response.json().await?;
 
     if let Some(error) = response.error {
         return Err(error.into());
     }
 
-    let result =
-        response
-            .result
-            .ok_or_else(|| ClientError::YandexMusicError {
-                error: YandexMusicError {
-                    name: "MissingResult".to_string(),
-                    message: Some(
-                        "API response contains no result".to_string(),
-                    ),
-                },
-            })?;
+    let result = response
+        .result
+        .ok_or_else(|| ClientError::YandexMusicError {
+            error: YandexMusicError {
+                name: "MissingResult".to_string(),
+                message: Some("API response contains no result".to_string()),
+            },
+        })?;
 
     Ok(serde_json::from_value(result)?)
 }
