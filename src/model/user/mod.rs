@@ -1,6 +1,8 @@
-use serde::Deserialize;
+use std::str::FromStr;
+use serde::{Serialize, Deserialize};
 
-pub type UserId = u64;
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Serialize, Deserialize)]
+pub struct UserId(u64);
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -14,4 +16,18 @@ pub struct User {
     pub verified: Option<bool>,
     #[serde(default)]
     pub regions: Vec<i32>,
+}
+
+impl std::fmt::Display for UserId {
+    fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> Result<(), std::fmt::Error> {
+        write!(fmt, "{}", self.0)
+    }
+}
+
+impl FromStr for UserId {
+    type Err = std::num::ParseIntError;
+
+    fn from_str(parsee: &str) -> Result<Self, <Self as FromStr>::Err> {
+        Ok(Self ( parsee.parse()? ))
+    }
 }
