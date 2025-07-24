@@ -1,4 +1,4 @@
-use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
+use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient, UserId};
 use reqwest::Method;
 use std::borrow::Cow;
 
@@ -10,7 +10,7 @@ pub struct PlayAudioOptions {
     pub play_id: Option<String>,
     pub from: String,
     pub from_cache: Option<bool>,
-    pub uid: Option<i32>,
+    pub uid: Option<UserId>,
     pub track_length_seconds: Option<i32>,
     pub total_played_seconds: Option<i32>,
     pub end_position_seconds: Option<i32>,
@@ -51,7 +51,7 @@ impl PlayAudioOptions {
         self
     }
 
-    pub fn uid(mut self, uid: i32) -> Self {
+    pub fn uid(mut self, uid: UserId) -> Self {
         self.uid = Some(uid);
         self
     }

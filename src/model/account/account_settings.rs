@@ -1,9 +1,10 @@
 use serde::{Deserialize, Serialize};
+use crate::UserId;
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountSettings {
-    pub uid: i32,
+    pub uid: UserId,
     pub last_fm_scrobbling_enabled: bool,
     pub shuffle_enabled: bool,
     pub volume_percents: i32,

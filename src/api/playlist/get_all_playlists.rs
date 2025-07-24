@@ -4,14 +4,15 @@ use reqwest::Method;
 
 use crate::{
     api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
+    UserId,
 };
 
 pub struct GetAllPlaylistsOptions {
-    pub user_id: i32,
+    pub user_id: UserId,
 }
 
 impl GetAllPlaylistsOptions {
-    pub fn new(user_id: i32) -> Self {
+    pub fn new(user_id: UserId) -> Self {
         Self { user_id }
     }
 }

@@ -7,7 +7,7 @@ use serde::Deserialize;
 use crate::model::{
     info::tag::Tag,
     track::{cover::Cover, PartialTrack, Track, TrackWithInfo},
-    user::User,
+    user::{User, UserId},
 };
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -35,7 +35,7 @@ pub struct Playlist {
     pub tags: Vec<Tag>,
     pub title: String,
     pub track_count: i32,
-    pub uid: i32,
+    pub uid: UserId,
     pub visibility: String,
     #[serde(default)]
     pub likes_count: i32,

@@ -4,19 +4,20 @@ use reqwest::Method;
 
 use crate::{
     api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
+    UserId,
 };
 
 /// Request for getting a specific playlist.
 pub struct GetPlaylistOptions {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: UserId,
     /// The kind (ID) of the playlist.
     pub kind: i32,
 }
 
 impl GetPlaylistOptions {
     /// Create a new request for getting a specific playlist.
-    pub fn new(user_id: i32, kind: i32) -> Self {
+    pub fn new(user_id: UserId, kind: i32) -> Self {
         Self { user_id, kind }
     }
 }

@@ -10,6 +10,8 @@ pub mod model;
 pub const API_PATH: &str = "https://api.music.yandex.net:443/";
 pub const DEFAULT_CLIENT_ID: &str = "YandexMusicAndroid/24023621";
 
+use crate::model::user::UserId;
+
 /// A client to interact with the Yandex Music API.
 pub struct YandexMusicClient {
     /// Internal reqwest client.

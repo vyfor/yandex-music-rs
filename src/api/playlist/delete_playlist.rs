@@ -2,19 +2,19 @@ use std::borrow::Cow;
 
 use reqwest::Method;
 
-use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
+use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient, UserId};
 
 /// Request for deleting a playlist.
 pub struct DeletePlaylistOptions {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: UserId,
     /// The kind (ID) of the playlist to delete.
     pub kind: i32,
 }
 
 impl DeletePlaylistOptions {
     /// Create a new request for deleting a playlist.
-    pub fn new(user_id: i32, kind: i32) -> Self {
+    pub fn new(user_id: UserId, kind: i32) -> Self {
         Self { user_id, kind }
     }
 }

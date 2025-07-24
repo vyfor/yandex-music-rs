@@ -3,12 +3,13 @@ pub mod promo_code;
 pub mod status;
 
 use serde::Deserialize;
+use crate::UserId;
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Account {
     pub now: String,
-    pub uid: Option<i32>,
+    pub uid: Option<UserId>,
     pub login: Option<String>,
     pub full_name: Option<String>,
     pub first_name: Option<String>,

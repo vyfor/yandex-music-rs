@@ -1,16 +1,16 @@
 use crate::client::request::RequestOptions;
-use crate::{api::Endpoint, model::track::Track, YandexMusicClient};
+use crate::{api::Endpoint, model::track::Track, YandexMusicClient, UserId};
 use reqwest::Method;
 use serde_json::Value;
 use std::borrow::Cow;
 
 pub struct GetRecommendationsOptions {
-    pub user_id: i32,
+    pub user_id: UserId,
     pub kind: i32,
 }
 
 impl GetRecommendationsOptions {
-    pub fn new(user_id: i32, kind: i32) -> Self {
+    pub fn new(user_id: UserId, kind: i32) -> Self {
         Self { user_id, kind }
     }
 }

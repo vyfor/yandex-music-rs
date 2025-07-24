@@ -4,12 +4,13 @@ use reqwest::Method;
 
 use crate::{
     api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
+    UserId,
 };
 
 /// Request for changing a playlist's visibility.
 pub struct ChangePlaylistVisibilityOptions {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: UserId,
     /// The kind (ID) of the playlist.
     pub kind: i32,
     /// The new visibility value ("public" or "private").
@@ -18,7 +19,7 @@ pub struct ChangePlaylistVisibilityOptions {
 
 impl ChangePlaylistVisibilityOptions {
     /// Create a new request to change a playlist's visibility.
-    pub fn new(user_id: i32, kind: i32, value: impl Into<String>) -> Self {
+    pub fn new(user_id: UserId, kind: i32, value: impl Into<String>) -> Self {
         Self {
             user_id,
             kind,

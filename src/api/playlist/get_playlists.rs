@@ -4,12 +4,13 @@ use reqwest::Method;
 
 use crate::{
     api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
+    UserId
 };
 
 /// Request for getting user's playlists.
 pub struct GetPlaylistsOptions {
     /// The ID of the user whose playlists to retrieve.
-    pub user_id: i32,
+    pub user_id: UserId,
     /// Specific playlist kinds to include. If empty, all playlists are returned.
     pub kinds: Vec<i32>,
     /// Whether to include mixed content in the response.
@@ -22,7 +23,7 @@ pub struct GetPlaylistsOptions {
 
 impl GetPlaylistsOptions {
     /// Create a new request for getting user's playlists.
-    pub fn new(user_id: i32) -> Self {
+    pub fn new(user_id: UserId) -> Self {
         Self {
             user_id,
             kinds: Vec::new(),

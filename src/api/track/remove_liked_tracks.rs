@@ -8,15 +8,16 @@ use crate::{
     client::request::RequestOptions,
     error::{ClientError, YandexMusicError},
     YandexMusicClient,
+    UserId
 };
 
 pub struct RemoveLikedTracksOptions {
-    pub user_id: i32,
+    pub user_id: UserId,
     pub track_ids: Vec<String>,
 }
 
 impl RemoveLikedTracksOptions {
-    pub fn new<S, I>(user_id: i32, track_ids: I) -> Self
+    pub fn new<S, I>(user_id: UserId, track_ids: I) -> Self
     where
         S: Into<String>,
         I: IntoIterator<Item = S>,
