@@ -24,22 +24,20 @@ pub struct Rotor {
 pub struct RotorSettings {
     pub language: String,
     pub diversity: String,
-    pub mood: Option<i32>,
+    pub mood: Option<u8>,
     pub mood_energy: Option<String>,
-    pub energy: Option<i32>,
+    pub energy: Option<u8>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RotorAdParams {
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub partner_id: i32,
-    #[serde(deserialize_with = "crate::model::utils::string_to_i32")]
-    pub category_id: i32,
+    pub partner_id: String,
+    pub category_id: String,
     pub page_ref: String,
     pub target_ref: String,
     pub other_params: String,
-    pub ad_volume: i32,
-    pub genre_id: Option<i32>,
+    pub ad_volume: u8,
+    pub genre_id: Option<u32>,
     pub genre_name: Option<String>,
 }

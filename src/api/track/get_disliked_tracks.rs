@@ -4,19 +4,19 @@ use reqwest::Method;
 use serde_json::Value;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions,
-    model::playlist::library::Library, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::playlist::library::Library,
+    YandexMusicClient,
 };
 
 /// Request for retrieving a user's disliked tracks.
 pub struct GetDislikedTracksOptions {
     /// The ID of the user whose disliked tracks to retrieve.
-    pub user_id: i32,
+    pub user_id: u64,
 }
 
 impl GetDislikedTracksOptions {
     /// Create a new request to get a user's disliked tracks.
-    pub fn new(user_id: i32) -> Self {
+    pub fn new(user_id: u64) -> Self {
         Self { user_id }
     }
 }

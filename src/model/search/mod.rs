@@ -26,8 +26,8 @@ pub struct Search {
     pub podcast_episodes: Option<SearchResult>,
     #[serde(rename = "type")]
     pub item_type: Option<String>,
-    pub page: Option<i32>,
-    pub per_page: Option<i32>,
+    pub page: Option<u32>,
+    pub per_page: Option<u32>,
     pub misspell_result: Option<String>,
     pub misspell_original: Option<String>,
     pub misspell_corrected: Option<bool>,

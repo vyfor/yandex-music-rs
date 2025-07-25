@@ -3,8 +3,8 @@ use std::borrow::Cow;
 use reqwest::Method;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions,
-    model::account::account_settings::AccountSettings, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::account::settings::AccountSettings,
+    YandexMusicClient,
 };
 
 #[derive(Default)]

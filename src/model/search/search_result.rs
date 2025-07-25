@@ -7,8 +7,8 @@ use super::search_result_item::SearchResultItem;
 pub struct SearchResult {
     #[serde(rename="type")]
     pub item_type: Option<String>,
-    pub total: i32,
-    pub per_page: i32,
-    pub order: i32,
+    pub total: u32,
+    pub per_page: u32,
+    pub order: u32,
     pub results: Vec<SearchResultItem>,
 }

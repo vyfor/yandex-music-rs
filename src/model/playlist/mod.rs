@@ -2,6 +2,9 @@ pub mod id;
 pub mod library;
 pub mod modify;
 
+use std::time::Duration;
+
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use crate::model::{
@@ -19,26 +22,30 @@ pub struct Playlist {
     pub available: bool,
     pub collective: bool,
     pub cover: Cover,
-    pub created: String,
-    pub modified: String,
+    pub created: DateTime<Utc>,
+    pub modified: DateTime<Utc>,
     pub background_color: Option<String>,
     pub text_color: Option<String>,
-    pub duration_ms: i32,
+    #[serde(
+        rename = "durationMs",
+        deserialize_with = "crate::model::utils::duration_from_millis"
+    )]
+    pub duration: Duration,
     pub is_banner: bool,
     pub is_premiere: bool,
-    pub kind: i32,
+    pub kind: u32,
     pub og_image: String,
     pub tracks: Option<TracksType>,
     pub owner: User,
-    pub revision: i32,
-    pub snapshot: i32,
+    pub revision: u32,
+    pub snapshot: u32,
     pub tags: Vec<Tag>,
     pub title: String,
-    pub track_count: i32,
-    pub uid: i32,
+    pub track_count: u32,
+    pub uid: u64,
     pub visibility: String,
     #[serde(default)]
-    pub likes_count: i32,
+    pub likes_count: u32,
     #[serde(default)]
     pub similar_playlists: Vec<Playlist>,
 }

@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use serde::Deserialize;
 
 use crate::model::{
@@ -15,9 +16,9 @@ pub struct Feed {
     pub is_wizard_passed: bool,
     pub generated_playlists: Vec<PersonalPlaylist>,
     pub headlines: Vec<Headline>,
-    pub today: String,
+    pub today: NaiveDate,
     pub days: Vec<Day>,
-    pub next_revision: Option<String>,
+    pub next_revision: Option<NaiveDate>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -32,7 +33,7 @@ pub struct Headline {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Day {
-    pub day: String,
+    pub day: NaiveDate,
     pub events: Vec<DayEvent>,
     pub tracks_to_play_with_ads: Vec<TrackWithAds>,
     pub tracks_to_play: Vec<Track>,
@@ -54,6 +55,6 @@ pub struct DayEvent {
     pub albums: Vec<AlbumEvent>,
     pub message: Option<String>,
     pub device: Option<String>,
-    pub tracks_count: Option<i32>,
+    pub tracks_count: Option<u32>,
     pub genre: Option<String>,
 }

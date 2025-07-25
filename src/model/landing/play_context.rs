@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use crate::model::track::TrackId;
@@ -15,5 +16,5 @@ pub struct PlayContext {
 #[serde(rename_all = "camelCase")]
 pub struct IncompleteTrack {
     pub track_id: TrackId,
-    pub timestamp: String,
+    pub timestamp: DateTime<Utc>,
 }

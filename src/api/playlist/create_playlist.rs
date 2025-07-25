@@ -9,7 +9,7 @@ use crate::{
 /// Request for creating a new playlist.
 pub struct CreatePlaylistOptions {
     /// The ID of the user who will own the playlist.
-    pub user_id: i32,
+    pub user_id: u64,
     /// The title of the new playlist.
     pub title: String,
     /// The visibility of the playlist. Must be either "public" or "private".
@@ -18,7 +18,7 @@ pub struct CreatePlaylistOptions {
 
 impl CreatePlaylistOptions {
     /// Create a new request for creating a playlist.
-    pub fn new(user_id: i32, title: impl Into<String>, visibility: impl Into<String>) -> Self {
+    pub fn new(user_id: u64, title: impl Into<String>, visibility: impl Into<String>) -> Self {
         Self {
             user_id,
             title: title.into(),

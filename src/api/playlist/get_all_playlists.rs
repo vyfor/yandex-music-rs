@@ -7,11 +7,11 @@ use crate::{
 };
 
 pub struct GetAllPlaylistsOptions {
-    pub user_id: i32,
+    pub user_id: u64,
 }
 
 impl GetAllPlaylistsOptions {
-    pub fn new(user_id: i32) -> Self {
+    pub fn new(user_id: u64) -> Self {
         Self { user_id }
     }
 }

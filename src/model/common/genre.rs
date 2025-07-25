@@ -8,14 +8,14 @@ use crate::model::info::icon::Icon;
 #[serde(rename_all = "camelCase")]
 pub struct Genre {
     pub id: String,
-    pub weight: i32,
+    pub weight: u32,
     pub composer_top: bool,
     pub title: String,
     pub titles: HashMap<String, GenreTitle>,
     pub images: GenreImages,
     pub show_in_menu: bool,
     #[serde(default)]
-    pub show_in_regions: Vec<i32>,
+    pub show_in_regions: Vec<u32>,
     pub full_title: Option<String>,
     pub url_part: Option<String>,
     pub color: Option<String>,
@@ -23,7 +23,7 @@ pub struct Genre {
     #[serde(default)]
     pub sub_genres: Vec<Genre>,
     #[serde(default)]
-    pub hide_in_regions: Vec<i32>,
+    pub hide_in_regions: Vec<u32>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]

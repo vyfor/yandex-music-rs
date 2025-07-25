@@ -10,12 +10,12 @@ use crate::{
 };
 
 pub struct AddLikedTracksOptions {
-    pub user_id: i32,
+    pub user_id: u64,
     pub track_ids: Vec<String>,
 }
 
 impl AddLikedTracksOptions {
-    pub fn new<S, I>(user_id: i32, track_ids: I) -> Self
+    pub fn new<S, I>(user_id: u64, track_ids: I) -> Self
     where
         S: Into<String>,
         I: IntoIterator<Item = S>,

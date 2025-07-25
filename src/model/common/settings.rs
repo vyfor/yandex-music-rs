@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -17,8 +19,10 @@ pub struct Product {
     pub offers_position_id: Option<String>,
     #[serde(rename = "type")]
     pub item_type: String,
-    pub duration: i32,
-    pub trial_duration: i32,
+    #[serde(deserialize_with = "crate::model::utils::duration_from_millis")]
+    pub duration: Duration,
+    #[serde(deserialize_with = "crate::model::utils::duration_from_millis")]
+    pub trial_duration: Duration,
     pub feature: String,
     pub debug: bool,
     pub plus: bool,

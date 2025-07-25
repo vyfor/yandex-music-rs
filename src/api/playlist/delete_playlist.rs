@@ -7,14 +7,14 @@ use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
 /// Request for deleting a playlist.
 pub struct DeletePlaylistOptions {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: u64,
     /// The kind (ID) of the playlist to delete.
-    pub kind: i32,
+    pub kind: u32,
 }
 
 impl DeletePlaylistOptions {
     /// Create a new request for deleting a playlist.
-    pub fn new(user_id: i32, kind: i32) -> Self {
+    pub fn new(user_id: u64, kind: u32) -> Self {
         Self { user_id, kind }
     }
 }

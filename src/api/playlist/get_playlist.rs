@@ -9,14 +9,14 @@ use crate::{
 /// Request for getting a specific playlist.
 pub struct GetPlaylistOptions {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: u64,
     /// The kind (ID) of the playlist.
-    pub kind: i32,
+    pub kind: u32,
 }
 
 impl GetPlaylistOptions {
     /// Create a new request for getting a specific playlist.
-    pub fn new(user_id: i32, kind: i32) -> Self {
+    pub fn new(user_id: u64, kind: u32) -> Self {
         Self { user_id, kind }
     }
 }

@@ -11,8 +11,8 @@ pub struct ChartItem {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Chart {
-    pub position: i32,
-    pub listeners: i32,
+    pub position: u32,
+    pub listeners: u32,
     pub shift: i32,
     pub bg_color: Option<String>,
     pub track_id: Option<TrackId>,

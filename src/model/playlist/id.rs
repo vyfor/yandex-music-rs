@@ -2,6 +2,6 @@ use serde::Deserialize;
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 pub struct PlaylistId {
-    pub uid: i32,
-    pub kind: i32,
+    pub uid: u64,
+    pub kind: u32,
 }

@@ -9,9 +9,9 @@ use crate::{
 /// Request for getting user's playlists.
 pub struct GetPlaylistsOptions {
     /// The ID of the user whose playlists to retrieve.
-    pub user_id: i32,
+    pub user_id: u64,
     /// Specific playlist kinds to include. If empty, all playlists are returned.
-    pub kinds: Vec<i32>,
+    pub kinds: Vec<u32>,
     /// Whether to include mixed content in the response.
     pub mixed: bool,
     /// Whether to include tracks in the response.
@@ -22,7 +22,7 @@ pub struct GetPlaylistsOptions {
 
 impl GetPlaylistsOptions {
     /// Create a new request for getting user's playlists.
-    pub fn new(user_id: i32) -> Self {
+    pub fn new(user_id: u64) -> Self {
         Self {
             user_id,
             kinds: Vec::new(),
@@ -35,7 +35,7 @@ impl GetPlaylistsOptions {
     /// Set specific playlist kinds to include.
     pub fn kinds<I>(mut self, kinds: I) -> Self
     where
-        I: IntoIterator<Item = i32>,
+        I: IntoIterator<Item = u32>,
     {
         self.kinds = kinds.into_iter().collect();
         self

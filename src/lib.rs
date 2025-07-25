@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use error::ClientError;
 
 use crate::client::builder::ClientBuilder;
@@ -18,7 +20,7 @@ pub struct YandexMusicClient {
 
 impl YandexMusicClient {
     /// Create a client builder.
-    pub fn builder<'a>(token: &'a str) -> ClientBuilder<'a> {
+    pub fn builder<'a>(token: impl Into<Cow<'a, str>>) -> ClientBuilder<'a> {
         ClientBuilder::new(token)
     }
 

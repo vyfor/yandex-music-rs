@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use super::context::QueueContext;
@@ -6,6 +7,6 @@ use super::context::QueueContext;
 #[serde(rename_all = "camelCase")]
 pub struct QueueItem {
     pub id: String,
-    pub modified: String,
+    pub modified: DateTime<Utc>,
     pub context: Option<QueueContext>,
 }
