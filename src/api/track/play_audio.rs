@@ -1,4 +1,5 @@
 use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
+use chrono::{DateTime, Utc};
 use reqwest::Method;
 use std::borrow::Cow;
 
@@ -10,12 +11,12 @@ pub struct PlayAudioOptions {
     pub play_id: Option<String>,
     pub from: String,
     pub from_cache: Option<bool>,
-    pub uid: Option<i32>,
-    pub track_length_seconds: Option<i32>,
-    pub total_played_seconds: Option<i32>,
-    pub end_position_seconds: Option<i32>,
-    pub timestamp: Option<String>,
-    pub client_now: Option<String>,
+    pub uid: Option<u64>,
+    pub track_length_seconds: Option<u32>,
+    pub total_played_seconds: Option<u32>,
+    pub end_position_seconds: Option<u32>,
+    pub timestamp: Option<DateTime<Utc>>,
+    pub client_now: Option<DateTime<Utc>>,
 }
 
 impl PlayAudioOptions {
@@ -51,33 +52,35 @@ impl PlayAudioOptions {
         self
     }
 
-    pub fn uid(mut self, uid: i32) -> Self {
+    pub fn uid(mut self, uid: u64) -> Self {
         self.uid = Some(uid);
         self
     }
 
-    pub fn track_length_seconds(mut self, track_length_seconds: i32) -> Self {
+    pub fn track_length_seconds(mut self, track_length_seconds: u32) -> Self {
         self.track_length_seconds = Some(track_length_seconds);
         self
     }
 
-    pub fn total_played_seconds(mut self, total_played_seconds: i32) -> Self {
+    pub fn total_played_seconds(mut self, total_played_seconds: u32) -> Self {
         self.total_played_seconds = Some(total_played_seconds);
         self
     }
 
-    pub fn end_position_seconds(mut self, end_position_seconds: i32) -> Self {
+    pub fn end_position_seconds(mut self, end_position_seconds: u32) -> Self {
         self.end_position_seconds = Some(end_position_seconds);
         self
     }
 
-    pub fn timestamp(mut self, timestamp: impl Into<String>) -> Self {
-        self.timestamp = Some(timestamp.into());
+    // todo: revisit
+    pub fn timestamp(mut self, timestamp: DateTime<Utc>) -> Self {
+        self.timestamp = Some(timestamp);
         self
     }
 
-    pub fn client_now(mut self, client_now: impl Into<String>) -> Self {
-        self.client_now = Some(client_now.into());
+    // todo: revisit
+    pub fn client_now(mut self, client_now: DateTime<Utc>) -> Self {
+        self.client_now = Some(client_now);
         self
     }
 }

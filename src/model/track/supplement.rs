@@ -20,7 +20,7 @@ pub struct TrackSupplement {
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackSupplementLyrics {
-    pub id: i32,
+    pub id: u32,
     pub lyrics: String,
     pub full_lyrics: String,
     pub has_rights: bool,

@@ -18,16 +18,16 @@ impl Diff {
 #[derive(Debug, PartialEq, Clone, Serialize)]
 #[serde(tag = "op", rename_all = "lowercase")]
 pub enum DiffOp {
-    Insert { at: i32 },
-    Delete { from: i32, to: i32 },
+    Insert { at: usize },
+    Delete { from: usize, to: usize },
 }
 
 impl DiffOp {
-    pub fn insert(at: i32) -> Self {
+    pub fn insert(at: usize) -> Self {
         Self::Insert { at }
     }
 
-    pub fn delete(from: i32, to: i32) -> Self {
+    pub fn delete(from: usize, to: usize) -> Self {
         Self::Delete { from, to }
     }
 }

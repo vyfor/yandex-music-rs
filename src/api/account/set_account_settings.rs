@@ -4,8 +4,8 @@ use reqwest::Method;
 use serde_json::Value;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions,
-    model::account::account_settings::AccountSettings, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::account::settings::AccountSettings,
+    YandexMusicClient,
 };
 
 pub struct SetAccountSettingsOptions {

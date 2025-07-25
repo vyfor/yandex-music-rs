@@ -1,13 +1,14 @@
 use serde::{Deserialize, Serialize};
+use chrono::{DateTime, Utc};
 
 #[derive(Debug, PartialEq, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountSettings {
-    pub uid: i32,
+    pub uid: u64,
     pub last_fm_scrobbling_enabled: bool,
     pub shuffle_enabled: bool,
-    pub volume_percents: i32,
-    pub modified: String,
+    pub volume_percents: u8,
+    pub modified: DateTime<Utc>,
     pub facebook_scrobbling_enabled: bool,
     pub add_new_track_on_playlist_top: bool,
     pub user_music_visibility: String,
@@ -23,5 +24,5 @@ pub struct AccountSettings {
     pub explicit_forbidden: Option<bool>,
     pub child_mod_enabled: Option<bool>,
     pub wizard_is_passed: Option<bool>,
-    pub user_collection_hue: Option<i32>,
+    pub user_collection_hue: Option<u32>,
 }

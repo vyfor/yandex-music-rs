@@ -9,16 +9,16 @@ use crate::{
 /// Request for changing a playlist's visibility.
 pub struct ChangePlaylistVisibilityOptions {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: u64,
     /// The kind (ID) of the playlist.
-    pub kind: i32,
+    pub kind: u32,
     /// The new visibility value ("public" or "private").
     pub value: String,
 }
 
 impl ChangePlaylistVisibilityOptions {
     /// Create a new request to change a playlist's visibility.
-    pub fn new(user_id: i32, kind: i32, value: impl Into<String>) -> Self {
+    pub fn new(user_id: u64, kind: u32, value: impl Into<String>) -> Self {
         Self {
             user_id,
             kind,

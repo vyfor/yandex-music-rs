@@ -13,18 +13,18 @@ use crate::{
 /// Request for modifying a playlist by adding or removing tracks.
 pub struct ModifyPlaylistOptions<'a> {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: u64,
     /// The kind (ID) of the playlist to modify.
-    pub kind: i32,
+    pub kind: u32,
     /// The diff object containing the changes to apply.
     pub diff: &'a Diff,
     /// The current revision of the playlist.
-    pub revision: i32,
+    pub revision: u32,
 }
 
 impl<'a> ModifyPlaylistOptions<'a> {
     /// Create a new request to modify a playlist.
-    pub fn new(user_id: i32, kind: i32, diff: &'a Diff, revision: i32) -> Self {
+    pub fn new(user_id: u64, kind: u32, diff: &'a Diff, revision: u32) -> Self {
         Self {
             user_id,
             kind,

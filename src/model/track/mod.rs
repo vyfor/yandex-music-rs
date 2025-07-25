@@ -4,6 +4,9 @@ pub mod label;
 pub mod similar_tracks;
 pub mod supplement;
 
+use std::time::Duration;
+
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::model::{album::Album, artist::Artist, user::User};
@@ -14,9 +17,9 @@ pub struct PartialTrack {
     #[serde(deserialize_with = "crate::model::utils::number_to_string")]
     pub id: String,
     #[serde(default)]
-    #[serde(deserialize_with = "crate::model::utils::opt_string_to_i32")]
-    pub album_id: Option<i32>,
-    pub timestamp: String,
+    #[serde(deserialize_with = "crate::model::utils::opt_string_to_u32")]
+    pub album_id: Option<u32>,
+    pub timestamp: DateTime<Utc>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -24,11 +27,11 @@ pub struct PartialTrack {
 pub struct TrackWithInfo {
     #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
     pub id: Option<String>,
-    pub original_index: i32,
-    pub timestamp: String,
+    pub original_index: u32,
+    pub timestamp: DateTime<Utc>,
     pub track: Track,
     pub recent: bool,
-    pub original_shuffle_index: i32,
+    pub original_shuffle_index: u32,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
@@ -52,9 +55,14 @@ pub struct Track {
     pub item_type: Option<String>,
     pub cover_uri: Option<String>,
     pub major: Option<TrackMajor>,
-    pub duration_ms: Option<i32>,
+    #[serde(
+        default,
+        rename = "durationMs",
+        deserialize_with = "crate::model::utils::opt_duration_from_millis"
+    )]
+    pub duration: Option<Duration>,
     pub storage_dir: Option<String>,
-    pub file_size: Option<i32>,
+    pub file_size: Option<u64>,
     pub substituted: Option<Box<Track>>,
     pub matched_track: Option<Box<Track>>,
     #[serde(default)]
@@ -71,7 +79,12 @@ pub struct Track {
     pub available_as_rbt: Option<bool>,
     pub content_warning: Option<String>,
     pub explicit: Option<bool>,
-    pub preview_duration_ms: Option<i32>,
+    #[serde(
+        default,
+        rename = "previewDurationMs",
+        deserialize_with = "crate::model::utils::opt_duration_from_millis"
+    )]
+    pub preview_duration: Option<Duration>,
     pub available_full_without_permission: Option<bool>,
     pub version: Option<String>,
     pub remember_position: Option<bool>,
@@ -97,12 +110,18 @@ pub struct Track {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackId {
-    #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
+    #[serde(
+        default,
+        deserialize_with = "crate::model::utils::opt_number_to_string"
+    )]
     pub id: Option<String>,
-    #[serde(deserialize_with = "crate::model::utils::opt_number_to_string")]
+    #[serde(
+        default,
+        deserialize_with = "crate::model::utils::opt_number_to_string"
+    )]
     pub track_id: Option<String>,
-    #[serde(deserialize_with = "crate::model::utils::opt_string_to_i32")]
-    pub album_id: Option<i32>,
+    #[serde(default, deserialize_with = "crate::model::utils::opt_string_to_u32")]
+    pub album_id: Option<u32>,
     pub from: Option<String>,
 }
 
@@ -183,16 +202,16 @@ pub struct TrackLyricsInfo {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct TrackNormalization {
     pub gain: f32,
-    pub peak: i32,
+    pub peak: u32,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct TrackMetadata {
     pub album: Option<String>,
-    pub volume: Option<i32>,
-    pub year: Option<i32>,
-    pub number: Option<i32>,
+    pub volume: Option<u8>,
+    pub year: Option<u16>,
+    pub number: Option<u32>,
     pub genre: Option<String>,
     pub lyricist: Option<String>,
     pub version: Option<String>,

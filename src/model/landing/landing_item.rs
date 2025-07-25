@@ -15,11 +15,11 @@ pub struct LandingItem {
     pub menu: Option<LandingItemMenu>,
     pub chart: Option<Playlist>,
     #[serde(default)]
-    pub new_releases: Vec<i32>,
+    pub new_releases: Vec<u32>,
     #[serde(default)]
     pub new_playlists: Vec<PlaylistId>,
     #[serde(default)]
-    pub podcasts: Vec<i32>,
+    pub podcasts: Vec<u32>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]

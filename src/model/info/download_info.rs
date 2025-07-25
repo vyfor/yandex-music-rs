@@ -11,7 +11,7 @@ pub struct TrackDownloadInfo {
     pub preview: bool,
     pub download_info_url: String,
     pub direct: bool,
-    pub bitrate_in_kbps: i32,
+    pub bitrate_in_kbps: u32,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
@@ -19,7 +19,7 @@ struct DownloadInfo {
     pub host: String,
     pub path: String,
     pub ts: String,
-    pub region: i32,
+    pub region: String,
     pub s: String,
 }
 
@@ -45,10 +45,7 @@ impl DownloadInfo {
 }
 
 impl TrackDownloadInfo {
-    pub async fn get_direct_link(
-        &self,
-        client: &Client,
-    ) -> Result<String, ClientError> {
+    pub async fn get_direct_link(&self, client: &Client) -> Result<String, ClientError> {
         let xml = client
             .get(&self.download_info_url)
             .send()

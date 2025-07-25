@@ -1,5 +1,8 @@
 pub mod event;
 
+use std::time::Duration;
+
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use crate::model::{
@@ -12,11 +15,11 @@ use crate::model::{
 #[serde(rename_all = "camelCase")]
 pub struct Album {
     #[serde(default)]
-    #[serde(deserialize_with = "crate::model::utils::opt_string_to_i32")]
-    pub id: Option<i32>,
+    #[serde(deserialize_with = "crate::model::utils::opt_string_to_u32")]
+    pub id: Option<u32>,
     pub error: Option<String>,
     pub title: Option<String>,
-    pub track_count: Option<i32>,
+    pub track_count: Option<u32>,
     #[serde(default)]
     pub artists: Vec<Artist>,
     #[serde(default)]
@@ -40,13 +43,13 @@ pub struct Album {
     pub available_for_mobile: Option<bool>,
     pub available_partially: Option<bool>,
     #[serde(default)]
-    pub bests: Vec<i32>,
+    pub bests: Vec<u32>,
     #[serde(default)]
     pub duplicates: Vec<Album>,
     #[serde(default)]
     pub volumes: Vec<Vec<Track>>,
-    pub year: Option<i32>,
-    pub release_date: Option<String>,
+    pub year: Option<u16>,
+    pub release_date: Option<DateTime<Utc>>,
     #[serde(rename = "type")]
     pub item_type: Option<String>,
     pub track_position: Option<TrackPosition>,
@@ -57,10 +60,14 @@ pub struct Album {
     pub remember_position: Option<bool>,
     #[serde(default)]
     pub albums: Vec<Album>,
-    pub duration_ms: Option<i32>,
+    #[serde(
+        default,
+        deserialize_with = "crate::model::utils::opt_duration_from_millis"
+    )]
+    pub duration_ms: Option<Duration>,
     pub explicit: Option<bool>,
-    pub start_date: Option<String>,
-    pub likes_count: Option<i32>,
+    pub start_date: Option<DateTime<Utc>>,
+    pub likes_count: Option<u32>,
     #[serde(default)]
     pub available_regions: Vec<String>,
     #[serde(default)]
@@ -75,6 +82,6 @@ pub struct Album {
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 pub struct TrackPosition {
-    pub volume: i32,
-    pub index: i32,
+    pub volume: u8,
+    pub index: u32,
 }

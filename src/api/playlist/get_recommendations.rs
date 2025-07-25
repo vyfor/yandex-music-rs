@@ -5,12 +5,12 @@ use serde_json::Value;
 use std::borrow::Cow;
 
 pub struct GetRecommendationsOptions {
-    pub user_id: i32,
-    pub kind: i32,
+    pub user_id: u64,
+    pub kind: u32,
 }
 
 impl GetRecommendationsOptions {
-    pub fn new(user_id: i32, kind: i32) -> Self {
+    pub fn new(user_id: u64, kind: u32) -> Self {
         Self { user_id, kind }
     }
 }

@@ -5,7 +5,7 @@ use std::fmt::Display;
 #[serde(rename_all = "camelCase")]
 pub struct TrackLyrics {
     pub download_url: String,
-    pub lyric_id: i32,
+    pub lyric_id: u32,
     pub external_lyric_id: String,
     pub writers: Vec<String>,
     pub major: LyricsMajor,
@@ -14,7 +14,7 @@ pub struct TrackLyrics {
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct LyricsMajor {
-    pub id: i32,
+    pub id: u32,
     pub name: String,
 }
 

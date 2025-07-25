@@ -7,12 +7,12 @@ use crate::{
 };
 
 pub struct GetAlbumOptions {
-    pub album_id: i32,
+    pub album_id: u32,
     pub with_tracks: bool,
 }
 
 impl GetAlbumOptions {
-    pub fn new(album_id: i32) -> Self {
+    pub fn new(album_id: u32) -> Self {
         Self {
             album_id,
             with_tracks: false,

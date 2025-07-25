@@ -9,7 +9,7 @@ use std::borrow::Cow;
 
 pub struct SearchOptions {
     pub text: String,
-    pub page: i32,
+    pub page: u32,
     pub item_type: SearchType,
     pub nocorrect: bool,
 }
@@ -24,7 +24,7 @@ impl SearchOptions {
         }
     }
 
-    pub fn page(mut self, page: i32) -> Self {
+    pub fn page(mut self, page: u32) -> Self {
         self.page = page;
         self
     }

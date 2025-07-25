@@ -9,16 +9,16 @@ use crate::{
 /// Request for renaming a playlist.
 pub struct RenamePlaylistOptions<'a> {
     /// The ID of the user who owns the playlist.
-    pub user_id: i32,
+    pub user_id: u64,
     /// The kind (ID) of the playlist to rename.
-    pub kind: i32,
+    pub kind: u32,
     /// The new name for the playlist.
     pub value: &'a str,
 }
 
 impl<'a> RenamePlaylistOptions<'a> {
     /// Create a new request to rename a playlist.
-    pub fn new(user_id: i32, kind: i32, value: &'a str) -> Self {
+    pub fn new(user_id: u64, kind: u32, value: &'a str) -> Self {
         Self {
             user_id,
             kind,

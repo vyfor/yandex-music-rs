@@ -6,13 +6,13 @@ use reqwest::Method;
 use std::borrow::Cow;
 
 pub struct GetAlbumsOptions {
-    album_ids: Vec<i32>,
+    album_ids: Vec<u32>,
 }
 
 impl GetAlbumsOptions {
     pub fn new<I>(album_ids: I) -> Self
     where
-        I: IntoIterator<Item = i32>,
+        I: IntoIterator<Item = u32>,
     {
         Self {
             album_ids: album_ids.into_iter().collect(),

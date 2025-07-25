@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use serde::Deserialize;
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
@@ -10,9 +12,13 @@ pub struct Video {
     pub provider_video_id: Option<String>,
     pub youtube_url: Option<String>,
     pub thumbnail_url: Option<String>,
-    pub duration: Option<i32>,
+    #[serde(
+        default,
+        deserialize_with = "crate::model::utils::opt_duration_from_millis"
+    )]
+    pub duration: Option<Duration>,
     pub text: Option<String>,
     pub html_auto_play_video_player: Option<String>,
     #[serde(default)]
-    pub regions: Vec<i32>,
+    pub regions: Vec<u32>,
 }

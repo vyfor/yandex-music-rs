@@ -1,6 +1,7 @@
 use serde::Deserialize;
 
 use super::Account;
+use chrono::{DateTime, Utc};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -13,7 +14,7 @@ pub struct AccountStatus {
     pub subeditor_level: Option<i32>,
     pub plus: AccountPlus,
     pub default_email: Option<String>,
-    pub skips_per_hour: Option<i32>,
+    pub skips_per_hour: Option<u32>,
     pub station_exists: Option<bool>,
     pub station_data: Option<AccountStationData>,
     pub experiment: Option<i32>,
@@ -24,7 +25,7 @@ pub struct AccountStatus {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AccountPermissions {
-    pub until: String,
+    pub until: DateTime<Utc>,
     pub values: Vec<String>,
     pub default: Vec<String>,
 }

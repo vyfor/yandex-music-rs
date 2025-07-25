@@ -2,6 +2,7 @@ pub mod event;
 
 use std::fmt::Display;
 
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use crate::model::{
@@ -33,7 +34,7 @@ pub struct Artist {
     #[serde(default)]
     pub links: Vec<ArtistLink>,
     pub tickets_available: Option<bool>,
-    pub likes_count: Option<i32>,
+    pub likes_count: Option<u32>,
     #[serde(default)]
     pub popular_tracks: Vec<Track>,
     #[serde(default)]
@@ -48,8 +49,8 @@ pub struct Artist {
     pub db_aliases: Vec<String>,
     #[serde(default)]
     pub aliases: Vec<String>,
-    pub init_date: Option<String>,
-    pub end_date: Option<String>,
+    pub init_date: Option<DateTime<Utc>>,
+    pub end_date: Option<DateTime<Utc>>,
 }
 
 #[allow(clippy::large_enum_variant)]
@@ -69,7 +70,7 @@ pub struct ArtistInfo {
     #[serde(default)]
     pub also_albums: Vec<Album>,
     #[serde(default)]
-    pub latest_release_ids: Vec<i32>,
+    pub latest_release_ids: Vec<u32>,
     #[serde(default)]
     pub popular_tracks: Vec<Track>,
     pub bandlink_scanner_link: Option<BandlinkLink>,
@@ -140,18 +141,18 @@ pub struct BandlinkLink {
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ArtistCounts {
-    pub tracks: i32,
-    pub direct_albums: i32,
-    pub also_albums: i32,
-    pub also_tracks: i32,
+    pub tracks: u32,
+    pub direct_albums: u32,
+    pub also_albums: u32,
+    pub also_tracks: u32,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ArtistRatings {
-    pub month: i32,
-    pub week: Option<i32>,
-    pub day: Option<i32>,
+    pub month: u32,
+    pub week: Option<u32>,
+    pub day: Option<u32>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
