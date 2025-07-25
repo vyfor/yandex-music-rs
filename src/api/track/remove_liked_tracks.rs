@@ -37,7 +37,8 @@ impl Endpoint for RemoveLikedTracksOptions {
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
-        RequestOptions::default().with_form_data([("track-ids", self.track_ids.join(","))])
+        RequestOptions::default()
+            .with_form_data([("track-ids", self.track_ids.join(","))])
     }
 }
 
@@ -52,17 +53,16 @@ impl YandexMusicClient {
     pub async fn remove_liked_tracks(
         &self,
         options: &RemoveLikedTracksOptions,
-    ) -> Result<i64, crate::ClientError> {
+    ) -> Result<u64, crate::ClientError> {
         let mut response = self.request::<Value, _>(options).await?;
 
-        response["revision"]
-            .take()
-            .as_i64()
-            .ok_or(ClientError::YandexMusicError {
+        response["revision"].take().as_u64().ok_or(
+            ClientError::YandexMusicError {
                 error: YandexMusicError {
                     name: "InvalidValue".to_string(),
                     message: Some("Revision is not an integer".to_string()),
                 },
-            })
+            },
+        )
     }
 }
