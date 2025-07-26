@@ -52,6 +52,6 @@ impl YandexMusicClient {
         &self,
         options: &GetLandingBlockOptions,
     ) -> Result<LandingItem, crate::ClientError> {
-        self.request::<LandingItem, _>(options).await
+        self.request(options).await
     }
 }

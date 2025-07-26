@@ -50,6 +50,6 @@ impl YandexMusicClient {
         &self,
         options: &GetSimilarTracksOptions,
     ) -> Result<SimilarTracks, crate::ClientError> {
-        self.request::<SimilarTracks, _>(options).await
+        self.request(options).await
     }
 }

@@ -43,6 +43,6 @@ impl YandexMusicClient {
         &self,
         options: &SetAccountSettingsOptions,
     ) -> Result<AccountSettings, crate::ClientError> {
-        self.request::<AccountSettings, _>(options).await
+        self.request(options).await
     }
 }

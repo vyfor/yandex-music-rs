@@ -46,8 +46,6 @@ impl YandexMusicClient {
     ) -> Result<Vec<Track>, crate::ClientError> {
         let mut response = self.request::<Value, _>(options).await?;
 
-        Ok(serde_json::from_value::<Vec<Track>>(
-            response["tracks"].take(),
-        )?)
+        Ok(serde_json::from_value(response["tracks"].take())?)
     }
 }

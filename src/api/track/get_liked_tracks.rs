@@ -4,8 +4,8 @@ use reqwest::Method;
 use serde_json::Value;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions, model::playlist::library::Library,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions,
+    model::playlist::library::Library, YandexMusicClient,
 };
 
 /// Request for retrieving a user's liked tracks.

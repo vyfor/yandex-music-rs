@@ -3,8 +3,8 @@ use std::borrow::Cow;
 use reqwest::Method;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions, model::rotor::feedback::StationFeedback,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions,
+    model::rotor::feedback::StationFeedback, YandexMusicClient,
 };
 
 /// Request for sending feedback about a radio station's track.
@@ -19,7 +19,10 @@ pub struct GetStationFeedbackOptions {
 
 impl GetStationFeedbackOptions {
     /// Create a new feedback request for a station.
-    pub fn new(station_id: impl Into<String>, feedback: StationFeedback) -> Self {
+    pub fn new(
+        station_id: impl Into<String>,
+        feedback: StationFeedback,
+    ) -> Self {
         Self {
             station_id: station_id.into(),
             batch_id: None,
@@ -51,7 +54,8 @@ impl Endpoint for GetStationFeedbackOptions {
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
-        RequestOptions::default().with_json_data(serde_json::to_value(&self.feedback).unwrap())
+        RequestOptions::default()
+            .with_json_data(serde_json::to_value(&self.feedback).unwrap())
     }
 }
 

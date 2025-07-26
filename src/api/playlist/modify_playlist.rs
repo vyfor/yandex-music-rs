@@ -11,20 +11,20 @@ use crate::{
 };
 
 /// Request for modifying a playlist by adding or removing tracks.
-pub struct ModifyPlaylistOptions<'a> {
+pub struct ModifyPlaylistOptions {
     /// The ID of the user who owns the playlist.
     pub user_id: u64,
     /// The kind (ID) of the playlist to modify.
     pub kind: u32,
     /// The diff object containing the changes to apply.
-    pub diff: &'a Diff,
+    pub diff: Diff,
     /// The current revision of the playlist.
     pub revision: u32,
 }
 
-impl<'a> ModifyPlaylistOptions<'a> {
+impl ModifyPlaylistOptions {
     /// Create a new request to modify a playlist.
-    pub fn new(user_id: u64, kind: u32, diff: &'a Diff, revision: u32) -> Self {
+    pub fn new(user_id: u64, kind: u32, diff: Diff, revision: u32) -> Self {
         Self {
             user_id,
             kind,
@@ -34,7 +34,7 @@ impl<'a> ModifyPlaylistOptions<'a> {
     }
 }
 
-impl<'a> Endpoint for ModifyPlaylistOptions<'a> {
+impl Endpoint for ModifyPlaylistOptions {
     type Options = [(&'static str, String); 2];
     const METHOD: Method = Method::POST;
 
@@ -52,8 +52,10 @@ impl<'a> Endpoint for ModifyPlaylistOptions<'a> {
         })
         .to_string();
 
-        RequestOptions::default()
-            .with_form_data([("diff", diff_str), ("revision", self.revision.to_string())])
+        RequestOptions::default().with_form_data([
+            ("diff", diff_str),
+            ("revision", self.revision.to_string()),
+        ])
     }
 }
 
@@ -67,8 +69,8 @@ impl YandexMusicClient {
     /// * `Result<Playlist, ClientError>` - The updated playlist or an error if the request fails.
     pub async fn modify_playlist(
         &self,
-        options: &ModifyPlaylistOptions<'_>,
+        options: &ModifyPlaylistOptions,
     ) -> Result<Playlist, crate::ClientError> {
-        self.request::<Playlist, _>(options).await
+        self.request(options).await
     }
 }

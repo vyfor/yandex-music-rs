@@ -3,32 +3,33 @@ use std::borrow::Cow;
 use reqwest::Method;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions, model::playlist::Playlist, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::playlist::Playlist,
+    YandexMusicClient,
 };
 
 /// Request for renaming a playlist.
-pub struct RenamePlaylistOptions<'a> {
+pub struct RenamePlaylistOptions {
     /// The ID of the user who owns the playlist.
     pub user_id: u64,
     /// The kind (ID) of the playlist to rename.
     pub kind: u32,
     /// The new name for the playlist.
-    pub value: &'a str,
+    pub value: String,
 }
 
-impl<'a> RenamePlaylistOptions<'a> {
+impl RenamePlaylistOptions {
     /// Create a new request to rename a playlist.
-    pub fn new(user_id: u64, kind: u32, value: &'a str) -> Self {
+    pub fn new(user_id: u64, kind: u32, value: impl Into<String>) -> Self {
         Self {
             user_id,
             kind,
-            value,
+            value: value.into(),
         }
     }
 }
 
-impl<'a> Endpoint for RenamePlaylistOptions<'a> {
-    type Options = [(&'static str, &'a str); 1];
+impl Endpoint for RenamePlaylistOptions {
+    type Options = [(&'static str, String); 1];
     const METHOD: Method = Method::POST;
 
     fn path(&self) -> Cow<'static, str> {
@@ -36,7 +37,8 @@ impl<'a> Endpoint for RenamePlaylistOptions<'a> {
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
-        RequestOptions::default().with_form_data([("value", self.value)])
+        RequestOptions::default()
+            .with_form_data([("value", self.value.clone())])
     }
 }
 
@@ -50,8 +52,8 @@ impl YandexMusicClient {
     /// * `Result<Playlist, ClientError>` - The updated playlist or an error if the request fails.
     pub async fn rename_playlist(
         &self,
-        options: &RenamePlaylistOptions<'_>,
+        options: &RenamePlaylistOptions,
     ) -> Result<Playlist, crate::ClientError> {
-        self.request::<Playlist, _>(options).await
+        self.request(options).await
     }
 }

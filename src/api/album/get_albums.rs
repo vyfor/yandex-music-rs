@@ -52,6 +52,6 @@ impl YandexMusicClient {
         &self,
         options: &GetAlbumsOptions,
     ) -> Result<Vec<Album>, crate::ClientError> {
-        self.request::<Vec<Album>, _>(options).await
+        self.request(options).await
     }
 }

@@ -40,6 +40,6 @@ impl YandexMusicClient {
         &self,
         options: &GetSearchSuggestionOptions,
     ) -> Result<SearchSuggestion, crate::ClientError> {
-        self.request::<SearchSuggestion, _>(options).await
+        self.request(options).await
     }
 }

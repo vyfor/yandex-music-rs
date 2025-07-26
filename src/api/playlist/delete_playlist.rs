@@ -2,7 +2,9 @@ use std::borrow::Cow;
 
 use reqwest::Method;
 
-use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
+use crate::{
+    api::Endpoint, client::request::RequestOptions, YandexMusicClient,
+};
 
 /// Request for deleting a playlist.
 pub struct DeletePlaylistOptions {
