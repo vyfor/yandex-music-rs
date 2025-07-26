@@ -66,6 +66,6 @@ impl YandexMusicClient {
     /// ### Returns
     /// * `Result<Search, ClientError>` - The search results or an error if the request fails.
     pub async fn search(&self, options: &SearchOptions) -> Result<Search, crate::ClientError> {
-        self.request::<Search, _>(options).await
+        self.request(options).await
     }
 }

@@ -52,6 +52,6 @@ impl YandexMusicClient {
         &self,
         options: &ChangePlaylistVisibilityOptions,
     ) -> Result<Playlist, crate::ClientError> {
-        self.request::<Playlist, _>(options).await
+        self.request(options).await
     }
 }

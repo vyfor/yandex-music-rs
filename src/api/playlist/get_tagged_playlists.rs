@@ -49,6 +49,6 @@ impl YandexMusicClient {
         &self,
         options: &GetTaggedPlaylistsOptions,
     ) -> Result<TaggedPlaylistIds, crate::ClientError> {
-        self.request::<TaggedPlaylistIds, _>(options).await
+        self.request(options).await
     }
 }

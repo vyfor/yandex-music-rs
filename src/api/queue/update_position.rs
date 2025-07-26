@@ -69,6 +69,6 @@ impl YandexMusicClient {
         &self,
         options: &UpdateQueuePositionOptions,
     ) -> Result<QueueStatus, crate::ClientError> {
-        self.request::<QueueStatus, _>(options).await
+        self.request(options).await
     }
 }

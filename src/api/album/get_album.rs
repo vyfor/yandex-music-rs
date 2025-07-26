@@ -52,6 +52,6 @@ impl YandexMusicClient {
     /// ### Returns
     /// * `Result<Album, ClientError>` - The album or an error if the request fails.
     pub async fn get_album(&self, options: &GetAlbumOptions) -> Result<Album, crate::ClientError> {
-        self.request::<Album, _>(options).await
+        self.request(options).await
     }
 }

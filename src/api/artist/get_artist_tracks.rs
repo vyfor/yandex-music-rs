@@ -59,6 +59,6 @@ impl YandexMusicClient {
         &self,
         options: &ArtistTracksOptions,
     ) -> Result<ArtistTracks, crate::ClientError> {
-        self.request::<ArtistTracks, _>(options).await
+        self.request(options).await
     }
 }

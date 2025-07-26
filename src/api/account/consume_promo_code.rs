@@ -51,6 +51,6 @@ impl YandexMusicClient {
         &self,
         options: &ConsumePromoCodeOptions,
     ) -> Result<PromoCode, crate::ClientError> {
-        self.request::<PromoCode, _>(options).await
+        self.request(options).await
     }
 }

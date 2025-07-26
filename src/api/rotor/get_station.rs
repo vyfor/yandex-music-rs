@@ -46,6 +46,6 @@ impl YandexMusicClient {
         &self,
         options: &GetStationOptions,
     ) -> Result<Vec<Rotor>, crate::ClientError> {
-        self.request::<Vec<Rotor>, _>(options).await
+        self.request(options).await
     }
 }

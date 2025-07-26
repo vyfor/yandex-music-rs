@@ -43,6 +43,6 @@ impl YandexMusicClient {
     /// ### Returns
     /// * `Result<Queue, ClientError>` - The queue or an error if the request fails.
     pub async fn get_queue(&self, options: &GetQueueOptions) -> Result<Queue, crate::ClientError> {
-        self.request::<Queue, _>(options).await
+        self.request(options).await
     }
 }

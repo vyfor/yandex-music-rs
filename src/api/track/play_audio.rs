@@ -1,4 +1,6 @@
-use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
+use crate::{
+    api::Endpoint, client::request::RequestOptions, YandexMusicClient,
+};
 use chrono::{DateTime, Utc};
 use reqwest::Method;
 use std::borrow::Cow;
@@ -93,6 +95,7 @@ impl Endpoint for PlayAudioOptions {
         "play-audio".into()
     }
 
+    // todo
     fn options(&self) -> RequestOptions<Self::Options> {
         RequestOptions::default()
     }
@@ -100,7 +103,10 @@ impl Endpoint for PlayAudioOptions {
 
 impl YandexMusicClient {
     /// Send sending the current state of the track being listened to.
-    pub async fn play_audio(&self, options: &PlayAudioOptions) -> Result<(), crate::ClientError> {
-        self.request::<(), _>(options).await
+    pub async fn play_audio(
+        &self,
+        options: &PlayAudioOptions,
+    ) -> Result<(), crate::ClientError> {
+        self.request(options).await
     }
 }

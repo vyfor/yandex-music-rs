@@ -3,8 +3,8 @@ use std::borrow::Cow;
 use reqwest::Method;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions, model::track::supplement::TrackSupplement,
-    YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions,
+    model::track::supplement::TrackSupplement, YandexMusicClient,
 };
 
 /// Request for retrieving supplementary information about a track.
@@ -50,6 +50,6 @@ impl YandexMusicClient {
         &self,
         options: &GetTrackSupplementOptions,
     ) -> Result<TrackSupplement, crate::ClientError> {
-        self.request::<TrackSupplement, _>(options).await
+        self.request(options).await
     }
 }

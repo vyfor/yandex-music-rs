@@ -46,6 +46,6 @@ impl YandexMusicClient {
         &self,
         options: &GetDownloadInfoOptions,
     ) -> Result<Vec<TrackDownloadInfo>, crate::ClientError> {
-        self.request::<Vec<TrackDownloadInfo>, _>(options).await
+        self.request(options).await
     }
 }
