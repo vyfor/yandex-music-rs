@@ -6,7 +6,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use crate::model::{
-    info::clip::TrackClip, info::pager::Pager, info::video::Video, landing::chart_item::Chart,
+    info::clip::Clip, info::pager::Pager, info::video::Video, landing::chart_item::Chart,
 };
 
 use crate::model::{
@@ -81,7 +81,7 @@ pub struct ArtistInfo {
     #[serde(default)]
     pub videos: Vec<Video>,
     #[serde(default)]
-    pub clips: Vec<TrackClip>,
+    pub clips: Vec<Clip>,
     #[serde(default)]
     pub latest_releases: Vec<Album>,
     pub custom_waves: Option<CustomWave>,
