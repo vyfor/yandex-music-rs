@@ -35,7 +35,7 @@ pub struct Playlist {
     pub is_premiere: bool,
     pub kind: u32,
     pub og_image: String,
-    pub tracks: Option<TracksType>,
+    pub tracks: Option<PlaylistTracks>,
     pub owner: User,
     pub revision: u32,
     pub snapshot: u32,
@@ -52,8 +52,8 @@ pub struct Playlist {
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(untagged)]
-pub enum TracksType {
+pub enum PlaylistTracks {
     Full(Vec<Track>),
-    TrackWithInfo(Vec<TrackWithInfo>),
+    WithInfo(Vec<TrackWithInfo>),
     Partial(Vec<PartialTrack>),
 }
