@@ -8,7 +8,7 @@ use chrono::{DateTime, Utc};
 use serde::Deserialize;
 
 use crate::model::{
-    info::tag::Tag,
+    info::{pager::Pager, tag::Tag},
     track::{cover::Cover, PartialTrack, Track, TrackWithInfo},
     user::User,
 };
@@ -48,6 +48,7 @@ pub struct Playlist {
     pub likes_count: u32,
     #[serde(default)]
     pub similar_playlists: Vec<Playlist>,
+    pub pager: Option<Pager>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
