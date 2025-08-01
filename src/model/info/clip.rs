@@ -6,7 +6,7 @@ use crate::model::artist::Artist;
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct TrackClip {
+pub struct Clip {
     pub clip_id: u32,
     pub title: String,
     pub player_id: Option<String>,

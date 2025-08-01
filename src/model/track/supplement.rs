@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::model::info::{clip::TrackClip, video::Video};
+use crate::model::info::{clip::Clip, video::Video};
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -14,7 +14,7 @@ pub struct TrackSupplement {
     pub videos: Vec<Video>,
     #[serde(default)]
     #[serde(deserialize_with = "crate::model::utils::deserialize_maybe_vec")]
-    pub clips: Vec<TrackClip>,
+    pub clips: Vec<Clip>,
 }
 
 #[derive(Debug, Eq, PartialEq, Clone, Deserialize)]
