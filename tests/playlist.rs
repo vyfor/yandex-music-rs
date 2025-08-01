@@ -139,7 +139,7 @@ mod playlist {
             DiffOp::insert(0),
             vec![TrackShort::new(track_id.clone(), Some(album_id.clone()))],
         );
-        let options = ModifyPlaylistOptions::new(user_id, kind, &diff, playlist.revision);
+        let options = ModifyPlaylistOptions::new(user_id, kind, diff, playlist.revision);
         let result = client.modify_playlist(&options).await.unwrap();
 
         tokio::time::sleep(std::time::Duration::from_secs(1)).await;
@@ -148,7 +148,7 @@ mod playlist {
             DiffOp::delete(0, 1),
             vec![TrackShort::new(track_id, Some(album_id))],
         );
-        let options = ModifyPlaylistOptions::new(user_id, kind, &diff, result.revision);
+        let options = ModifyPlaylistOptions::new(user_id, kind, diff, result.revision);
         client.modify_playlist(&options).await.unwrap();
     }
 }
