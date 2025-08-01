@@ -105,6 +105,7 @@ pub struct Track {
     #[serde(default)]
     pub special_audio_resources: Vec<String>,
     pub player_id: Option<String>,
+    pub play_count: Option<u32>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
