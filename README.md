@@ -17,8 +17,21 @@ cargo add yandex-music
 ```rust
 use yandex_music::YandexMusicClient;
 
-let client = YandexMusicClient::new("TOKEN");
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+	// Replace "TOKEN" with your Yandex Music access token
+	let client = YandexMusicClient::builder("TOKEN").build()?;
+
+	// Example usage
+	let status = client.get_account_status().await?;
+	println!("Account status: {status:?}");
+
+	Ok(())
+}
 ```
+
+> [!NOTE]
+> You may also want to take a look at [yamusic](https://github.com/yamusic/yamusic).
 
 ## Acknowledgements
 - https://github.com/acherkashin/yandex-music-open-api
