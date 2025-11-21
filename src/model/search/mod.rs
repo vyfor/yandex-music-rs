@@ -7,6 +7,10 @@ use std::fmt::Display;
 
 use serde::Deserialize;
 
+use crate::model::{
+    album::Album, artist::Artist, info::video::Video, playlist::Playlist, track::Track, user::User,
+};
+
 use best_result::BestResult;
 use search_result::SearchResult;
 
@@ -16,14 +20,12 @@ pub struct Search {
     pub search_request_id: String,
     pub text: String,
     pub best: Option<BestResult>,
-    pub albums: Option<SearchResult>,
-    pub artists: Option<SearchResult>,
-    pub playlists: Option<SearchResult>,
-    pub tracks: Option<SearchResult>,
-    pub users: Option<SearchResult>,
-    pub videos: Option<SearchResult>,
-    pub podcasts: Option<SearchResult>,
-    pub podcast_episodes: Option<SearchResult>,
+    pub albums: Option<SearchResult<Album>>,
+    pub artists: Option<SearchResult<Artist>>,
+    pub playlists: Option<SearchResult<Playlist>>,
+    pub tracks: Option<SearchResult<Track>>,
+    pub users: Option<SearchResult<User>>,
+    pub videos: Option<SearchResult<Video>>,
     #[serde(rename = "type")]
     pub item_type: Option<String>,
     pub page: Option<u32>,

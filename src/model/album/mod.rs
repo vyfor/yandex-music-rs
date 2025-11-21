@@ -8,8 +8,15 @@ use serde::Deserialize;
 use crate::model::{
     artist::Artist,
     info::pager::Pager,
-    track::{custom_wave::CustomWave, label::Label, Track},
+    track::{custom_wave::CustomWave, label::Label as TrackLabel, Track},
 };
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(untagged)]
+pub enum Label {
+    TrackLabel(TrackLabel),
+    String(String),
+}
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
