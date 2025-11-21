@@ -36,6 +36,11 @@ impl YandexMusicClient {
     /// Get track download info.
     /// Use [`get_direct_link`](TrackDownloadInfo::get_direct_link) to construct the link to download the track.
     ///
+    /// Note: prefer using [`YandexMusicClient::get_file_info`] for high-quality or
+    /// lossless direct links and for explicit codec support. `get_download_info`
+    /// remains supported and returns available download variants, but
+    /// `get_file_info` exposes additional quality/codec options.
+    ///
     /// ### Arguments
     /// * `options` - The request options containing the track ID.
     ///
