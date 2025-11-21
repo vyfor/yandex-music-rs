@@ -132,4 +132,20 @@ mod track {
         let result = client.get_tracks(&options).await.unwrap();
         println!("{result:#?}");
     }
+
+    #[tokio::test]
+    async fn get_track_file_info_test() {
+        dotenv::dotenv().ok();
+        let api_key = std::env::var("YANDEX_MUSIC_TOKEN").expect("YANDEX_MUSIC_TOKEN must be set");
+        let track_id =
+            std::env::var("YANDEX_MUSIC_TRACK_ID").expect("YANDEX_MUSIC_TRACK_ID must be set");
+
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
+
+        use yandex_music::api::track::get_file_info::GetFileInfoOptions;
+        let options = GetFileInfoOptions::new(track_id)
+            .codec(yandex_music::model::info::file_info::Codec::FlacMp4);
+        let result = client.get_file_info(&options).await.unwrap();
+        println!("{result:#?}");
+    }
 }

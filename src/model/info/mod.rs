@@ -1,5 +1,6 @@
 pub mod clip;
 pub mod download_info;
+pub mod file_info;
 pub mod icon;
 pub mod lyrics;
 pub mod pager;
