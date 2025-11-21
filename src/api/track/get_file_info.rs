@@ -15,6 +15,7 @@ pub struct GetFileInfoOptions {
     pub track_id: String,
     pub quality: String,
     pub codec: Codec,
+    pub is_encrypted: bool,
 }
 
 impl GetFileInfoOptions {
@@ -23,6 +24,7 @@ impl GetFileInfoOptions {
             track_id: track_id.into(),
             quality: "lossless".to_string(),
             codec: Codec::Mp3,
+            is_encrypted: false,
         }
     }
 
@@ -35,6 +37,11 @@ impl GetFileInfoOptions {
         self.codec = codec;
         self
     }
+
+    pub fn is_encrypted(mut self, is_encrypted: bool) -> Self {
+        self.is_encrypted = is_encrypted;
+        self
+    }
 }
 
 impl Endpoint for GetFileInfoOptions {
@@ -42,11 +49,12 @@ impl Endpoint for GetFileInfoOptions {
     const METHOD: Method = Method::GET;
 
     fn path(&self) -> Cow<'static, str> {
+        let transport = if self.is_encrypted { "encraw" } else { "raw" };
         let (ts, sign) = create_file_info_sign(
             &self.track_id,
             &self.quality,
             &self.codec.to_string(),
-            "encraw",
+            transport,
         );
 
         let mut serializer = url::form_urlencoded::Serializer::new(String::from("get-file-info?"));
@@ -54,7 +62,7 @@ impl Endpoint for GetFileInfoOptions {
         serializer.append_pair("trackId", &self.track_id);
         serializer.append_pair("quality", &self.quality);
         serializer.append_pair("codecs", &self.codec.to_string());
-        serializer.append_pair("transports", "encraw");
+        serializer.append_pair("transports", transport);
         serializer.append_pair("sign", &sign);
 
         serializer.finish().into()
