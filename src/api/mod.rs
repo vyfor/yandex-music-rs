@@ -34,9 +34,7 @@ pub struct InvocationInfo {
     pub req_id: String,
 }
 
-fn deserialize_exec_duration_millis<'de, D>(
-    deserializer: D,
-) -> Result<Option<u64>, D::Error>
+fn deserialize_exec_duration_millis<'de, D>(deserializer: D) -> Result<Option<u64>, D::Error>
 where
     D: serde::Deserializer<'de>,
 {

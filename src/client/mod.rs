@@ -7,6 +7,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use crate::api::Endpoint;
+use crate::client::request::send_request_direct;
 use crate::error::ClientError;
 use crate::YandexMusicClient;
 
@@ -14,10 +15,7 @@ use self::request::send_request;
 
 impl YandexMusicClient {
     /// Generic request method that handles all request types.
-    pub(crate) async fn request<T, P>(
-        &self,
-        endpoint: &P,
-    ) -> Result<T, ClientError>
+    pub(crate) async fn request<T, P>(&self, endpoint: &P) -> Result<T, ClientError>
     where
         T: DeserializeOwned,
         P: Endpoint,
@@ -38,6 +36,32 @@ impl YandexMusicClient {
         <P as Endpoint>::Options: Serialize,
     {
         send_request(&self.inner, endpoint, Some(url)).await
+    }
+
+    /// Generic request method that parses the raw JSON response directly into T.
+    /// Useful for endpoints that do not return the standard `{ result: ..., error: ... }` wrapper.
+    pub(crate) async fn request_direct<T, P>(&self, endpoint: &P) -> Result<T, ClientError>
+    where
+        T: DeserializeOwned,
+        P: Endpoint,
+        <P as Endpoint>::Options: Serialize,
+    {
+        send_request_direct(&self.inner, endpoint, None).await
+    }
+
+    /// Generic direct request method with a custom URL.
+    #[allow(dead_code)]
+    pub(crate) async fn request_direct_with_url<T, P>(
+        &self,
+        url: String,
+        endpoint: &P,
+    ) -> Result<T, ClientError>
+    where
+        T: DeserializeOwned,
+        P: Endpoint,
+        <P as Endpoint>::Options: Serialize,
+    {
+        send_request_direct(&self.inner, endpoint, Some(url)).await
     }
 }
 

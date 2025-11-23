@@ -6,6 +6,7 @@ pub mod personal_playlists;
 pub mod play_context;
 pub mod play_contexts;
 pub mod promotion;
+pub mod wave;
 
 use serde::Deserialize;
 

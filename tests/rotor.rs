@@ -62,4 +62,15 @@ mod rotor {
         let result = client.get_stations_dashboard().await.unwrap();
         println!("{result:#?}");
     }
+
+    #[tokio::test]
+    async fn get_waves_test() {
+        dotenv::dotenv().ok();
+        let api_key = std::env::var("YANDEX_MUSIC_TOKEN").expect("YANDEX_MUSIC_TOKEN must be set");
+
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
+
+        let result = client.get_waves().await.unwrap();
+        println!("{result:#?}");
+    }
 }

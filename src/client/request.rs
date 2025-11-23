@@ -179,3 +179,54 @@ where
 
     Ok(serde_json::from_value(result)?)
 }
+
+/// Helper function for sending API requests directly parsing the response into the desired type.
+pub(crate) async fn send_request_direct<P, T>(
+    client: &reqwest::Client,
+    endpoint: &P,
+    url: Option<String>,
+) -> Result<T, ClientError>
+where
+    P: Endpoint,
+    T: DeserializeOwned,
+    <P as Endpoint>::Options: Serialize,
+{
+    let method = <P as Endpoint>::METHOD;
+    let options = endpoint.options();
+
+    let url = if let Some(url) = url {
+        url
+    } else {
+        format!("{}{}", API_PATH, endpoint.path())
+    };
+
+    let mut request_builder = client.request(method, url);
+
+    if let Some(headers) = options.headers {
+        request_builder = request_builder.headers(headers);
+    }
+
+    match options.body {
+        RequestBody::Form(form) => {
+            request_builder = request_builder.form(&form);
+        }
+        RequestBody::Json(json) => {
+            request_builder = request_builder.json(&json);
+        }
+        RequestBody::Empty => {}
+    }
+
+    let response = request_builder.send().await?;
+    let status_code = response.status();
+
+    if !status_code.is_success() {
+        return Err(ClientError::YandexMusicError {
+            error: YandexMusicError {
+                name: "RequestFailed".to_string(),
+                message: Some(format!("Request failed with status code: {status_code}")),
+            },
+        });
+    }
+
+    Ok(response.json::<T>().await?)
+}
