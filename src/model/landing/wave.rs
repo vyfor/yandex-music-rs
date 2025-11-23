@@ -2,15 +2,15 @@ use serde::Deserialize;
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Wave {
+pub struct LandingWave {
     pub id: String,
     pub title: String,
-    pub items: Vec<WaveItem>,
+    pub items: Vec<LandingWaveItem>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
-pub struct WaveItem {
+pub struct LandingWaveItem {
     pub title: String,
     pub header: String,
     pub animation_url: String,

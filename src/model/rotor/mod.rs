@@ -2,6 +2,7 @@ pub mod dashboard;
 pub mod feedback;
 pub mod id;
 pub mod restrictions;
+pub mod session;
 pub mod station;
 
 use serde::Deserialize;

@@ -218,3 +218,12 @@ pub struct TrackMetadata {
     pub version: Option<String>,
     pub composer: Option<String>,
 }
+
+#[derive(Debug, PartialEq, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct TrackParameters {
+    pub bpm: u32,
+    pub energy: f32,
+    pub hue: f32,
+    pub user_collection_hue: u32,
+}

@@ -4,7 +4,8 @@ use reqwest::Method;
 use serde::Deserialize;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions, model::landing::wave::Wave, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::landing::wave::LandingWave,
+    YandexMusicClient,
 };
 
 #[derive(Default)]
@@ -25,7 +26,7 @@ impl Endpoint for GetWavesOptions {
 
 #[derive(Deserialize)]
 struct GetWavesResponse {
-    waves: Vec<Wave>,
+    waves: Vec<LandingWave>,
 }
 
 impl YandexMusicClient {
@@ -33,7 +34,7 @@ impl YandexMusicClient {
     ///
     /// ### Returns
     /// * [Vec<Wave>] - The landing waves data.
-    pub async fn get_waves(&self) -> Result<Vec<Wave>, crate::ClientError> {
+    pub async fn get_waves(&self) -> Result<Vec<LandingWave>, crate::ClientError> {
         self.request_direct::<GetWavesResponse, _>(&GetWavesOptions::default())
             .await
             .map(|res| res.waves)

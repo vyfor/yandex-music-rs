@@ -73,4 +73,28 @@ mod rotor {
         let result = client.get_waves().await.unwrap();
         println!("{result:#?}");
     }
+
+    #[tokio::test]
+    async fn session_test() {
+        dotenv::dotenv().ok();
+        let api_key = std::env::var("YANDEX_MUSIC_TOKEN").expect("YANDEX_MUSIC_TOKEN must be set");
+
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
+
+        let options = yandex_music::api::rotor::create_session::CreateSessionOptions::new(vec![
+            "user:onyourwave",
+        ]);
+
+        let result = client.create_session(options).await.unwrap();
+        let session_id = result.batch_id.clone();
+
+        println!("{result:#?}\n{session_id}");
+
+        let options = yandex_music::api::rotor::get_session_tracks::GetSessionTracksOptions::new(
+            session_id,
+            vec![],
+        );
+        let result = client.get_session_tracks(options).await.unwrap();
+        println!("{result:#?}");
+    }
 }
