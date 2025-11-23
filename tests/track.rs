@@ -1,6 +1,9 @@
 #[cfg(test)]
 mod track {
-    use yandex_music::{model::info::lyrics::LyricsFormat, YandexMusicClient};
+    use yandex_music::{
+        model::info::{file_info::Quality, lyrics::LyricsFormat},
+        YandexMusicClient,
+    };
 
     #[tokio::test]
     async fn get_disliked_tracks_test() {
@@ -143,9 +146,25 @@ mod track {
         let client = YandexMusicClient::builder(&api_key).build().unwrap();
 
         use yandex_music::api::track::get_file_info::GetFileInfoOptions;
-        let options = GetFileInfoOptions::new(track_id)
-            .codec(yandex_music::model::info::file_info::Codec::FlacMp4);
+        let options = GetFileInfoOptions::new(track_id).quality(Quality::Normal);
         let result = client.get_file_info(&options).await.unwrap();
+        println!("{result:#?}");
+    }
+
+    #[tokio::test]
+    async fn get_track_file_info_batch_test() {
+        dotenv::dotenv().ok();
+        let api_key = std::env::var("YANDEX_MUSIC_TOKEN").expect("YANDEX_MUSIC_TOKEN must be set");
+        let track_id =
+            std::env::var("YANDEX_MUSIC_TRACK_ID").expect("YANDEX_MUSIC_TRACK_ID must be set");
+        let track_ids = vec![track_id.clone(), track_id];
+
+        let client = YandexMusicClient::builder(&api_key).build().unwrap();
+
+        let options =
+            yandex_music::api::track::get_file_info_batch::GetFileInfoBatchOptions::new(track_ids)
+                .quality(Quality::Low);
+        let result = client.get_file_info_batch(&options).await.unwrap();
         println!("{result:#?}");
     }
 }

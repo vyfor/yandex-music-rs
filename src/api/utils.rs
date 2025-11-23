@@ -2,7 +2,7 @@ use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
 use hmac::{Hmac, Mac};
 use sha2::Sha256;
-use std::time::SystemTime;
+use std::{fmt::Display, time::SystemTime};
 
 pub const SIGN_KEY: &str = "p93jhgh689SBReK6ghtw62";
 
@@ -44,6 +44,33 @@ pub fn create_file_info_sign(
     (timestamp, sign)
 }
 
+pub fn create_file_info_batch_sign(
+    track_ids: &Vec<String>,
+    quality: &str,
+    codec: &str,
+    transport: &str,
+) -> (String, String) {
+    let timestamp = SystemTime::now()
+        .duration_since(SystemTime::UNIX_EPOCH)
+        .unwrap()
+        .as_secs()
+        .to_string();
+
+    let track_ids_str = track_ids.join(",");
+    let sign_str = format!(
+        "{}{}{}{}{}",
+        timestamp, track_ids_str, quality, codec, transport
+    );
+
+    let mut mac = Hmac::<Sha256>::new_from_slice(SIGN_KEY.as_bytes()).unwrap();
+    mac.update(sign_str.as_bytes());
+    let result = mac.finalize();
+    let sign = STANDARD.encode(result.into_bytes());
+    let sign = sign[..sign.len() - 1].to_string();
+
+    (timestamp, sign)
+}
+
 fn url_encode(input: String) -> String {
     let mut output = String::with_capacity(input.len() * 3);
     const HEX: &[u8; 16] = b"0123456789ABCDEF";
@@ -62,4 +89,40 @@ fn url_encode(input: String) -> String {
     }
 
     output
+}
+
+pub(crate) trait JoinDisplay {
+    fn delimited(&self, delimiter: &str) -> String;
+    fn concatenated(&self) -> String;
+}
+
+impl<T: Display> JoinDisplay for [T] {
+    fn delimited(&self, delimiter: &str) -> String {
+        let mut result = String::new();
+        for (i, item) in self.iter().enumerate() {
+            if i != 0 {
+                result.push_str(delimiter);
+            }
+            result.push_str(&item.to_string());
+        }
+        result
+    }
+
+    fn concatenated(&self) -> String {
+        let mut result = String::new();
+        for item in self.iter() {
+            result.push_str(&item.to_string());
+        }
+        result
+    }
+}
+
+impl<T: Display> JoinDisplay for Vec<T> {
+    fn delimited(&self, delimiter: &str) -> String {
+        self.as_slice().delimited(delimiter)
+    }
+
+    fn concatenated(&self) -> String {
+        self.as_slice().concatenated()
+    }
 }

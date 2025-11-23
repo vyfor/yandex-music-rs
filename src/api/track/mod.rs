@@ -2,6 +2,7 @@ pub mod add_liked_tracks;
 pub mod get_disliked_tracks;
 pub mod get_download_info;
 pub mod get_file_info;
+pub mod get_file_info_batch;
 pub mod get_liked_tracks;
 pub mod get_lyrics;
 pub mod get_similar_tracks;
