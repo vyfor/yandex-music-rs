@@ -15,11 +15,11 @@ pub mod liked_tracks;
 #[derive(Debug, PartialEq, Clone, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Collection {
-    liked_albums: Option<LikedAlbumsCollection>,
-    liked_artists: Option<LikedArtistsCollection>,
-    liked_clips: Option<LikedClipsCollection>,
-    liked_playlists: Option<LikedPlaylistsCollection>,
-    liked_tracks: Option<LikedTracksCollection>,
+    pub liked_albums: Option<LikedAlbumsCollection>,
+    pub liked_artists: Option<LikedArtistsCollection>,
+    pub liked_clips: Option<LikedClipsCollection>,
+    pub liked_playlists: Option<LikedPlaylistsCollection>,
+    pub liked_tracks: Option<LikedTracksCollection>,
 }
 
 #[derive(Debug, PartialEq, Clone, Deserialize)]
