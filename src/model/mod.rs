@@ -1,6 +1,7 @@
 pub mod account;
 pub mod album;
 pub mod artist;
+pub mod collection;
 pub mod common;
 pub mod info;
 pub mod landing;

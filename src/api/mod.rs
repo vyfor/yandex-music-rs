@@ -9,6 +9,7 @@ use crate::{client::request::RequestOptions, error::YandexMusicError};
 pub mod account;
 pub mod album;
 pub mod artist;
+pub mod collection;
 pub mod common;
 pub mod landing;
 pub mod playlist;
