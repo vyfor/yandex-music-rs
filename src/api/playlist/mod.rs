@@ -8,3 +8,5 @@ pub mod get_recommendations;
 pub mod get_tagged_playlists;
 pub mod modify_playlist;
 pub mod rename_playlist;
+pub mod add_liked_playlist;
+pub mod remove_liked_playlist;

@@ -13,6 +13,7 @@ pub mod collection;
 pub mod common;
 pub mod landing;
 pub mod playlist;
+pub mod clip;
 pub mod queue;
 pub mod rotor;
 pub mod search;
