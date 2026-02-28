@@ -71,6 +71,12 @@ impl CollectionSyncOptions {
     }
 }
 
+impl Default for CollectionSyncOption {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl CollectionSyncOption {
     pub fn new() -> Self {
         Self {

@@ -35,7 +35,7 @@ impl YandexMusicClient {
     /// ### Returns
     /// * [Vec<Wave>] - The landing waves data.
     pub async fn get_waves(&self) -> Result<Vec<LandingWave>, crate::ClientError> {
-        self.request_direct::<GetWavesResponse, _>(&GetWavesOptions::default())
+        self.request_direct::<GetWavesResponse, _>(&GetWavesOptions)
             .await
             .map(|res| res.waves)
     }

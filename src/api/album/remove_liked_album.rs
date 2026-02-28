@@ -1,13 +1,7 @@
 use reqwest::Method;
-use serde_json::Value;
 use std::borrow::Cow;
 
-use crate::{
-    api::Endpoint,
-    client::request::RequestOptions,
-    error::{ClientError, YandexMusicError},
-    YandexMusicClient,
-};
+use crate::{api::Endpoint, client::request::RequestOptions, YandexMusicClient};
 
 pub struct RemoveLikedAlbumOptions {
     pub user_id: u64,
@@ -42,17 +36,7 @@ impl YandexMusicClient {
     pub async fn remove_liked_album(
         &self,
         options: &RemoveLikedAlbumOptions,
-    ) -> Result<u64, crate::ClientError> {
-        let mut response = self.request::<Value, _>(options).await?;
-
-        response["revision"]
-            .take()
-            .as_u64()
-            .ok_or(ClientError::YandexMusicError {
-                error: YandexMusicError {
-                    name: "InvalidValue".to_string(),
-                    message: Some("Revision is not an integer".to_string()),
-                },
-            })
+    ) -> Result<(), crate::ClientError> {
+        self.request::<(), _>(options).await
     }
 }
