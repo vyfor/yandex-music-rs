@@ -1,6 +1,7 @@
 use std::borrow::Cow;
 
 use reqwest::Method;
+use serde_json::to_value;
 
 use crate::{
     api::Endpoint, client::request::RequestOptions,
@@ -74,7 +75,37 @@ impl YandexMusicClient {
         &self,
         options: &GetStationFeedbackOptions,
     ) -> Result<(), crate::ClientError> {
-        self.request::<(), _>(options).await?;
+        let url = if let Some(batch_id) = &options.batch_id {
+            format!(
+                "https://api.music.yandex.net/rotor/station/{}/feedback?batch-id={}",
+                options.station_id, batch_id
+            )
+        } else {
+            format!(
+                "https://api.music.yandex.net/rotor/station/{}/feedback",
+                options.station_id
+            )
+        };
+
+        let response = self
+            .inner
+            .post(url)
+            .json(&to_value(&options.feedback)?)
+            .send()
+            .await?;
+
+        if !response.status().is_success() {
+            return Err(crate::error::ClientError::YandexMusicError {
+                error: crate::error::YandexMusicError {
+                    name: "RequestFailed".to_string(),
+                    message: Some(format!(
+                        "Request failed with status code: {}",
+                        response.status()
+                    )),
+                },
+            });
+        }
+
         Ok(())
     }
 }
