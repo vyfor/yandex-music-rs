@@ -14,16 +14,16 @@ pub struct SendStationFeedbackOptions {
     /// Optional batch ID for grouping related feedback.
     pub batch_id: Option<String>,
     /// The feedback data containing track information and user action.
-    pub feedback: StationFeedback,
+    pub event: StationFeedback,
 }
 
 impl SendStationFeedbackOptions {
     /// Create a new feedback request for a station.
-    pub fn new(station_id: impl Into<String>, feedback: StationFeedback) -> Self {
+    pub fn new(station_id: impl Into<String>, event: StationFeedback) -> Self {
         Self {
             station_id: station_id.into(),
             batch_id: None,
-            feedback,
+            event,
         }
     }
 
@@ -51,7 +51,7 @@ impl Endpoint for SendStationFeedbackOptions {
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
-        RequestOptions::default().with_json_data(serde_json::to_value(&self.feedback).unwrap())
+        RequestOptions::default().with_json_data(serde_json::to_value(&self.event).unwrap())
     }
 }
 
