@@ -51,15 +51,7 @@ impl Endpoint for SendStationFeedbackOptions {
     const METHOD: Method = Method::POST;
 
     fn path(&self) -> Cow<'static, str> {
-        if let Some(batch_id) = &self.batch_id {
-            format!(
-                "rotor/station/{}/feedback?batch-id={}",
-                self.station_id, batch_id
-            )
-            .into()
-        } else {
-            format!("rotor/station/{}/feedback", self.station_id).into()
-        }
+        format!("rotor/session/{}/feedback", self.station_id).into()
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
@@ -82,7 +74,8 @@ impl YandexMusicClient {
         &self,
         options: &SendStationFeedbackOptions,
     ) -> Result<(), crate::ClientError> {
-        self.request::<(), _>(options).await?;
+        self.request_unit(options).await?;
+
         Ok(())
     }
 }

@@ -7,7 +7,7 @@ use serde::de::DeserializeOwned;
 use serde::Serialize;
 
 use crate::api::Endpoint;
-use crate::client::request::send_request_direct;
+use crate::client::request::{send_request_direct, send_request_unit};
 use crate::error::ClientError;
 use crate::YandexMusicClient;
 
@@ -62,6 +62,14 @@ impl YandexMusicClient {
         <P as Endpoint>::Options: Serialize,
     {
         send_request_direct(&self.inner, endpoint, Some(url)).await
+    }
+
+    pub(crate) async fn request_unit<P>(&self, endpoint: &P) -> Result<(), ClientError>
+    where
+        P: Endpoint,
+        <P as Endpoint>::Options: Serialize,
+    {
+        send_request_unit(&self.inner, endpoint, None).await
     }
 }
 
