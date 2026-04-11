@@ -7,13 +7,13 @@ use serde::Serialize;
 #[serde(rename_all = "camelCase")]
 pub struct StationFeedback {
     #[serde(rename = "type")]
-    pub item_type: String,
+    pub item_type: Option<String>,
     pub timestamp: DateTime<Utc>,
-    pub from: String,
-    pub track_id: String,
+    pub from: Option<String>,
+    pub track_id: Option<String>,
     #[serde(
         rename = "totalPlayedSeconds",
-        serialize_with = "crate::model::utils::duration_to_secs"
+        serialize_with = "crate::model::utils::opt_duration_to_secs_f64"
     )]
-    pub total_played: Duration,
+    pub total_played: Option<Duration>,
 }

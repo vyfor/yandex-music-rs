@@ -16,27 +16,19 @@ where
     }
 }
 
-pub fn opt_string_to_u32<'de, D>(
-    deserializer: D,
-) -> Result<Option<u32>, D::Error>
+pub fn opt_string_to_u32<'de, D>(deserializer: D) -> Result<Option<u32>, D::Error>
 where
     D: Deserializer<'de>,
 {
     let value = Deserialize::deserialize(deserializer)?;
     match value {
-        serde_json::Value::Number(num) => {
-            Ok(Some(num.as_u64().unwrap() as u32))
-        }
-        serde_json::Value::String(s) => {
-            s.parse::<u32>().map_err(de::Error::custom).map(Some)
-        }
+        serde_json::Value::Number(num) => Ok(Some(num.as_u64().unwrap() as u32)),
+        serde_json::Value::String(s) => s.parse::<u32>().map_err(de::Error::custom).map(Some),
         _ => Ok(None),
     }
 }
 
-pub fn opt_number_to_string<'de, D>(
-    deserializer: D,
-) -> Result<Option<String>, D::Error>
+pub fn opt_number_to_string<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -48,9 +40,7 @@ where
     }
 }
 
-pub fn deserialize_maybe_vec<'de, D, T>(
-    deserializer: D,
-) -> Result<Vec<T>, D::Error>
+pub fn deserialize_maybe_vec<'de, D, T>(deserializer: D) -> Result<Vec<T>, D::Error>
 where
     D: Deserializer<'de>,
     T: Deserialize<'de>,
@@ -101,9 +91,7 @@ where
     deserializer.deserialize_any(MaybeVecVisitor(std::marker::PhantomData))
 }
 
-pub fn duration_from_millis<'de, D>(
-    deserializer: D,
-) -> Result<Duration, D::Error>
+pub fn duration_from_millis<'de, D>(deserializer: D) -> Result<Duration, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -111,9 +99,7 @@ where
     Ok(Duration::from_millis(millis))
 }
 
-pub fn opt_duration_from_millis<'de, D>(
-    deserializer: D,
-) -> Result<Option<Duration>, D::Error>
+pub fn opt_duration_from_millis<'de, D>(deserializer: D) -> Result<Option<Duration>, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -121,12 +107,15 @@ where
     Ok(millis.map(Duration::from_millis))
 }
 
-pub fn duration_to_secs<S>(
-    duration: &Duration,
+pub fn opt_duration_to_secs_f64<S>(
+    duration: &Option<Duration>,
     serializer: S,
 ) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
 {
-    serializer.serialize_u64(duration.as_secs())
+    match duration {
+        Some(dur) => serializer.serialize_f64(dur.as_secs_f64()),
+        None => serializer.serialize_none(),
+    }
 }

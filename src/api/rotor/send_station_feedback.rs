@@ -3,12 +3,12 @@ use std::borrow::Cow;
 use reqwest::Method;
 
 use crate::{
-    api::Endpoint, client::request::RequestOptions,
-    model::rotor::feedback::StationFeedback, YandexMusicClient,
+    api::Endpoint, client::request::RequestOptions, model::rotor::feedback::StationFeedback,
+    YandexMusicClient,
 };
 
 /// Request for sending feedback about a radio station's track.
-pub struct GetStationFeedbackOptions {
+pub struct SendStationFeedbackOptions {
     /// The ID of the station to provide feedback for.
     pub station_id: String,
     /// Optional batch ID for grouping related feedback.
@@ -17,12 +17,9 @@ pub struct GetStationFeedbackOptions {
     pub feedback: StationFeedback,
 }
 
-impl GetStationFeedbackOptions {
+impl SendStationFeedbackOptions {
     /// Create a new feedback request for a station.
-    pub fn new(
-        station_id: impl Into<String>,
-        feedback: StationFeedback,
-    ) -> Self {
+    pub fn new(station_id: impl Into<String>, feedback: StationFeedback) -> Self {
         Self {
             station_id: station_id.into(),
             batch_id: None,
@@ -37,7 +34,7 @@ impl GetStationFeedbackOptions {
     }
 }
 
-impl Endpoint for GetStationFeedbackOptions {
+impl Endpoint for SendStationFeedbackOptions {
     type Options = ();
     const METHOD: Method = Method::POST;
 
@@ -54,8 +51,7 @@ impl Endpoint for GetStationFeedbackOptions {
     }
 
     fn options(&self) -> RequestOptions<Self::Options> {
-        RequestOptions::default()
-            .with_json_data(serde_json::to_value(&self.feedback).unwrap())
+        RequestOptions::default().with_json_data(serde_json::to_value(&self.feedback).unwrap())
     }
 }
 
@@ -72,7 +68,7 @@ impl YandexMusicClient {
     /// * `Result<(), ClientError>` - An empty result or an error if the request fails.
     pub async fn send_station_feedback(
         &self,
-        options: &GetStationFeedbackOptions,
+        options: &SendStationFeedbackOptions,
     ) -> Result<(), crate::ClientError> {
         self.request::<(), _>(options).await?;
         Ok(())
