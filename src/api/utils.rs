@@ -1,6 +1,6 @@
 use base64::engine::general_purpose::STANDARD;
 use base64::Engine;
-use hmac::{Hmac, Mac};
+use hmac::{Hmac, KeyInit, Mac};
 use sha2::Sha256;
 use std::{fmt::Display, time::SystemTime};
 
