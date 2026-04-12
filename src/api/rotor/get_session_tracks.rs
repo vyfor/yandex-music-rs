@@ -1,6 +1,9 @@
 use crate::{
-    api::Endpoint, client::request::RequestOptions, error::ClientError,
-    model::rotor::session::Session, YandexMusicClient,
+    api::Endpoint,
+    client::request::RequestOptions,
+    error::ClientError,
+    model::rotor::{feedback::StationFeedback, session::Session},
+    YandexMusicClient,
 };
 
 #[derive(Default)]
@@ -9,6 +12,8 @@ pub struct GetSessionTracksOptions {
     pub session_id: String,
     /// The queue of track identifiers in the format of "{track_id}:{album_id}".
     pub queue: Vec<String>,
+    /// Additional feedback for the session.
+    pub feedbacks: Vec<StationFeedback>,
 }
 
 impl GetSessionTracksOptions {
@@ -20,7 +25,16 @@ impl GetSessionTracksOptions {
         Self {
             session_id: session_id.into(),
             queue: queue.into_iter().map(Into::into).collect(),
+            feedbacks: Vec::new(),
         }
+    }
+
+    pub fn feedbacks<I>(mut self, feedbacks: I) -> Self
+    where
+        I: IntoIterator<Item = StationFeedback>,
+    {
+        self.feedbacks = feedbacks.into_iter().collect();
+        self
     }
 }
 
@@ -35,6 +49,7 @@ impl Endpoint for GetSessionTracksOptions {
     fn options(&self) -> RequestOptions<Self::Options> {
         RequestOptions::default().with_json_data(serde_json::json!({
             "queue": self.queue,
+            "feedbacks": self.feedbacks
         }))
     }
 }
