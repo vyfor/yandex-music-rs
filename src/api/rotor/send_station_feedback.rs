@@ -14,35 +14,17 @@ pub struct SendStationFeedbackOptions {
     /// The ID of the station to provide feedback for.
     #[serde(skip)]
     pub station_id: String,
-    /// Optional batch ID for grouping related feedback.
-    pub batch_id: Option<String>,
-    /// The feedback data containing track information and user action.
-    pub event: StationFeedback,
-    /// Source of the feedback.
-    pub from: Option<String>,
+    #[serde(flatten)]
+    pub feedback: StationFeedback,
 }
 
 impl SendStationFeedbackOptions {
     /// Create a new feedback request for a station.
-    pub fn new(station_id: impl Into<String>, event: StationFeedback) -> Self {
+    pub fn new(station_id: impl Into<String>, feedback: StationFeedback) -> Self {
         Self {
             station_id: station_id.into(),
-            batch_id: None,
-            event,
-            from: None,
+            feedback,
         }
-    }
-
-    /// Set the batch ID for grouping related feedback.
-    pub fn batch_id(mut self, batch_id: impl Into<String>) -> Self {
-        self.batch_id = Some(batch_id.into());
-        self
-    }
-
-    /// Set the source of the feedback.
-    pub fn from(mut self, from: impl Into<String>) -> Self {
-        self.from = Some(from.into());
-        self
     }
 }
 
