@@ -8,6 +8,7 @@ pub struct TrackFileInfo {
     pub gain: bool,
     pub quality: String,
     pub real_id: String,
+    #[serde(default)]
     pub size: u64,
     pub track_id: String,
     pub transport: String,
