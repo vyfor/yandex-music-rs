@@ -8,7 +8,7 @@ pub struct TrackFileInfo {
     pub gain: bool,
     pub quality: String,
     pub real_id: String,
-    pub size: u64,
+    pub size: Option<u64>,
     pub track_id: String,
     pub transport: String,
     pub url: String,
